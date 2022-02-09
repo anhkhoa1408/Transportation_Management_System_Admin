@@ -32,7 +32,6 @@ export const RenderRoutes = (props) => {
             <Layout>
               {allowedRoutes.map((route) => {
                 let { component: Component, link, ...rest } = route;
-
                 return (
                   <Route path={link} key={link}>
                     <PrivateRoute isAuthenticated={isAuthenticated}>

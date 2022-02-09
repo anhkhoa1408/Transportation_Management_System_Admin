@@ -9,10 +9,6 @@ const adminRouter = [
     link: "/dashboard",
     component: HomePage,
   },
-  {
-    link: "/dashboard",
-    component: HomePage,
-  },
 ];
 
 export { adminRouter };
