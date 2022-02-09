@@ -11,6 +11,8 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import { NavLink } from "react-router-dom";
+import Home from "@mui/icons-material/Dashboard";
 
 const drawerWidth = 240;
 
@@ -29,8 +31,8 @@ const closedMixin = (theme) => ({
     duration: theme.transitions.duration.leavingScreen,
   }),
   overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
+  width: `calc(${theme.spacing(9)} + 1px)`,
+  [theme.breakpoints.up("md")]: {
     width: `calc(${theme.spacing(9)} + 1px)`,
   },
 });
@@ -61,9 +63,13 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+const routerList = [
+  { link: "/dashboard", title: "Bảng điều khiển", icon: <Home /> },
+];
+
 const Sidebar = (props) => {
   const theme = useTheme();
-  const { open, handleDrawerClose } = props;
+  const [open, setOpen] = React.useState(false);
 
   return (
     <Drawer
@@ -76,27 +82,47 @@ const Sidebar = (props) => {
       }}
     >
       <DrawerHeader>
-        <IconButton onClick={handleDrawerClose}>
-          {theme.direction === "rtl" ? (
+        <IconButton onClick={() => setOpen(!open)}>
+          {!open ? (
             <ChevronRightIcon className="text-white" />
           ) : (
             <ChevronLeftIcon className="text-white" />
           )}
         </IconButton>
       </DrawerHeader>
-      {/* <Divider /> */}
+      <Divider
+        sx={{
+          margin: theme.spacing(0, 1),
+          color: "white",
+          borderWidth: 1,
+          opacity: 1,
+        }}
+      />
+
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem button key={text} className="text-white">
-            <ListItemIcon className="text-white">
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
+        {routerList.map((item, index) => (
+          <NavLink
+            key={index}
+            activeClassName="active"
+            className="nav-link"
+            to={item.link}
+          >
+            <ListItem button className="text-white">
+              <ListItemIcon className="text-white">{item.icon}</ListItemIcon>
+              <ListItemText primary={item.title} />
+            </ListItem>
+          </NavLink>
         ))}
       </List>
-      <Divider sx={{ margin: theme.spacing(0, 1) }} />
-      <List>
+      <Divider
+        sx={{
+          margin: theme.spacing(0, 1),
+          color: "white",
+          borderWidth: 1,
+          opacity: 1,
+        }}
+      />
+      {/* <List>
         {["All mail", "Trash", "Spam"].map((text, index) => (
           <ListItem button key={text} className="text-white">
             <ListItemIcon className="text-white">
@@ -105,7 +131,7 @@ const Sidebar = (props) => {
             <ListItemText primary={text} />
           </ListItem>
         ))}
-      </List>
+      </List> */}
     </Drawer>
   );
 };
