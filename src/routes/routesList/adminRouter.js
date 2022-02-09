@@ -6,7 +6,7 @@ const HomePage = lazy(() =>
 
 const adminRouter = [
   {
-    link: "/",
+    link: "/dashboard",
     component: HomePage,
   },
   {

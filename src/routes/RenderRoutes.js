@@ -10,7 +10,7 @@ import PrivateRoute from "./PrivateRoutes";
 const SuspenseLoading = () => <div>Xin vui lòng đợi</div>;
 
 export const RenderRoutes = (props) => {
-  const isAuthenticated = true;
+  const isAuthenticated = false;
   const allowedRoutes = adminRouter;
 
   return (
@@ -34,7 +34,7 @@ export const RenderRoutes = (props) => {
                 let { component: Component, link, ...rest } = route;
 
                 return (
-                  <Route path={link} key={link} {...rest}>
+                  <Route path={link} key={link}>
                     <PrivateRoute isAuthenticated={isAuthenticated}>
                       <Component {...rest} />
                     </PrivateRoute>
