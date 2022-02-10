@@ -3,9 +3,11 @@ import { CLEAN_STORE } from "../constants/types";
 import localStorage from "redux-persist/lib/storage";
 import { persistor } from "../config/configureStore";
 import userInfo from "./userInfo";
+import layoutOption from "./layoutOption";
 
 const appReducer = combineReducers({
   userInfo: userInfo,
+  layoutOption: layoutOption,
 });
 
 const rootReducer = (state, action) => {

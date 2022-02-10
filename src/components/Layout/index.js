@@ -1,28 +1,62 @@
-import { Box, CssBaseline } from "@mui/material";
+import { Box, CssBaseline, Grid } from "@mui/material";
 import React from "react";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
+import { connect } from "react-redux";
+import { useTheme } from "@mui/material/styles";
 
 const Layout = (props) => {
-  const { children } = props;
+  const { children, toggleSideBar } = props;
+  const theme = useTheme();
 
   return (
     <Box
       sx={{
         display: "flex",
-        backgroundColor: "#F8F8F8",
+        backgroundColor: "#F8F9FC",
         height: "100vh",
         flexDirection: "row",
       }}
     >
       <CssBaseline />
-      <Sidebar />
-      <Box component="main" className="d-flex flex-column flex-grow-1">
-        <Header />
-        {children}
-      </Box>
+      <Grid container>
+        <Grid
+          item
+          xs={toggleSideBar ? 1 : 2}
+          style={{
+            transition: theme.transitions.create("all", {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.leavingScreen,
+            }),
+          }}
+        >
+          <Sidebar />
+        </Grid>
+
+        <Grid
+          item
+          xs={toggleSideBar ? 11 : 10}
+          style={{
+            transition: theme.transitions.create("all", {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.leavingScreen,
+            }),
+          }}
+        >
+          <Box component="main" className="d-flex flex-column flex-grow-1">
+            <Header />
+            {children}
+          </Box>
+        </Grid>
+      </Grid>
     </Box>
   );
 };
 
-export default Layout;
+const mapStateToProps = (state) => ({
+  toggleSideBar: state.layoutOption.toggleSideBar,
+});
+
+const mapDispatchToProps = {};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Layout);

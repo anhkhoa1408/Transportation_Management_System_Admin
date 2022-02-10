@@ -4,38 +4,26 @@ import MuiDrawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import { NavLink } from "react-router-dom";
-import Home from "@mui/icons-material/Dashboard";
-
-const drawerWidth = 240;
-
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-});
-
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(9)} + 1px)`,
-  [theme.breakpoints.up("md")]: {
-    width: `calc(${theme.spacing(9)} + 1px)`,
-  },
-});
+import { Box } from "@mui/system";
+import {
+  Home,
+  ChevronLeft,
+  ChevronRight,
+  AccountCircle,
+  ListAlt,
+  LocalShipping,
+  ConfirmationNumber,
+  Storage,
+  ModeComment,
+  Description,
+} from "@mui/icons-material";
+import { connect } from "react-redux";
+import { toggleSidebar } from "../../actions/actions";
+import { Typography } from "@mui/material";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -47,93 +35,168 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
+})(({ theme, toggle }) => ({
   flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
-  border: 0,
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
+  height: "100%",
 }));
 
 const routerList = [
-  { link: "/dashboard", title: "Bảng điều khiển", icon: <Home /> },
+  { link: "/dashboard", title: "Người dùng", icon: <AccountCircle /> },
+  { link: "/dashboard", title: "Nhân viên", icon: <AccountCircle /> },
+  { link: "/dashboard", title: "Đơn hàng", icon: <ListAlt /> },
+  { link: "/dashboard", title: "Phương tiện", icon: <LocalShipping /> },
+  { link: "/dashboard", title: "Khuyến mãi", icon: <ConfirmationNumber /> },
+  { link: "/dashboard", title: "Kho", icon: <Storage /> },
 ];
 
 const Sidebar = (props) => {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const { toggle, handleToggleSideBar } = props;
+
+  const handleToggle = () => {
+    handleToggleSideBar(!toggle);
+  };
 
   return (
     <Drawer
       variant="permanent"
-      open={open}
+      open={toggle}
       PaperProps={{
         sx: {
           backgroundColor: "#7FC3DC",
+          position: "static",
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "stretch",
         },
       }}
     >
-      <DrawerHeader>
-        <IconButton onClick={() => setOpen(!open)}>
-          {!open ? (
-            <ChevronRightIcon className="text-white" />
+      <DrawerHeader className="d-flex flex-column align-items-center mb-3">
+        <IconButton className="bg-white" onClick={handleToggle}>
+          {toggle ? (
+            <ChevronRight className="primary-color" />
           ) : (
-            <ChevronLeftIcon className="text-white" />
+            <ChevronLeft className="primary-color" />
           )}
         </IconButton>
       </DrawerHeader>
-      <Divider
-        sx={{
-          margin: theme.spacing(0, 1),
-          color: "white",
-          borderWidth: 1,
-          opacity: 1,
-        }}
-      />
 
-      <List>
-        {routerList.map((item, index) => (
-          <NavLink
-            key={index}
-            activeClassName="active"
-            className="nav-link"
-            to={item.link}
-          >
-            <ListItem button className="text-white">
-              <ListItemIcon className="text-white">{item.icon}</ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItem>
-          </NavLink>
-        ))}
-      </List>
-      <Divider
+      <NavLink activeClassName="active" className="nav-link" to="/dashboard">
+        <ListItem
+          button
+          className="text-white d-flex align-items-center justify-content-center"
+        >
+          {!toggle ? (
+            <>
+              <ListItemIcon className="text-white m-0 w-0">
+                <Home />
+              </ListItemIcon>
+              <ListItemText primary="Bảng điều khiển" />
+            </>
+          ) : (
+            <Home />
+          )}
+        </ListItem>
+      </NavLink>
+
+      <Box
         sx={{
-          margin: theme.spacing(0, 1),
-          color: "white",
-          borderWidth: 1,
-          opacity: 1,
+          padding: theme.spacing(0, 4),
+
+          width: "100%",
         }}
-      />
-      {/* <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem button key={text} className="text-white">
-            <ListItemIcon className="text-white">
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
+      >
+        <Divider
+          sx={{ width: "100%", color: "white", borderWidth: 1, opacity: 1 }}
+        />
+      </Box>
+
+      {routerList.map((item, index) => (
+        <NavLink
+          key={index}
+          activeClassName="active"
+          className="nav-link"
+          to={item.link}
+        >
+          <ListItem
+            button
+            className="text-white d-flex align-items-center justify-content-center"
+          >
+            {!toggle ? (
+              <>
+                <ListItemIcon className="text-white m-0 w-0">
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.title} />
+              </>
+            ) : (
+              item.icon
+            )}
           </ListItem>
-        ))}
-      </List> */}
+        </NavLink>
+      ))}
+      <Box
+        sx={{
+          padding: theme.spacing(0, 4),
+
+          width: "100%",
+        }}
+      >
+        <Divider
+          sx={{ width: "100%", color: "white", borderWidth: 1, opacity: 1 }}
+        />
+      </Box>
+
+      <NavLink activeClassName="active" className="nav-link" to="/dashboard">
+        <ListItem
+          button
+          className="text-white d-flex align-items-center justify-content-center"
+        >
+          {!toggle ? (
+            <>
+              <ListItemIcon className="text-white m-0 w-0">
+                <Description />
+              </ListItemIcon>
+              <ListItemText primary="Báo cáo định kỳ" />
+            </>
+          ) : (
+            <Description />
+          )}
+        </ListItem>
+      </NavLink>
+
+      <NavLink activeClassName="active" className="nav-link" to="/dashboard">
+        <ListItem
+          button
+          className="text-white d-flex align-items-center justify-content-center"
+        >
+          {!toggle ? (
+            <>
+              <ListItemIcon className="text-white m-0 w-0">
+                <ModeComment />
+              </ListItemIcon>
+              <ListItemText primary="Phản hồi" />
+            </>
+          ) : (
+            <ModeComment />
+          )}
+        </ListItem>
+      </NavLink>
     </Drawer>
   );
 };
 
-export default Sidebar;
+const mapStateToProps = (state) => ({
+  toggle: state.layoutOption.toggleSideBar,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    handleToggleSideBar: (toggle) => dispatch(toggleSidebar(toggle)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);
