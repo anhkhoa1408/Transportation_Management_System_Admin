@@ -1,16 +1,17 @@
 import React, { Suspense } from "react";
 import { connect } from "react-redux";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import Layout from "../components/Layout";
 import { generalRouter } from "./routesList/generalRouter";
 import { adminRouter } from "./routesList/adminRouter";
 import PublicRoute from "./PublicRoutes";
 import PrivateRoute from "./PrivateRoutes";
+import LoginPage from "../views/AuthPage/LoginPage/LoginPage";
 
 const SuspenseLoading = () => <div>Xin vui lòng đợi</div>;
 
 export const RenderRoutes = (props) => {
-  const isAuthenticated = false;
+  const isAuthenticated = true;
   const allowedRoutes = adminRouter;
 
   return (
@@ -33,7 +34,7 @@ export const RenderRoutes = (props) => {
               {allowedRoutes.map((route) => {
                 let { component: Component, link, ...rest } = route;
                 return (
-                  <Route path={link} key={link}>
+                  <Route exact path={link} key={link}>
                     <PrivateRoute isAuthenticated={isAuthenticated}>
                       <Component {...rest} />
                     </PrivateRoute>
@@ -43,6 +44,8 @@ export const RenderRoutes = (props) => {
             </Layout>
           </Route>
         )}
+        <Redirect exact from="/" to="/login" />
+        <Route path="*" exact={true} component={LoginPage} />
       </Switch>
     </Suspense>
   );
