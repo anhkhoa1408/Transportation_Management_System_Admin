@@ -14,7 +14,7 @@ const Layout = (props) => {
       sx={{
         display: "flex",
         backgroundColor: "#F8F9FC",
-        height: "100vh",
+        minHeight: "100vh",
         flexDirection: "row",
       }}
     >
@@ -43,9 +43,12 @@ const Layout = (props) => {
             }),
           }}
         >
-          <Box component="main" className="d-flex flex-column flex-grow-1">
+          <Box
+            component="main"
+            className="d-flex flex-column flex-grow-1 h-100"
+          >
             <Header />
-            {children}
+            <Box className="h-100 flex-grow-1">{children}</Box>
           </Box>
         </Grid>
       </Grid>

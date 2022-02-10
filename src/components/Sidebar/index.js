@@ -20,6 +20,7 @@ import {
   Storage,
   ModeComment,
   Description,
+  People,
 } from "@mui/icons-material";
 import { connect } from "react-redux";
 import { toggleSidebar } from "../../actions/actions";
@@ -43,8 +44,8 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const routerList = [
-  { link: "/dashboard", title: "Người dùng", icon: <AccountCircle /> },
-  { link: "/dashboard", title: "Nhân viên", icon: <AccountCircle /> },
+  { link: "/customer", title: "Người dùng", icon: <AccountCircle /> },
+  { link: "/dashboard", title: "Nhân viên", icon: <People /> },
   { link: "/dashboard", title: "Đơn hàng", icon: <ListAlt /> },
   { link: "/dashboard", title: "Phương tiện", icon: <LocalShipping /> },
   { link: "/dashboard", title: "Khuyến mãi", icon: <ConfirmationNumber /> },
@@ -77,14 +78,18 @@ const Sidebar = (props) => {
       <DrawerHeader className="d-flex flex-column align-items-center mb-3">
         <IconButton className="bg-white" onClick={handleToggle}>
           {toggle ? (
-            <ChevronRight className="primary-color" />
+            <ChevronRight className="app-primary-color" />
           ) : (
-            <ChevronLeft className="primary-color" />
+            <ChevronLeft className="app-primary-color" />
           )}
         </IconButton>
       </DrawerHeader>
 
-      <NavLink activeClassName="active" className="nav-link" to="/dashboard">
+      <NavLink
+        activeClassName="active opacity-100"
+        className="nav-link opacity-50"
+        to="/dashboard"
+      >
         <ListItem
           button
           className="text-white d-flex align-items-center justify-content-center"
@@ -117,8 +122,8 @@ const Sidebar = (props) => {
       {routerList.map((item, index) => (
         <NavLink
           key={index}
-          activeClassName="active"
-          className="nav-link"
+          activeClassName="opacity-100 active"
+          className="nav-link opacity-50"
           to={item.link}
         >
           <ListItem
@@ -150,7 +155,11 @@ const Sidebar = (props) => {
         />
       </Box>
 
-      <NavLink activeClassName="active" className="nav-link" to="/dashboard">
+      <NavLink
+        activeClassName="active opacity-100"
+        className="nav-link opacity-50"
+        to="/dashboard"
+      >
         <ListItem
           button
           className="text-white d-flex align-items-center justify-content-center"
@@ -168,7 +177,11 @@ const Sidebar = (props) => {
         </ListItem>
       </NavLink>
 
-      <NavLink activeClassName="active" className="nav-link" to="/dashboard">
+      <NavLink
+        activeClassName="active opacity-100"
+        className="nav-link opacity-50"
+        to="/dashboard"
+      >
         <ListItem
           button
           className="text-white d-flex align-items-center justify-content-center"
