@@ -1,3 +1,7 @@
+:root {
+  --app-primary: #7fc3dc;
+}
+
 html,
 body {
   height: 100%;
@@ -9,9 +13,13 @@ body {
 }
 
 .app-primary-color {
-  color: "#7FC3DC";
+  color: var(--app-primary) !important;
 }
 
 .app-primary-bg-color {
-  background-color: "#7FC3DC";
+  background-color: var(--app-primary) !important;
+}
+
+.dropdown-item:active {
+  background-color: var(--app-primary);
 }
