@@ -14,14 +14,14 @@ import { Add, FilterList, Info } from "@mui/icons-material";
 import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
 
-export const CustomerList = (props) => {
+export const ReportList = (props) => {
   const [data, setData] = useState([
     {
       id: 1,
-      name: "aaa",
-      phone: "aaa",
-      rank: "aaa",
-      dateOfBirth: "14/08/2000",
+      date: "12/12/2012",
+      name: "Yoga Shibe",
+      position: "kho Hà Nội",
+      address: "183/14 Bui Vien",
     },
   ]);
 
@@ -36,23 +36,23 @@ export const CustomerList = (props) => {
         width: 100,
       },
       {
-        Header: "Tên",
-        accessor: "name",
+        Header: "Ngày thực hiện",
+        accessor: "date",
         filterable: false,
       },
       {
-        Header: "Số điện thoại",
-        accessor: "phone",
+        Header: "Người thực hiện",
+        accessor: "manager",
         filterable: false,
       },
       {
-        Header: "Hạng",
-        accessor: "rank",
+        Header: "Tên kho",
+        accessor: "position",
         filterable: false,
       },
       {
-        Header: "Ngày sinh",
-        accessor: "dateOfBirth",
+        Header: "Địa chỉ",
+        accessor: "address",
         filterable: false,
       },
       {
@@ -68,12 +68,13 @@ export const CustomerList = (props) => {
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
+        maxWeight: prop.maxWeight + " kg",
         options: (
           <Button
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/customer/info/1")}
+            onClick={() => history.push("/report/detail/1")}
           >
             Chi tiết
           </Button>
@@ -103,7 +104,7 @@ export const CustomerList = (props) => {
               variant="h5"
               className="flex-grow-1 fs-5 app-primary-color"
             >
-              Danh sách khách hàng
+              Danh sách báo cáo
             </Typography>
             <Box>
               <Button variant="outlined" className="me-2" endIcon={<Add />}>
@@ -145,7 +146,7 @@ export const CustomerList = (props) => {
                   onClick: (e, handleOriginal) => {
                     console.log(column);
                     if (column.id !== "options") {
-                      history.push("/customer/info/1223");
+                      history.push("/report/detail/1223");
                     }
                   },
                 };
@@ -162,4 +163,4 @@ const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerList);
+export default connect(mapStateToProps, mapDispatchToProps)(ReportList);

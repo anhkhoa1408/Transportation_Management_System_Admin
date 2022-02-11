@@ -12,6 +12,7 @@ import {
   Typography,
   Select,
   MenuItem,
+  InputAdornment,
 } from "@mui/material";
 import ReactTable from "react-table-v6";
 import { Add, FilterList } from "@mui/icons-material";
@@ -19,7 +20,7 @@ import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
 import img from "./../../../assets/img/delivery.jpg";
 
-export const CustomerInfo = (props) => {
+const StorageDetail = (props) => {
   const [data, setData] = useState([
     {
       id: 1,
@@ -34,94 +35,41 @@ export const CustomerInfo = (props) => {
     <Box className="p-4">
       <Grid container className="p-4" direction="column">
         <Grid item md={12} className="d-flex flex-column">
-          {/* <Typography
-            variant="h5"
-            className="flex-grow-1 fs-5 text-primary mb-3"
-          >
-            Thông tin khách hàng
-          </Typography> */}
           <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center">
-            <Box className="d-flex flex-row align-items-center p-4">
-              <Avatar
-                sx={{
-                  width: 100,
-                  height: 100,
-                  marginRight: "40px",
-                }}
-              />
-              <Box className="flex-grow-1">
-                <Typography variant="h5">Yoga shiber</Typography>
-                <Typography
-                  variant="h5"
-                  className="fs-6 mt-2 text-success fw-bold"
-                >
-                  Khách hàng thân thiết
-                </Typography>
-              </Box>
-              <Button variant="outlined" color="error" className="me-3">
-                Xoá người dùng
-              </Button>
-              <Button variant="contained" className="app-primary-bg-color">
-                Lưu lại
-              </Button>
-            </Box>
             <Box className="px-5 py-2">
               <Grid container spacing={1} direction="column">
-                <Typography className="mt-3 mb-4 fs-5 fw-bold">
-                  Thông tin chi tiết
-                </Typography>
+                <Grid container className="mt-3 mb-4">
+                  <Grid item md={8}>
+                    <Typography className="fs-5 fw-bold">
+                      Thông tin kho
+                    </Typography>
+                  </Grid>
+                  <Grid
+                    item
+                    md={4}
+                    className="d-flex flex-row justify-content-end"
+                  >
+                    <Button
+                      variant="contained"
+                      className="app-primary-bg-color"
+                    >
+                      Lưu lại
+                    </Button>
+                  </Grid>
+                </Grid>
+
                 <Grid container md={12} className="px-1 mb-4">
                   <Grid
                     item
                     md={3}
                     className="align-items-center d-flex flex-row"
                   >
-                    <Typography>Họ và tên</Typography>
+                    <Typography>Tên kho</Typography>
                   </Grid>
                   <Grid item md={9}>
                     <TextField
                       fullWidth
-                      label="Họ và tên"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="px-1 mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Địa chỉ email</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Email"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="px-1 mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Số điện thoại</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Số điện thoại"
+                      label="Tên kho"
                       inputProps={{
                         style: {
                           backgroundColor: "#F8F9FA",
@@ -156,26 +104,63 @@ export const CustomerInfo = (props) => {
                     md={3}
                     className="align-items-center d-flex flex-row"
                   >
-                    <Typography>Loại khách hàng</Typography>
+                    <Typography>Diện tích</Typography>
                   </Grid>
                   <Grid item md={9}>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      // value={age}
+                    <TextField
                       fullWidth
-                      label="Khách hàng"
-                      // onChange={handleChange}
+                      label="Diện tích"
                       inputProps={{
                         style: {
                           backgroundColor: "#F8F9FA",
                         },
                       }}
-                    >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
-                    </Select>
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="start">m²</InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container className="px-1 mb-4">
+                  <Grid
+                    item
+                    md={3}
+                    className="align-items-center d-flex flex-row"
+                  >
+                    <Typography>Thủ kho</Typography>
+                  </Grid>
+                  <Grid item md={9}>
+                    <TextField
+                      fullWidth
+                      label="Thủ kho"
+                      inputProps={{
+                        style: {
+                          backgroundColor: "#F8F9FA",
+                        },
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container className="px-1 mb-4">
+                  <Grid
+                    item
+                    md={3}
+                    className="align-items-center d-flex flex-row"
+                  >
+                    <Typography>Ngày thành lập</Typography>
+                  </Grid>
+                  <Grid item md={9}>
+                    <TextField
+                      fullWidth
+                      label="Ngày thành lập"
+                      inputProps={{
+                        style: {
+                          backgroundColor: "#F8F9FA",
+                        },
+                      }}
+                    />
                   </Grid>
                 </Grid>
               </Grid>
@@ -191,4 +176,4 @@ const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(StorageDetail);

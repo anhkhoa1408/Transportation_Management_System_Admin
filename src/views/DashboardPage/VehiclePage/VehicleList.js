@@ -14,14 +14,15 @@ import { Add, FilterList, Info } from "@mui/icons-material";
 import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
 
-export const CustomerList = (props) => {
+export const VehicleList = (props) => {
   const [data, setData] = useState([
     {
       id: 1,
-      name: "aaa",
-      phone: "aaa",
-      rank: "aaa",
-      dateOfBirth: "14/08/2000",
+      lisence: "CHONKER",
+      manager: "Yoga Shibe",
+      position: "kho Hà Nội",
+      kind: "Container",
+      maxWeight: "10000",
     },
   ]);
 
@@ -36,23 +37,28 @@ export const CustomerList = (props) => {
         width: 100,
       },
       {
-        Header: "Tên",
-        accessor: "name",
+        Header: "Biển số xe",
+        accessor: "lisence",
         filterable: false,
       },
       {
-        Header: "Số điện thoại",
-        accessor: "phone",
+        Header: "Người quản lý",
+        accessor: "manager",
         filterable: false,
       },
       {
-        Header: "Hạng",
-        accessor: "rank",
+        Header: "Vị trí",
+        accessor: "position",
         filterable: false,
       },
       {
-        Header: "Ngày sinh",
-        accessor: "dateOfBirth",
+        Header: "Loại",
+        accessor: "kind",
+        filterable: false,
+      },
+      {
+        Header: "Tải trọng tối đa",
+        accessor: "maxWeight",
         filterable: false,
       },
       {
@@ -68,12 +74,13 @@ export const CustomerList = (props) => {
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
+        maxWeight: prop.maxWeight + " kg",
         options: (
           <Button
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/customer/info/1")}
+            onClick={() => history.push("/vehicle/detail/1")}
           >
             Chi tiết
           </Button>
@@ -103,7 +110,7 @@ export const CustomerList = (props) => {
               variant="h5"
               className="flex-grow-1 fs-5 app-primary-color"
             >
-              Danh sách khách hàng
+              Danh sách phương tiện
             </Typography>
             <Box>
               <Button variant="outlined" className="me-2" endIcon={<Add />}>
@@ -145,7 +152,7 @@ export const CustomerList = (props) => {
                   onClick: (e, handleOriginal) => {
                     console.log(column);
                     if (column.id !== "options") {
-                      history.push("/customer/info/1223");
+                      history.push("/vehicle/detail/1223");
                     }
                   },
                 };
@@ -162,4 +169,4 @@ const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerList);
+export default connect(mapStateToProps, mapDispatchToProps)(VehicleList);

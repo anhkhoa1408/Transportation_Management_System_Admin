@@ -18,7 +18,7 @@ export const HomePage = (props) => {
     <Box className="d-flex flex-column w-100 p-4">
       <Container maxWidth="xl" className="mb-5">
         <Grid container spacing={3}>
-          <Grid item md={3} sm={12}>
+          <Grid item md={6} sm={12} lg={3}>
             <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-success border-5">
               <Box component="div" className="flex-grow-1">
                 <Typography
@@ -34,7 +34,7 @@ export const HomePage = (props) => {
               <Paid sx={{ fontSize: 33, opacity: 0.3 }} />
             </Paper>
           </Grid>
-          <Grid item md={3} sm={12}>
+          <Grid item md={6} sm={12} lg={3}>
             <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-warning border-5">
               <Box component="div" className="flex-grow-1">
                 <Typography
@@ -50,7 +50,7 @@ export const HomePage = (props) => {
               <CalendarToday sx={{ fontSize: 33, opacity: 0.3 }} />
             </Paper>
           </Grid>
-          <Grid item md={3} sm={12}>
+          <Grid item md={6} sm={12} lg={3}>
             <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-primary border-5">
               <Box component="div" className="flex-grow-1">
                 <Typography
@@ -66,7 +66,7 @@ export const HomePage = (props) => {
               <Archive sx={{ fontSize: 33, opacity: 0.3 }} />
             </Paper>
           </Grid>
-          <Grid item md={3} sm={12}>
+          <Grid item md={6} sm={12} lg={3}>
             <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-danger border-5">
               <Box component="div" className="flex-grow-1">
                 <Typography

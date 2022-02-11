@@ -19,7 +19,7 @@ import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
 import img from "./../../../assets/img/delivery.jpg";
 
-export const CustomerInfo = (props) => {
+const StaffInfo = (props) => {
   const [data, setData] = useState([
     {
       id: 1,
@@ -55,7 +55,7 @@ export const CustomerInfo = (props) => {
                   variant="h5"
                   className="fs-6 mt-2 text-success fw-bold"
                 >
-                  Khách hàng thân thiết
+                  Thủ kho
                 </Typography>
               </Box>
               <Button variant="outlined" color="error" className="me-3">
@@ -136,12 +136,12 @@ export const CustomerInfo = (props) => {
                     md={3}
                     className="align-items-center d-flex flex-row"
                   >
-                    <Typography>Địa chỉ</Typography>
+                    <Typography>Thuộc kho</Typography>
                   </Grid>
                   <Grid item md={9}>
                     <TextField
                       fullWidth
-                      label="Địa chỉ"
+                      label="Kho"
                       inputProps={{
                         style: {
                           backgroundColor: "#F8F9FA",
@@ -156,15 +156,15 @@ export const CustomerInfo = (props) => {
                     md={3}
                     className="align-items-center d-flex flex-row"
                   >
-                    <Typography>Loại khách hàng</Typography>
+                    <Typography>Chức vụ</Typography>
                   </Grid>
                   <Grid item md={9}>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      // value={age}
+                      value={10}
                       fullWidth
-                      label="Khách hàng"
+                      label="Chức vụ"
                       // onChange={handleChange}
                       inputProps={{
                         style: {
@@ -172,9 +172,9 @@ export const CustomerInfo = (props) => {
                         },
                       }}
                     >
-                      <MenuItem value={10}>Ten</MenuItem>
-                      <MenuItem value={20}>Twenty</MenuItem>
-                      <MenuItem value={30}>Thirty</MenuItem>
+                      <MenuItem value={10}>Thủ kho</MenuItem>
+                      <MenuItem value={20}>Tài xế</MenuItem>
+                      <MenuItem value={30}>Phụ xe</MenuItem>
                     </Select>
                   </Grid>
                 </Grid>
@@ -191,4 +191,4 @@ const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerInfo);
+export default connect(mapStateToProps, mapDispatchToProps)(StaffInfo);

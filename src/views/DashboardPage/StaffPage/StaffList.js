@@ -14,14 +14,14 @@ import { Add, FilterList, Info } from "@mui/icons-material";
 import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
 
-export const CustomerList = (props) => {
+export const StaffList = (props) => {
   const [data, setData] = useState([
     {
       id: 1,
-      name: "aaa",
-      phone: "aaa",
-      rank: "aaa",
-      dateOfBirth: "14/08/2000",
+      name: "CHONKER",
+      phone: "1241241",
+      position: "Thủ kho",
+      storage: "Hà Nội",
     },
   ]);
 
@@ -46,13 +46,13 @@ export const CustomerList = (props) => {
         filterable: false,
       },
       {
-        Header: "Hạng",
-        accessor: "rank",
+        Header: "Chức vụ",
+        accessor: "position",
         filterable: false,
       },
       {
-        Header: "Ngày sinh",
-        accessor: "dateOfBirth",
+        Header: "Thuộc kho",
+        accessor: "storage",
         filterable: false,
       },
       {
@@ -73,7 +73,7 @@ export const CustomerList = (props) => {
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/customer/info/1")}
+            onClick={() => history.push("/staff/info/1")}
           >
             Chi tiết
           </Button>
@@ -103,7 +103,7 @@ export const CustomerList = (props) => {
               variant="h5"
               className="flex-grow-1 fs-5 app-primary-color"
             >
-              Danh sách khách hàng
+              Danh sách nhân viên
             </Typography>
             <Box>
               <Button variant="outlined" className="me-2" endIcon={<Add />}>
@@ -145,7 +145,7 @@ export const CustomerList = (props) => {
                   onClick: (e, handleOriginal) => {
                     console.log(column);
                     if (column.id !== "options") {
-                      history.push("/customer/info/1223");
+                      history.push("/staff/info/1223");
                     }
                   },
                 };
@@ -162,4 +162,4 @@ const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerList);
+export default connect(mapStateToProps, mapDispatchToProps)(StaffList);

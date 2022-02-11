@@ -13,15 +13,17 @@ import ReactTable from "react-table-v6";
 import { Add, FilterList, Info } from "@mui/icons-material";
 import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
+import { Badge } from "reactstrap";
 
-export const CustomerList = (props) => {
+export const PackageList = (props) => {
   const [data, setData] = useState([
     {
       id: 1,
-      name: "aaa",
-      phone: "aaa",
-      rank: "aaa",
-      dateOfBirth: "14/08/2000",
+      QRCode: "CHONKER",
+      size: "10m x 10m x 10m",
+      weight: "1000 kg",
+      quantity: "1000 thùng",
+      currentLocation: "Kho Hà Nội",
     },
   ]);
 
@@ -36,23 +38,28 @@ export const CustomerList = (props) => {
         width: 100,
       },
       {
-        Header: "Tên",
-        accessor: "name",
+        Header: "Mã QR",
+        accessor: "QRCode",
         filterable: false,
       },
       {
-        Header: "Số điện thoại",
-        accessor: "phone",
+        Header: "Kích thước",
+        accessor: "size",
         filterable: false,
       },
       {
-        Header: "Hạng",
-        accessor: "rank",
+        Header: "Khối lượng",
+        accessor: "size",
         filterable: false,
       },
       {
-        Header: "Ngày sinh",
-        accessor: "dateOfBirth",
+        Header: "Số lượng",
+        accessor: "quantity",
+        filterable: false,
+      },
+      {
+        Header: "Vị trí hiện tại",
+        accessor: "currentLocation",
         filterable: false,
       },
       {
@@ -68,12 +75,17 @@ export const CustomerList = (props) => {
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
+        // status: (
+        //   <Badge className="bg-warning p-1">
+        //     <Typography component="span">{prop.status}</Typography>
+        //   </Badge>
+        // ),
         options: (
           <Button
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/customer/info/1")}
+            onClick={() => history.push("/order/detail/1")}
           >
             Chi tiết
           </Button>
@@ -103,12 +115,9 @@ export const CustomerList = (props) => {
               variant="h5"
               className="flex-grow-1 fs-5 app-primary-color"
             >
-              Danh sách khách hàng
+              Danh sách kiện hàng
             </Typography>
             <Box>
-              <Button variant="outlined" className="me-2" endIcon={<Add />}>
-                Thêm
-              </Button>
               <Button variant="outlined" endIcon={<FilterList />}>
                 Lọc
               </Button>
@@ -145,7 +154,7 @@ export const CustomerList = (props) => {
                   onClick: (e, handleOriginal) => {
                     console.log(column);
                     if (column.id !== "options") {
-                      history.push("/customer/info/1223");
+                      history.push("/package/detail/1223");
                     }
                   },
                 };
@@ -162,4 +171,4 @@ const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerList);
+export default connect(mapStateToProps, mapDispatchToProps)(PackageList);

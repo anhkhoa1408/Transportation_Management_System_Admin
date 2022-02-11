@@ -10,18 +10,18 @@ import {
   Typography,
 } from "@mui/material";
 import ReactTable from "react-table-v6";
-import { Add, FilterList, Info } from "@mui/icons-material";
+import { Add, FilterList, Info, Star } from "@mui/icons-material";
 import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
 
-export const CustomerList = (props) => {
+export const FeedbackList = (props) => {
   const [data, setData] = useState([
     {
       id: 1,
-      name: "aaa",
-      phone: "aaa",
-      rank: "aaa",
-      dateOfBirth: "14/08/2000",
+      customerName: "Yoga Shibe",
+      date: "12/12/2012",
+      rank: 4,
+      comment: "Vận chuyển rất bruh",
     },
   ]);
 
@@ -36,28 +36,23 @@ export const CustomerList = (props) => {
         width: 100,
       },
       {
-        Header: "Tên",
-        accessor: "name",
+        Header: "Tên khách hàng",
+        accessor: "customerName",
         filterable: false,
       },
       {
-        Header: "Số điện thoại",
-        accessor: "phone",
+        Header: "Ngày đánh giá",
+        accessor: "date",
         filterable: false,
       },
       {
-        Header: "Hạng",
+        Header: "Xếp hạng",
         accessor: "rank",
         filterable: false,
       },
       {
-        Header: "Ngày sinh",
-        accessor: "dateOfBirth",
-        filterable: false,
-      },
-      {
-        Header: "Tuỳ chọn",
-        accessor: "options",
+        Header: "Bình luận",
+        accessor: "comment",
         filterable: false,
       },
     ],
@@ -68,16 +63,23 @@ export const CustomerList = (props) => {
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
-        options: (
-          <Button
-            variant="contained"
-            endIcon={<Info />}
-            className="app-primary-bg-color"
-            onClick={() => history.push("/customer/info/1")}
-          >
-            Chi tiết
-          </Button>
-        ),
+        rank:
+          prop.rank === 5 ? (
+            <Box>
+              {Array.from({ length: 5 }, (_, idx) => (
+                <Star key={idx} color="warning"></Star>
+              ))}
+            </Box>
+          ) : (
+            <Box>
+              {Array.from({ length: prop.rank }, (_, idx) => (
+                <Star key={idx} color="warning"></Star>
+              ))}
+              {Array.from({ length: 5 - prop.rank }, (_, idx) => (
+                <Star key={idx} className="text-dark opacity-25"></Star>
+              ))}
+            </Box>
+          ),
       };
     });
     setData(data_table);
@@ -103,7 +105,7 @@ export const CustomerList = (props) => {
               variant="h5"
               className="flex-grow-1 fs-5 app-primary-color"
             >
-              Danh sách khách hàng
+              Danh sách đánh giá
             </Typography>
             <Box>
               <Button variant="outlined" className="me-2" endIcon={<Add />}>
@@ -140,16 +142,16 @@ export const CustomerList = (props) => {
               PaginationComponent={() => <CustomPagination />}
               // pages={totalPage}
               className="-striped -highlight"
-              getTdProps={(state, rowInfo, column, instance) => {
-                return {
-                  onClick: (e, handleOriginal) => {
-                    console.log(column);
-                    if (column.id !== "options") {
-                      history.push("/customer/info/1223");
-                    }
-                  },
-                };
-              }}
+              // getTdProps={(state, rowInfo, column, instance) => {
+              //   return {
+              //     onClick: (e, handleOriginal) => {
+              //       console.log(column);
+              //       if (column.id !== "options") {
+              //         history.push("/report/detail/1223");
+              //       }
+              //     },
+              //   };
+              // }}
             />
           </Paper>
         </Grid>
@@ -162,4 +164,4 @@ const mapStateToProps = (state) => ({});
 
 const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomerList);
+export default connect(mapStateToProps, mapDispatchToProps)(FeedbackList);
