@@ -2,6 +2,7 @@ import { Box, CssBaseline, Grid } from "@mui/material";
 import React from "react";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
+import Footer from "../Footer";
 import { connect } from "react-redux";
 import { useTheme } from "@mui/material/styles";
 
@@ -49,6 +50,7 @@ const Layout = (props) => {
           >
             <Header />
             <Box className="h-100 flex-grow-1">{children}</Box>
+            <Footer />
           </Box>
         </Grid>
       </Grid>

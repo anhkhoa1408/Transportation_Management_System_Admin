@@ -28,8 +28,8 @@ export const CustomPagination = () => {
               className="bg-white d-flex flex-row align-items-center d-25 border-white p-0 shadow-none"
               // caret
             >
-              <Typography className="me-2 text-dark">
-                Số hàng mỗi trang
+              <Typography className="me-1 text-dark">
+                Số hàng mỗi trang:
               </Typography>
 
               <Typography className="text-dark">{rowPerPage}</Typography>

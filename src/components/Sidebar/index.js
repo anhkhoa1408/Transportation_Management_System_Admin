@@ -1,7 +1,6 @@
 import React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
@@ -24,7 +23,6 @@ import {
 } from "@mui/icons-material";
 import { connect } from "react-redux";
 import { toggleSidebar } from "../../actions/actions";
-import { Typography } from "@mui/material";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -45,11 +43,11 @@ const Drawer = styled(MuiDrawer, {
 
 const routerList = [
   { link: "/customer", title: "Người dùng", icon: <AccountCircle /> },
-  { link: "/dashboard", title: "Nhân viên", icon: <People /> },
-  { link: "/dashboard", title: "Đơn hàng", icon: <ListAlt /> },
-  { link: "/dashboard", title: "Phương tiện", icon: <LocalShipping /> },
+  { link: "/staff", title: "Nhân viên", icon: <People /> },
+  { link: "/order", title: "Đơn hàng", icon: <ListAlt /> },
+  { link: "/vehicle", title: "Phương tiện", icon: <LocalShipping /> },
   { link: "/dashboard", title: "Khuyến mãi", icon: <ConfirmationNumber /> },
-  { link: "/dashboard", title: "Kho", icon: <Storage /> },
+  { link: "/storage", title: "Kho", icon: <Storage /> },
 ];
 
 const Sidebar = (props) => {
@@ -158,7 +156,7 @@ const Sidebar = (props) => {
       <NavLink
         activeClassName="active opacity-100"
         className="nav-link opacity-50"
-        to="/dashboard"
+        to="/report"
       >
         <ListItem
           button
@@ -180,7 +178,7 @@ const Sidebar = (props) => {
       <NavLink
         activeClassName="active opacity-100"
         className="nav-link opacity-50"
-        to="/dashboard"
+        to="/feedback"
       >
         <ListItem
           button
