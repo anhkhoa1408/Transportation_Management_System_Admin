@@ -29,18 +29,3 @@
 .pagination-bottom {
   align-items: flex-end;
 }
-/* .ReactTable .rt-tbody .rt-td:last-child {
-  overflow: unset;
-} */
-/* .ReactTable .rt-tbody {
-  overflow: initial !important;
-}
-.ReactTable .rt-table {
-  overflow: auto;
-} */
-/* .ReactTable.-striped .rt-tr.-odd {
-  border-radius: 5px;
-}
-.ReactTable .rt-tbody .rt-tr-group {
-  border-bottom: none;
-} */

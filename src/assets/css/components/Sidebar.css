@@ -1,0 +1,38 @@
+.sidebar-mobile {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-102%);
+  z-index: 1;
+  transition: transform 0.3s linear;
+  box-shadow: 0 0 3px 3px #7fc3dc;
+  border-right: none;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.5s linear;
+}
+
+#toggle-sidebar-mobile:checked + .sidebar-mobile {
+  transform: translateX(0%);
+}
+
+#toggle-sidebar-mobile:checked ~ .overlay {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

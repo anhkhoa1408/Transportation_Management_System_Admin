@@ -69,11 +69,7 @@ export const OrderList = (props) => {
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
-        status: (
-          <Badge className="bg-warning p-1">
-            <Typography component="span">{prop.status}</Typography>
-          </Badge>
-        ),
+        status: <Badge className="bg-warning p-2">{prop.status}</Badge>,
         options: (
           <Button
             variant="contained"

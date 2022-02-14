@@ -13,6 +13,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import img from "./../../../../src/assets/img/delivery.jpg";
+import LOGO from "./../../../../src/assets/img/logo.png";
 
 function Copyright(props) {
   return (
@@ -56,7 +57,10 @@ export default function LoginPage() {
           md={7}
           className="d-flex flex-row align-items-center justify-content-center"
         >
-          <img alt="" src={img} className="banner-img w-75" />
+          <Box className="d-flex flex-column justify-content-center align-items-center">
+            <img alt="" src={LOGO} className="banner-img w-50" />
+            <img alt="" src={img} className="banner-img w-75" />
+          </Box>
         </Grid>
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
           <Box
