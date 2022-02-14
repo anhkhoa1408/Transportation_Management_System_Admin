@@ -1,10 +1,12 @@
 import { Box, CssBaseline, Grid } from "@mui/material";
 import React from "react";
+import clsx from "clsx";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import Footer from "../Footer";
 import { connect } from "react-redux";
 import { useTheme } from "@mui/material/styles";
+import "./../../assets/css/components/Sidebar.css";
 
 const Layout = (props) => {
   const { children, toggleSideBar } = props;
@@ -20,14 +22,20 @@ const Layout = (props) => {
       }}
     >
       <CssBaseline />
-      <Grid container>
+      <Grid container spacing={0}>
         <Grid
           item
-          xs={toggleSideBar ? 1 : 2}
+          className={clsx(
+            "d-none d-sm-none d-md-none d-lg-flex d-xl-flex flex-column align-items-stretch",
+            {
+              "col-0 col-sm-0 col-md-0 col-lg-3 col-xl-2": !toggleSideBar,
+              "col-10 col-sm-0 col-md-0 col-lg-1 col-xl-1": toggleSideBar,
+            },
+          )}
           style={{
             transition: theme.transitions.create("all", {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen,
+              easing: "linear",
+              duration: "0.3s",
             }),
           }}
         >
@@ -36,11 +44,14 @@ const Layout = (props) => {
 
         <Grid
           item
-          xs={toggleSideBar ? 11 : 10}
+          className={clsx({
+            "col-12 col-sm-12 col-md-12 col-lg-9 col-xl-10": !toggleSideBar,
+            "col-12 col-sm-12 col-md-12 col-lg-11 col-xl-11": toggleSideBar,
+          })}
           style={{
             transition: theme.transitions.create("all", {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen,
+              easing: "linear",
+              duration: "0.3s",
             }),
           }}
         >

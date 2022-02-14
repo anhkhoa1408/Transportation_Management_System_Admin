@@ -2,7 +2,6 @@ import React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import MuiDrawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -10,8 +9,6 @@ import { NavLink } from "react-router-dom";
 import { Box } from "@mui/system";
 import {
   Home,
-  ChevronLeft,
-  ChevronRight,
   AccountCircle,
   ListAlt,
   LocalShipping,
@@ -20,23 +17,12 @@ import {
   ModeComment,
   Description,
   People,
+  Close,
 } from "@mui/icons-material";
-import { connect } from "react-redux";
-import { toggleSidebar } from "../../actions/actions";
-import "./../../assets/css/components/Sidebar.css";
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-}));
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, toggle }) => ({
-  flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
   height: "100%",
@@ -51,19 +37,14 @@ const routerList = [
   { link: "/storage", title: "Kho", icon: <Storage /> },
 ];
 
-const Sidebar = (props) => {
+const SidebarMobile = (props) => {
   const theme = useTheme();
-  const { toggle, handleToggleSideBar } = props;
-
-  const handleToggle = () => {
-    handleToggleSideBar(!toggle);
-  };
 
   return (
     <Drawer
-      // className="d-none d-sm-none d-md-flex"
+      className="sidebar-mobile"
       variant="permanent"
-      open={toggle}
+      open={true}
       PaperProps={{
         sx: {
           flex: 1,
@@ -73,18 +54,14 @@ const Sidebar = (props) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "stretch",
+          overflow: "hidden",
+          border: "none",
         },
       }}
     >
-      <DrawerHeader className="d-flex flex-column align-items-center mb-3">
-        <IconButton className="bg-white" onClick={handleToggle}>
-          {toggle ? (
-            <ChevronRight className="app-primary-color" />
-          ) : (
-            <ChevronLeft className="app-primary-color" />
-          )}
-        </IconButton>
-      </DrawerHeader>
+      <label htmlFor="toggle-sidebar-mobile" className="d-flex flex-column btn">
+        <Close className="text-white align-self-end m-2" />
+      </label>
 
       <NavLink
         activeClassName="active opacity-100"
@@ -95,16 +72,10 @@ const Sidebar = (props) => {
           button
           className="text-white d-flex align-items-center justify-content-center"
         >
-          {!toggle ? (
-            <>
-              <ListItemIcon className="text-white m-0 w-0">
-                <Home />
-              </ListItemIcon>
-              <ListItemText primary="Bảng điều khiển" />
-            </>
-          ) : (
+          <ListItemIcon className="text-white m-0 w-0">
             <Home />
-          )}
+          </ListItemIcon>
+          <ListItemText primary="Bảng điều khiển" />
         </ListItem>
       </NavLink>
 
@@ -131,16 +102,10 @@ const Sidebar = (props) => {
             button
             className="text-white d-flex align-items-center justify-content-center"
           >
-            {!toggle ? (
-              <>
-                <ListItemIcon className="text-white m-0 w-0">
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.title} />
-              </>
-            ) : (
-              item.icon
-            )}
+            <ListItemIcon className="text-white m-0 w-0">
+              {item.icon}
+            </ListItemIcon>
+            <ListItemText primary={item.title} />
           </ListItem>
         </NavLink>
       ))}
@@ -165,16 +130,10 @@ const Sidebar = (props) => {
           button
           className="text-white d-flex align-items-center justify-content-center"
         >
-          {!toggle ? (
-            <>
-              <ListItemIcon className="text-white m-0 w-0">
-                <Description />
-              </ListItemIcon>
-              <ListItemText primary="Báo cáo định kỳ" />
-            </>
-          ) : (
+          <ListItemIcon className="text-white m-0 w-0">
             <Description />
-          )}
+          </ListItemIcon>
+          <ListItemText primary="Báo cáo định kỳ" />
         </ListItem>
       </NavLink>
 
@@ -187,30 +146,14 @@ const Sidebar = (props) => {
           button
           className="text-white d-flex align-items-center justify-content-center"
         >
-          {!toggle ? (
-            <>
-              <ListItemIcon className="text-white m-0 w-0">
-                <ModeComment />
-              </ListItemIcon>
-              <ListItemText primary="Phản hồi" />
-            </>
-          ) : (
+          <ListItemIcon className="text-white m-0 w-0">
             <ModeComment />
-          )}
+          </ListItemIcon>
+          <ListItemText primary="Phản hồi" />
         </ListItem>
       </NavLink>
     </Drawer>
   );
 };
 
-const mapStateToProps = (state) => ({
-  toggle: state.layoutOption.toggleSideBar,
-});
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    handleToggleSideBar: (toggle) => dispatch(toggleSidebar(toggle)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);
+export default SidebarMobile;
