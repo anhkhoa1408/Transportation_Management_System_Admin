@@ -1,11 +1,37 @@
-import { Box, Container, Grid, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  Grid,
+  Paper,
+  SpeedDial,
+  SpeedDialAction,
+  SpeedDialIcon,
+  Typography,
+} from "@mui/material";
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { styled } from "@mui/material/styles";
-import { Paid, CalendarToday, Archive } from "@mui/icons-material";
+import {
+  Paid,
+  CalendarToday,
+  Archive,
+  ImportExport,
+  Chat,
+} from "@mui/icons-material";
 import Chart from "react-apexcharts";
+import { useHistory } from "react-router-dom";
 
 export const HomePage = (props) => {
+  const history = useHistory();
+  const actions = [
+    {
+      icon: <ImportExport color="primary" />,
+      name: "Nhập xuất",
+      link: "/dashboard",
+    },
+    { icon: <Archive color="primary" />, name: "Đơn hàng", link: "/order" },
+    { icon: <Chat color="primary" />, name: "Phản hồi", link: "/feedback" },
+  ];
   const [option, setOption] = useState({
     chart: {
       id: "basic-bar",
@@ -88,10 +114,25 @@ export const HomePage = (props) => {
       <Container maxWidth="xl">
         <Grid container>
           <Grid item sm={12} md={12} lg={12}>
-            <Paper className="p-4">
-              <Typography variant="h5" className="fs-5 mb-2">
-                Biểu đồ vận chuyển tháng
+            <Paper
+              className="p-4"
+              sx={{
+                background: "#F8F9FA",
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+              }}
+            >
+              <Typography variant="h5" className="fs-5 app-primary-color">
+                Lượt vận chuyển tháng
               </Typography>
+            </Paper>
+            <Paper
+              className="p-4"
+              sx={{
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
+              }}
+            >
               <Chart
                 options={option}
                 series={[
@@ -108,6 +149,20 @@ export const HomePage = (props) => {
           </Grid>
         </Grid>
       </Container>
+      <SpeedDial
+        ariaLabel="SpeedDial basic example"
+        sx={{ position: "fixed", bottom: 40, right: 20 }}
+        icon={<SpeedDialIcon />}
+      >
+        {actions.map((action) => (
+          <SpeedDialAction
+            onClick={() => history.push(action.link)}
+            key={action.name}
+            icon={action.icon}
+            tooltipTitle={action.name}
+          />
+        ))}
+      </SpeedDial>
     </Box>
   );
 };
