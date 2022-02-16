@@ -1,5 +1,6 @@
 :root {
   --app-primary: #7fc3dc;
+  --app-primary-neutral: #cce7f1;
 }
 
 html,
@@ -16,10 +17,40 @@ body {
   color: var(--app-primary) !important;
 }
 
+.app-primary-bg-color-neutral {
+  background-color: var(--app-primary-neutral) !important;
+}
+
 .app-primary-bg-color {
   background-color: var(--app-primary) !important;
 }
 
 .dropdown-item:active {
   background-color: var(--app-primary);
+}
+
+.dropdown-menu {
+  min-width: inherit;
+  max-height: inherit;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--app-primary);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #7cd3f3;
 }
