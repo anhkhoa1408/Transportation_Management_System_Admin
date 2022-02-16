@@ -107,7 +107,7 @@ export const StorageList = (props) => {
       <Grid container className="p-4" direction="column">
         <Grid item md={12}>
           <Paper
-            className="d-flex flex-row align-items-center p-3 rounded-top"
+            className="d-flex flex-row align-items-center p-4 rounded-top"
             sx={{
               bgcolor: "#F8F9FC",
               borderBottomRightRadius: 0,

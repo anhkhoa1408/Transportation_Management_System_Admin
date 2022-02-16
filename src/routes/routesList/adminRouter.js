@@ -63,6 +63,10 @@ const FeedbackList = lazy(() =>
   import("./../../views/DashboardPage/FeedbackPage/FeedbackList"),
 );
 
+const AccountPage = lazy(() =>
+  import("./../../views/AuthPage/AccountPage/AccountPage"),
+);
+
 const adminRouter = [
   {
     link: "/dashboard",
@@ -127,6 +131,10 @@ const adminRouter = [
   {
     link: "/feedback",
     component: FeedbackList,
+  },
+  {
+    link: "/account/info",
+    component: AccountPage,
   },
 ];
 

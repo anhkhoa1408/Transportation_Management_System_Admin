@@ -34,20 +34,14 @@ const StaffInfo = (props) => {
     <Box className="p-4">
       <Grid container className="p-4" direction="column">
         <Grid item md={12} className="d-flex flex-column">
-          {/* <Typography
-            variant="h5"
-            className="flex-grow-1 fs-5 text-primary mb-3"
-          >
-            Thông tin khách hàng
-          </Typography> */}
           <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center">
-            <Box className="d-flex flex-row align-items-center p-4">
+            <Box className="d-flex flex-row align-items-center px-5 py-2">
               <Avatar
                 sx={{
-                  width: 100,
-                  height: 100,
-                  marginRight: "40px",
+                  width: 80,
+                  height: 80,
                 }}
+                className="me-4"
               />
               <Box className="flex-grow-1">
                 <Typography variant="h5">Yoga shiber</Typography>
@@ -66,11 +60,11 @@ const StaffInfo = (props) => {
               </Button>
             </Box>
             <Box className="px-5 py-2">
-              <Grid container spacing={1} direction="column">
+              <Grid container direction="column">
                 <Typography className="mt-3 mb-4 fs-5 fw-bold">
                   Thông tin chi tiết
                 </Typography>
-                <Grid container md={12} className="px-1 mb-4">
+                <Grid container md={12} className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -90,7 +84,7 @@ const StaffInfo = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -110,7 +104,7 @@ const StaffInfo = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -130,7 +124,7 @@ const StaffInfo = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -150,7 +144,7 @@ const StaffInfo = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}

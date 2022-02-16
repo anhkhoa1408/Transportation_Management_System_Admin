@@ -13,6 +13,7 @@ import {
   Select,
   MenuItem,
   InputAdornment,
+  Divider,
 } from "@mui/material";
 import ReactTable from "react-table-v6";
 import { Add, ArrowDropDown, FilterList } from "@mui/icons-material";
@@ -42,18 +43,12 @@ const OrderDetail = (props) => {
     <Box className="p-4">
       <Grid container className="p-4" direction="column">
         <Grid item md={12} className="d-flex flex-column">
-          {/* <Typography
-            variant="h5"
-            className="flex-grow-1 fs-5 text-primary mb-3"
-          >
-            Thông tin khách hàng
-          </Typography> */}
           <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center">
             <Box className="px-5 py-2">
               <Grid container spacing={1} direction="column">
-                <Grid container direction="row" className="mb-3">
+                <Grid container direction="row" className="mb-1">
                   <Grid item md={8}>
-                    <Typography className="mt-3 mb-4 fs-4 fw-bold">
+                    <Typography className="mt-3 mb-4 fs-5 fw-bold">
                       Thông tin chi tiết
                     </Typography>
                   </Grid>
@@ -75,17 +70,24 @@ const OrderDetail = (props) => {
                         TUỲ CHỌN
                         <ArrowDropDown />
                       </DropdownToggle>
-                      <DropdownMenu>
-                        <DropdownItem onClick={() => history.push("/package")}>
+                      <DropdownMenu className="shadow p-0">
+                        <DropdownItem
+                          className="py-3 px-4"
+                          onClick={() => history.push("/package")}
+                        >
                           Xem kiện hàng
                         </DropdownItem>
-                        <DropdownItem>Phản hồi</DropdownItem>
+                        <Divider className="app-primary-color" />
+
+                        <DropdownItem className="py-3 px-4">
+                          Phản hồi
+                        </DropdownItem>
                       </DropdownMenu>
                     </UncontrolledDropdown>
                   </Grid>
                 </Grid>
 
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -106,7 +108,7 @@ const OrderDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -126,7 +128,7 @@ const OrderDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -146,7 +148,7 @@ const OrderDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -166,7 +168,7 @@ const OrderDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -186,7 +188,7 @@ const OrderDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -206,7 +208,7 @@ const OrderDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -226,7 +228,7 @@ const OrderDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -246,7 +248,7 @@ const OrderDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -266,7 +268,7 @@ const OrderDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -291,7 +293,7 @@ const OrderDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}

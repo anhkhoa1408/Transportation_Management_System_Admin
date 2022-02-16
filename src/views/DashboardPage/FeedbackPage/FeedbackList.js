@@ -21,7 +21,7 @@ export const FeedbackList = (props) => {
       customerName: "Yoga Shibe",
       date: "12/12/2012",
       rank: 4,
-      comment: "Vận chuyển rất bruh",
+      comment: "Tôi rất thích",
     },
   ]);
 

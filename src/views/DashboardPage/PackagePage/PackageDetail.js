@@ -45,15 +45,15 @@ const PackageDetail = (props) => {
           <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center">
             <Box className="px-5 py-2">
               <Grid container spacing={1} direction="column">
-                <Grid container direction="row" className="mb-3">
+                <Grid container direction="row" className="mb-1">
                   <Grid item md={12}>
-                    <Typography className="mt-3 mb-4 fs-4 fw-bold">
+                    <Typography className="mt-3 mb-4 fs-5 fw-bold">
                       Chi tiết kiện hàng
                     </Typography>
                   </Grid>
                 </Grid>
 
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -74,7 +74,7 @@ const PackageDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -94,7 +94,7 @@ const PackageDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -119,7 +119,7 @@ const PackageDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -144,7 +144,7 @@ const PackageDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -169,7 +169,7 @@ const PackageDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -194,7 +194,7 @@ const PackageDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -222,7 +222,7 @@ const PackageDetail = (props) => {
                     </Select>
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}

@@ -58,7 +58,7 @@ const VehicleDetail = (props) => {
                   </Grid>
                 </Grid>
 
-                <Grid container md={12} className="px-1 mb-4">
+                <Grid container md={12} className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -78,7 +78,7 @@ const VehicleDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -103,7 +103,7 @@ const VehicleDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -123,7 +123,7 @@ const VehicleDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -143,7 +143,7 @@ const VehicleDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -163,12 +163,12 @@ const VehicleDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid item md={12} className="px-1 mb-4">
-                  <Typography className="fw-bold fs-6">
+                <Box className="mb-4">
+                  <Typography className="fw-bold fs-5">
                     Kích thước thùng hàng
                   </Typography>
-                </Grid>
-                <Grid container className="px-1 mb-4">
+                </Box>
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -193,7 +193,7 @@ const VehicleDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -218,7 +218,7 @@ const VehicleDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}

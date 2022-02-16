@@ -59,7 +59,7 @@ const ReportDetail = (props) => {
                   </Grid>
                 </Grid>
 
-                <Grid container md={12} className="px-1 mb-4">
+                <Grid container md={12} className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -79,7 +79,7 @@ const ReportDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -99,7 +99,7 @@ const ReportDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -119,7 +119,7 @@ const ReportDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
@@ -144,7 +144,7 @@ const ReportDetail = (props) => {
                     />
                   </Grid>
                 </Grid>
-                <Grid container className="px-1 mb-4">
+                <Grid container className="mb-4">
                   <Grid
                     item
                     md={3}
