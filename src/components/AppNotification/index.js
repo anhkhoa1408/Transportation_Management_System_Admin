@@ -1,28 +1,17 @@
-import React from "react";
-import { styled } from "@mui/material/styles";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import { Avatar, Button, Divider, Typography } from "@mui/material";
-import { Box } from "@mui/system";
-import LOGO from "./../../assets/img/logo.png";
-import SidebarMobile from "../SidebarMobile";
 import {
-  AccountCircle,
-  FormatAlignJustify,
-  Logout,
-  NotificationsOutlined,
-  Notifications,
   History,
+  Notifications,
+  NotificationsOutlined,
 } from "@mui/icons-material";
+import { Divider, Typography } from "@mui/material";
+import { Box } from "@mui/system";
+import React from "react";
 import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  Modal,
-  ModalBody,
   UncontrolledDropdown,
 } from "reactstrap";
-
 import "./../../assets/css/components/AppNotification.css";
 
 const AppNotification = (props) => {

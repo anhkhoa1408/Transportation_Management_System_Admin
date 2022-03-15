@@ -1,4 +1,11 @@
 import {
+  Archive,
+  CalendarToday,
+  Chat,
+  ImportExport,
+  Paid,
+} from "@mui/icons-material";
+import {
   Box,
   Container,
   Grid,
@@ -9,16 +16,8 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { styled } from "@mui/material/styles";
-import {
-  Paid,
-  CalendarToday,
-  Archive,
-  ImportExport,
-  Chat,
-} from "@mui/icons-material";
 import Chart from "react-apexcharts";
+import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 
 export const HomePage = (props) => {

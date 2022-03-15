@@ -1,23 +1,16 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
 import {
   Avatar,
   Box,
   Button,
-  Container,
   Grid,
-  IconButton,
+  MenuItem,
   Paper,
+  Select,
   TextField,
   Typography,
-  Select,
-  MenuItem,
 } from "@mui/material";
-import ReactTable from "react-table-v6";
-import { Add, FilterList } from "@mui/icons-material";
-import { CustomPagination } from "../../../components/CustomPagination";
-import { useHistory } from "react-router-dom";
-import img from "./../../../assets/img/delivery.jpg";
+import React, { useState } from "react";
+import { connect } from "react-redux";
 
 export const CustomerInfo = (props) => {
   const [data, setData] = useState([
