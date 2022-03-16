@@ -1,11 +1,11 @@
 import { Box, CssBaseline, Grid } from "@mui/material";
-import React from "react";
+import { useTheme } from "@mui/material/styles";
 import clsx from "clsx";
+import React from "react";
+import { connect } from "react-redux";
+import Footer from "../Footer";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
-import Footer from "../Footer";
-import { connect } from "react-redux";
-import { useTheme } from "@mui/material/styles";
 import "./../../assets/css/components/Sidebar.css";
 
 const Layout = (props) => {

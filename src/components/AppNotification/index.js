@@ -40,11 +40,8 @@ const AppNotification = (props) => {
           className="flex-column justify-content-start align-items-stretch"
         >
           {Array.from({ length: 10 }, (_, index) => (
-            <>
-              <DropdownItem
-                key={index}
-                className="d-flex flex-row align-items-center p-4"
-              >
+            <div key={index}>
+              <DropdownItem className="d-flex flex-row align-items-center p-4">
                 <Box className="app-primary-bg-color-neutral icon-notification p-2 me-4">
                   <NotificationsOutlined className="app-primary-color" />
                 </Box>
@@ -64,7 +61,7 @@ const AppNotification = (props) => {
                 </Box>
               </DropdownItem>
               <Divider className="border border-1" />
-            </>
+            </div>
           ))}
         </Box>
       </DropdownMenu>

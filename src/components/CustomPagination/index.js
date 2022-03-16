@@ -1,33 +1,31 @@
+import { ExpandMore } from "@mui/icons-material";
+import { Grid, Pagination, Paper, Typography } from "@mui/material";
 import React, { useState } from "react";
-import {
-  Pagination,
-  Box,
-  Modal,
-  Container,
-  Grid,
-  Typography,
-  IconButton,
-  Paper,
-} from "@mui/material";
-import { Add, ExpandMore } from "@mui/icons-material";
 import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  UncontrolledCarousel,
   UncontrolledDropdown,
 } from "reactstrap";
-export const CustomPagination = () => {
+export const CustomPagination = (props) => {
+  const { pages, onPageChange, onPageSizeChange } = props;
   const [rowPerPage, setRowPerPage] = useState(5);
+
+  const handleChangePage = (page) => {
+    onPageChange(page - 1);
+  };
+
+  const handleChangePageSize = (size) => {
+    setRowPerPage(size);
+    onPageSizeChange(size);
+  };
+
   return (
-    <Grid container>
+    <Grid container className="mt-4">
       <Grid item md={3} className="d-flex flex-row align-items-center">
         <UncontrolledDropdown direction="up">
           <Paper className="d-flex flex-row align-items-center p-2">
-            <DropdownToggle
-              className="bg-white d-flex flex-row align-items-center d-25 border-white p-0 shadow-none"
-              // caret
-            >
+            <DropdownToggle className="bg-white d-flex flex-row align-items-center d-25 border-white p-0 shadow-none">
               <Typography className="me-1 text-dark">
                 Số hàng mỗi trang:
               </Typography>
@@ -38,7 +36,10 @@ export const CustomPagination = () => {
           </Paper>
           <DropdownMenu>
             {[5, 10, 15, 20].map((item) => (
-              <DropdownItem key={item} onClick={() => setRowPerPage(item)}>
+              <DropdownItem
+                key={item}
+                onClick={() => handleChangePageSize(item)}
+              >
                 {item}
               </DropdownItem>
             ))}
@@ -47,7 +48,7 @@ export const CustomPagination = () => {
       </Grid>
       <Grid item md={9}>
         <Pagination
-          count={10}
+          count={pages}
           showFirstButton
           showLastButton
           sx={{
@@ -55,6 +56,7 @@ export const CustomPagination = () => {
             justifyContent: "flex-end",
             alignItems: "flex-end",
           }}
+          onChange={(e, page) => handleChangePage(page)}
         />
       </Grid>
     </Grid>

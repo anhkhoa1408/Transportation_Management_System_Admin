@@ -15,6 +15,8 @@ import {
 } from "reactstrap";
 import AppNotification from "../AppNotification";
 import { useHistory } from "react-router-dom";
+import { CLEAN_STORE } from "../../constants/types";
+import { useDispatch } from "react-redux";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -55,6 +57,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 const Header = (props) => {
   const history = useHistory();
+  const dispatch = useDispatch();
   return (
     <>
       <AppBar>
@@ -113,7 +116,13 @@ const Header = (props) => {
                   />
                   <Typography>Cá nhân</Typography>
                 </DropdownItem>
-                <DropdownItem className="d-flex flex-row align-items-center justify-content-start px-4 py-3">
+                <DropdownItem
+                  onClick={() => {
+                    dispatch({ type: CLEAN_STORE });
+                    history.push("/login");
+                  }}
+                  className="d-flex flex-row align-items-center justify-content-start px-4 py-3"
+                >
                   <Logout
                     sx={{
                       width: 20,
