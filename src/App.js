@@ -6,6 +6,9 @@ import ErrorBoundary from "./components/ErrorHandle/ErrorHandle";
 import { toast, ToastContainer } from "react-toastify";
 import { BrowserRouter } from "react-router-dom";
 import { RenderRoutes } from "./routes/RenderRoutes";
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
@@ -13,14 +16,23 @@ function App() {
       <PersistGate persistor={persistor}>
         <BrowserRouter>
           <ErrorBoundary>
-            <RenderRoutes />
+            <QueryClientProvider client={queryClient}>
+              <RenderRoutes />
+            </QueryClientProvider>
           </ErrorBoundary>
+          <ToastContainer
+            enableMultiContainer
+            containerId="A"
+            position={toast.POSITION.TOP_RIGHT}
+            autoClose={500}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            newestOnTop={false}
+          />
         </BrowserRouter>
-        <ToastContainer
-          enableMultiContainer
-          containerId="A"
-          position={toast.POSITION.TOP_RIGHT}
-        />
       </PersistGate>
     </Provider>
   );
