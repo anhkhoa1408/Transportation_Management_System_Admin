@@ -1,59 +1,56 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { FilterList, Info } from "@mui/icons-material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
+import React, { useMemo, useState } from "react";
 import { connect } from "react-redux";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
-} from "@mui/material";
-import ReactTable from "react-table-v6";
-import { Add, FilterList, Info } from "@mui/icons-material";
-import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
+import ReactTable from "react-table-v6";
 import { Badge } from "reactstrap";
+import orderApi from "../../../api/orderApi";
+import { CustomPagination } from "../../../components/CustomPagination";
+import { useQueryTable } from "./../../../utils/queryUtils.js";
+import Loading from "./../../../components/Loading";
+import moment from "moment";
 
 export const OrderList = (props) => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: "CHONKER",
-      phone: "1241241",
-      status: "Đang xử lý",
-      orderTime: "12:40, 30/05/2022",
-    },
-  ]);
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(0);
+  const [totalPage, setTotal] = useState(0);
+  const [size, setSize] = useState(5);
 
   const history = useHistory();
 
   const columns = useMemo(
     () => [
       {
-        Header: "ID",
+        Header: "STT",
+        accessor: "stt",
+        filterable: false,
+        width: 50,
+      },
+      {
+        Header: "Mã đơn hàng",
         accessor: "id",
         filterable: false,
-        width: 100,
+        width: 250,
       },
       {
         Header: "Tên khách hàng",
-        accessor: "name",
+        accessor: "sender_name",
         filterable: false,
       },
       {
         Header: "Số điện thoại",
-        accessor: "phone",
+        accessor: "sender_phone",
         filterable: false,
       },
       {
         Header: "Trạng thái đơn hàng",
-        accessor: "status",
+        accessor: "state",
         filterable: false,
       },
       {
         Header: "Thời gian đặt hàng",
-        accessor: "orderTime",
+        accessor: "createdAt",
         filterable: false,
       },
       {
@@ -66,10 +63,12 @@ export const OrderList = (props) => {
   );
 
   const handleData = (data) => {
-    let data_table = data.map((prop, index) => {
+    let data_table = data.totalOrder.map((prop, index) => {
       return {
         ...prop,
-        status: <Badge className="bg-warning p-2">{prop.status}</Badge>,
+        stt: page * size + index + 1,
+        state: <Badge className="bg-warning p-2">{prop.status}</Badge>,
+        createdAt: moment(prop.createdAt).format("DD/MM/YYYY HH:mm:ss"),
         options: (
           <Button
             variant="contained"
@@ -83,14 +82,17 @@ export const OrderList = (props) => {
       };
     });
     setData(data_table);
+    setTotal(data.totalPage);
   };
 
-  useEffect(() => {
-    if (data.length) handleData(data);
-  }, []);
+  const OrderQuery = useQueryTable("order-list", orderApi.getList, handleData, {
+    page: page,
+    size: size,
+  });
 
   return (
     <Box className="p-4">
+      {OrderQuery.isLoading ? <Loading /> : null}
       <Grid container className="p-4" direction="column">
         <Grid item md={12}>
           <Paper
@@ -108,9 +110,6 @@ export const OrderList = (props) => {
               Danh sách đơn hàng
             </Typography>
             <Box>
-              {/* <Button variant="outlined" className="me-2" endIcon={<Add />}>
-                Thêm
-              </Button> */}
               <Button variant="outlined" endIcon={<FilterList />}>
                 Lọc
               </Button>
@@ -126,21 +125,26 @@ export const OrderList = (props) => {
             }}
           >
             <ReactTable
+              noDataText="Không có dữ liệu"
               data={data}
               columns={columns}
               previousText={"<"}
               nextText={">"}
               rowsText={"hàng"}
               ofText="/"
-              // loading={<div>aaaa</div>}
-              // LoadingComponent={LoadingTable}
               manual
-              defaultPageSize={10}
+              loading={OrderQuery.isLoading}
+              loadingComponent={Loading}
+              defaultPageSize={size}
               showPaginationBottom={true}
               sortable={false}
               resizable={false}
-              PaginationComponent={() => <CustomPagination />}
-              // pages={totalPage}
+              PaginationComponent={CustomPagination}
+              pages={totalPage}
+              onFetchData={async (state, instance) => {
+                setPage(state.page);
+                setSize(state.pageSize);
+              }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {
                 return {
