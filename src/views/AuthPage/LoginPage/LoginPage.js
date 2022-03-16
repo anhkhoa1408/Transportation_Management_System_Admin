@@ -1,19 +1,26 @@
-import * as React from "react";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import CssBaseline from "@mui/material/CssBaseline";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useFormik } from "formik";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import * as Bonk from "yup";
+import { saveInfoSuccess } from "../../../actions/actions";
 import img from "./../../../../src/assets/img/delivery.jpg";
 import LOGO from "./../../../../src/assets/img/logo.png";
+import authApi from "./../../../api/authApi";
+import { errorNotify } from "./../../../utils/notification.js";
 
 function Copyright(props) {
   return (
@@ -36,14 +43,35 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function LoginPage() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const [data, setData] = useState({
+    identifier: "",
+    password: "",
+  });
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: data,
+    validationSchema: Bonk.object({
+      identifier: Bonk.string().required("Bạn chưa nhập tài khoản"),
+      password: Bonk.string().required("Bạn chưa nhập mật khẩu"),
+    }),
+    onSubmit: (values) => {
+      handleSubmit(values);
+    },
+  });
+
+  const handleSubmit = (values) => {
+    console.log(values);
+    authApi
+      .login(values)
+      .then((response) => {
+        dispatch(saveInfoSuccess(response));
+        history.push("/dashboard");
+      })
+      .catch((error) => errorNotify("Đăng nhập thất bại"));
   };
 
   return (
@@ -93,6 +121,16 @@ export default function LoginPage() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                value={formik.values.identifier}
+                error={
+                  formik.touched.identifier && formik.errors.identifier
+                    ? true
+                    : false
+                }
+                helperText={
+                  formik.touched.identifier && formik.errors.identifier
+                }
+                {...formik.getFieldProps("identifier")}
               />
               <TextField
                 margin="normal"
@@ -103,13 +141,20 @@ export default function LoginPage() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={formik.values.password}
+                error={
+                  formik.touched.password && formik.errors.password
+                    ? true
+                    : false
+                }
+                helperText={formik.touched.password && formik.errors.password}
+                {...formik.getFieldProps("password")}
               />
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Nhớ mật khẩu"
               />
               <Button
-                type="submit"
                 fullWidth
                 variant="contained"
                 sx={{
@@ -121,6 +166,7 @@ export default function LoginPage() {
                     opacity: 0.8,
                   },
                 }}
+                onClick={formik.submitForm}
               >
                 Đăng nhập
               </Button>
