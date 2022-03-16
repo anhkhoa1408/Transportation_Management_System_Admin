@@ -1,42 +1,49 @@
-import React, { Suspense } from "react";
-import { connect } from "react-redux";
-import { Switch, Route, Redirect } from "react-router-dom";
+import React, { Suspense, useEffect, useState } from "react";
+import { connect, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import Layout from "../components/Layout";
-import { generalRouter } from "./routesList/generalRouter";
-import { adminRouter } from "./routesList/adminRouter";
-import PublicRoute from "./PublicRoutes";
-import PrivateRoute from "./PrivateRoutes";
+import Loading from "../components/Loading";
+import { store } from "../config/configureStore";
 import LoginPage from "../views/AuthPage/LoginPage/LoginPage";
-import { Audio } from "react-loader-spinner";
-import { Typography } from "@mui/material";
-
-const SuspenseLoading = () => (
-  <div className="d-flex flex-column align-items-center justify-content-center bg-white h-100 w-100 position-fixed top-0 bottom-0">
-    <Audio
-      wrapperClass="mb-3"
-      heigth="150"
-      width="150"
-      color="#7fc3dc"
-      ariaLabel="loading"
-    />
-    <Typography className="app-primary-color">
-      Xin vui lòng đợi trong giây lát
-    </Typography>
-  </div>
-);
+import { acceptedRoute, isLoggedIn } from "./check";
+import PrivateRoute from "./PrivateRoutes";
+import PublicRoute from "./PublicRoutes";
+import { generalRouter } from "./routesList/generalRouter";
 
 export const RenderRoutes = (props) => {
-  const isAuthenticated = true;
-  const allowedRoutes = adminRouter;
+  const isAuthenticated = isLoggedIn();
+  const allowedRoutes = acceptedRoute() || [];
+  const history = useHistory();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location && location.pathname) {
+      let isValidRoute =
+        generalRouter.filter((item) => item.link === location.pathname)
+          .length !== 0 ||
+        allowedRoutes.filter((item) => item.link === location.pathname)
+          .length !== 0;
+
+      if (!isValidRoute) {
+        if (!isAuthenticated) {
+          history.push("/login");
+        } else {
+          history.push("/dashboard");
+        }
+      }
+    }
+  });
 
   return (
-    <Suspense fallback={<SuspenseLoading />}>
+    <Suspense fallback={<Loading />}>
       <Switch>
         {generalRouter.map((route) => {
           let { link, component: Component, ...rest } = route;
           return (
             <Route exact path={link} key={link}>
-              <PublicRoute isAuthenticated={isAuthenticated}>
+              <PublicRoute exact isAuthenticated={isAuthenticated}>
                 <Component {...rest} />
               </PublicRoute>
             </Route>
@@ -61,7 +68,7 @@ export const RenderRoutes = (props) => {
         )}
 
         <Redirect exact from="/" to="/login" />
-        <Route path="*" exact={true} component={LoginPage} />
+        {/* <Route path="*" component={LoginPage} /> */}
       </Switch>
     </Suspense>
   );
