@@ -73,7 +73,7 @@ const adminRouter = [
     component: HomePage,
   },
   {
-    link: "/customer/info/:id",
+    link: "/customer/info",
     component: CustomerInfo,
   },
   {
@@ -85,7 +85,7 @@ const adminRouter = [
     component: StaffList,
   },
   {
-    link: "/staff/info/:id",
+    link: "/staff/info",
     component: StaffInfo,
   },
   {
@@ -93,7 +93,7 @@ const adminRouter = [
     component: OrderList,
   },
   {
-    link: "/order/detail/:id",
+    link: "/order/detail",
     component: OrderDetail,
   },
   {
@@ -101,7 +101,7 @@ const adminRouter = [
     component: PackageList,
   },
   {
-    link: "/package/detail/:id",
+    link: "/package/detail/",
     component: PackageDetail,
   },
   {
@@ -109,7 +109,7 @@ const adminRouter = [
     component: VehicleList,
   },
   {
-    link: "/vehicle/detail/:id",
+    link: "/vehicle/detail/",
     component: VehicleDetail,
   },
   {
@@ -117,7 +117,7 @@ const adminRouter = [
     component: StorageList,
   },
   {
-    link: "/storage/info/:id",
+    link: "/storage/info/",
     component: StorageDetail,
   },
   {
@@ -125,7 +125,7 @@ const adminRouter = [
     component: ReportList,
   },
   {
-    link: "/report/detail/:id",
+    link: "/report/detail/",
     component: ReportDetail,
   },
   {
