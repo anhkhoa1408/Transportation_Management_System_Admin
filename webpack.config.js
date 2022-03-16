@@ -1,14 +1,17 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const Dotenv = require("dotenv-webpack");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = ({ env }) => ({
   entry: "./src/index.js",
   output: {
-    path: path.resolve(__dirname, "build"),
+    path: path.join(__dirname, "build"),
     filename: "index.bundle.js",
+    chunkFilename: "./assets/chunks/[name].chunk.js",
+    publicPath: "/",
   },
-  devtool: "source-map",
+  devtool: "inline-source-map",
   module: {
     rules: [
       {
@@ -18,7 +21,21 @@ module.exports = ({ env }) => ({
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [
+          "style-loader",
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              esModule: false,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
       },
       {
         test: /\.(gif|png|jpe?g|svg)$/i,
@@ -42,6 +59,10 @@ module.exports = ({ env }) => ({
     }),
     new Dotenv({
       path: path.join(__dirname, `.env.${env}`),
+    }),
+    new MiniCssExtractPlugin({
+      filename: "style.min.css",
+      ignoreOrder: true,
     }),
   ],
 });
