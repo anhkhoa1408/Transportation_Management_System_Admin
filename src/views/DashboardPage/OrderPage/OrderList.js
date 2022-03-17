@@ -15,7 +15,7 @@ export const OrderList = (props) => {
   const [data, setData] = useState([]);
   const [page, setPage] = useState(0);
   const [totalPage, setTotal] = useState(0);
-  const [size, setSize] = useState(5);
+  const [size, setSize] = useState(10);
 
   const history = useHistory();
 
@@ -74,7 +74,11 @@ export const OrderList = (props) => {
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/order/detail/1")}
+            onClick={() =>
+              history.push("/order/detail", {
+                id: prop.id,
+              })
+            }
           >
             Chi tiết
           </Button>
@@ -96,7 +100,7 @@ export const OrderList = (props) => {
       <Grid container className="p-4" direction="column">
         <Grid item md={12}>
           <Paper
-            className="d-flex flex-row align-items-center p-4 rounded-top"
+            className="d-flex flex-row align-items-center p-4 rounded-top shadow-sm"
             sx={{
               bgcolor: "#F8F9FC",
               borderBottomRightRadius: 0,
@@ -118,7 +122,7 @@ export const OrderList = (props) => {
         </Grid>
         <Grid item md={12} xs={12}>
           <Paper
-            className="p-4"
+            className="p-4 shadow-sm"
             sx={{
               borderTopRightRadius: 0,
               borderTopLeftRadius: 0,
@@ -149,9 +153,11 @@ export const OrderList = (props) => {
               getTdProps={(state, rowInfo, column, instance) => {
                 return {
                   onClick: (e, handleOriginal) => {
-                    console.log(column);
+                    // console.log(rowInfo, state, instance);
                     if (column.id !== "options") {
-                      history.push("/order/detail/1223");
+                      history.push("/order/detail", {
+                        id: rowInfo.row.id,
+                      });
                     }
                   },
                 };
