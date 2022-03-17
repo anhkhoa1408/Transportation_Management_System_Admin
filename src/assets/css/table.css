@@ -19,10 +19,10 @@
 .ReactTable .rt-thead .rt-td {
   border-right: none;
   text-align: left;
-  padding: 15px 10px;
+  padding: 22px 10px;
 }
 .ReactTable .rt-tbody .rt-td {
-  padding: 15px 10px;
+  padding: 22px 10px;
   border-right: none;
 }
 

@@ -36,18 +36,23 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, toggle }) => ({
-  flexShrink: 0,
   whiteSpace: "nowrap",
   boxSizing: "border-box",
-  height: "100%",
+  position: "sticky",
+  top: 0,
+  height: "100vh",
 }));
 
 const routerList = [
-  { link: "/customer", title: "Người dùng", icon: <AccountCircle /> },
+  {
+    link: "/customer",
+    title: "Người dùng",
+    icon: <AccountCircle />,
+  },
   { link: "/staff", title: "Nhân viên", icon: <People /> },
   { link: "/order", title: "Đơn hàng", icon: <ListAlt /> },
   { link: "/vehicle", title: "Phương tiện", icon: <LocalShipping /> },
-  { link: "/dashboard", title: "Khuyến mãi", icon: <ConfirmationNumber /> },
+  { link: "/asdsa", title: "Khuyến mãi", icon: <ConfirmationNumber /> },
   { link: "/storage", title: "Kho", icon: <Storage /> },
 ];
 
@@ -61,15 +66,14 @@ const Sidebar = (props) => {
 
   return (
     <Drawer
-      // className="d-none d-sm-none d-md-flex"
       variant="permanent"
       open={toggle}
       PaperProps={{
         sx: {
           flex: 1,
-          backgroundColor: "#7FC3DC",
+          boxShadow: "0 0 0",
+          borderWidth: 0,
           position: "static",
-          height: "100%",
           display: "flex",
           flexDirection: "column",
           alignItems: "stretch",
@@ -77,27 +81,23 @@ const Sidebar = (props) => {
       }}
     >
       <DrawerHeader className="d-flex flex-column align-items-center mb-3">
-        <IconButton className="bg-white" onClick={handleToggle}>
+        <IconButton className="app-primary-bg-color" onClick={handleToggle}>
           {toggle ? (
-            <ChevronRight className="app-primary-color" />
+            <ChevronRight className="text-white" />
           ) : (
-            <ChevronLeft className="app-primary-color" />
+            <ChevronLeft className="text-white" />
           )}
         </IconButton>
       </DrawerHeader>
 
-      <NavLink
-        activeClassName="active opacity-100"
-        className="nav-link opacity-50"
-        to="/dashboard"
-      >
+      <NavLink className="nav-link" to="/dashboard">
         <ListItem
           button
-          className="text-white d-flex align-items-center justify-content-center"
+          className="app-primary-color d-flex align-items-center justify-content-center"
         >
           {!toggle ? (
             <>
-              <ListItemIcon className="text-white m-0 w-0">
+              <ListItemIcon className="m-0 w-0">
                 <Home />
               </ListItemIcon>
               <ListItemText primary="Bảng điều khiển" />
@@ -121,21 +121,14 @@ const Sidebar = (props) => {
       </Box>
 
       {routerList.map((item, index) => (
-        <NavLink
-          key={index}
-          activeClassName="opacity-100 active"
-          className="nav-link opacity-50"
-          to={item.link}
-        >
+        <NavLink key={index} className="nav-link" to={item.link}>
           <ListItem
             button
-            className="text-white d-flex align-items-center justify-content-center"
+            className="app-primary-color d-flex align-items-center justify-content-center"
           >
             {!toggle ? (
               <>
-                <ListItemIcon className="text-white m-0 w-0">
-                  {item.icon}
-                </ListItemIcon>
+                <ListItemIcon className="m-0 w-0">{item.icon}</ListItemIcon>
                 <ListItemText primary={item.title} />
               </>
             ) : (
@@ -156,18 +149,14 @@ const Sidebar = (props) => {
         />
       </Box>
 
-      <NavLink
-        activeClassName="active opacity-100"
-        className="nav-link opacity-50"
-        to="/report"
-      >
+      <NavLink className="nav-link" to="/report">
         <ListItem
           button
-          className="text-white d-flex align-items-center justify-content-center"
+          className="app-primary-color d-flex align-items-center justify-content-center"
         >
           {!toggle ? (
             <>
-              <ListItemIcon className="text-white m-0 w-0">
+              <ListItemIcon className="m-0 w-0">
                 <Description />
               </ListItemIcon>
               <ListItemText primary="Báo cáo định kỳ" />
@@ -178,18 +167,14 @@ const Sidebar = (props) => {
         </ListItem>
       </NavLink>
 
-      <NavLink
-        activeClassName="active opacity-100"
-        className="nav-link opacity-50"
-        to="/feedback"
-      >
+      <NavLink className="nav-link" to="/feedback">
         <ListItem
           button
-          className="text-white d-flex align-items-center justify-content-center"
+          className="app-primary-color d-flex align-items-center justify-content-center"
         >
           {!toggle ? (
             <>
-              <ListItemIcon className="text-white m-0 w-0">
+              <ListItemIcon className="m-0 w-0">
                 <ModeComment />
               </ListItemIcon>
               <ListItemText primary="Phản hồi" />

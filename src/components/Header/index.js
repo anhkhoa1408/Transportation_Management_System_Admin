@@ -21,7 +21,7 @@ import { useDispatch } from "react-redux";
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
-  position: "static",
+  position: "sticky",
   boxShadow: "10px 0px 0px 0px",
   backgroundColor: "#FFF",
 }));

@@ -1,12 +1,21 @@
 :root {
   --app-primary: #7fc3dc;
   --app-primary-neutral: #cce7f1;
+  --white: #fff;
 }
 
 html,
 body {
   height: 100%;
 }
+
+.fixed-header {
+  /* position: sticky; */
+  top: -220px;
+  /* right: 0px; */
+  /* left: 0px; */
+}
+
 .banner-img {
   background-position: "center";
   background-size: "cover";

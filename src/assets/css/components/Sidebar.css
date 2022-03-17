@@ -1,3 +1,5 @@
+@import url("./../main.css");
+
 .sidebar-mobile {
   position: fixed;
   bottom: 0;
@@ -5,7 +7,7 @@
   transform: translateX(-102%);
   z-index: 1;
   transition: transform 0.3s linear;
-  box-shadow: 0 0 3px 3px #7fc3dc;
+  box-shadow: 0 0 5px 3px #fff;
   border-right: none;
 }
 
@@ -26,6 +28,33 @@
 
 #toggle-sidebar-mobile:checked ~ .overlay {
   display: block;
+}
+
+.nav-link .MuiButtonBase-root:hover .MuiListItemIcon-root,
+.nav-link .MuiButtonBase-root:hover .MuiListItemText-root,
+.nav-link .MuiButtonBase-root:hover .MuiSvgIcon-root {
+  color: var(--white);
+  transition: 0.5s linear;
+}
+
+.nav-link.active .MuiButtonBase-root:active,
+.nav-link.active .MuiButtonBase-root,
+.nav-link .MuiButtonBase-root:hover {
+  background-color: var(--app-primary);
+  color: var(--white);
+  border-radius: 7px;
+  box-shadow: 0 0 10px 1px;
+  transition: 0.3s linear;
+}
+
+.nav-link.active .MuiListItemIcon-root,
+.nav-link.active .MuiListItemText-root,
+.nav-link.active .MuiSvgIcon-root {
+  color: var(--white);
+}
+
+.nav-link .MuiListItemIcon-root {
+  color: var(--app-primary);
 }
 
 @keyframes fadeIn {
