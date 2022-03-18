@@ -13,9 +13,9 @@ import moment from "moment";
 
 export const OrderList = (props) => {
   const [data, setData] = useState([]);
-  const [page, setPage] = useState(0);
+  const [_start, setStart] = useState(0);
   const [totalPage, setTotal] = useState(0);
-  const [size, setSize] = useState(10);
+  const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
 
@@ -63,10 +63,10 @@ export const OrderList = (props) => {
   );
 
   const handleData = (data) => {
-    let data_table = data.totalOrder.map((prop, index) => {
+    let data_table = data.map((prop, index) => {
       return {
         ...prop,
-        stt: page * size + index + 1,
+        stt: _start * _limit + index + 1,
         state: <Badge className="bg-warning p-2">{prop.status}</Badge>,
         createdAt: moment(prop.createdAt).format("DD/MM/YYYY HH:mm:ss"),
         options: (
@@ -86,17 +86,26 @@ export const OrderList = (props) => {
       };
     });
     setData(data_table);
-    setTotal(data.totalPage);
+  };
+
+  const handleTotal = (data) => {
+    setTotal(Math.ceil(data / _limit));
   };
 
   const OrderQuery = useQueryTable("order-list", orderApi.getList, handleData, {
-    page: page,
-    size: size,
+    _start,
+    _limit,
   });
+
+  const SizeQuery = useQueryTable(
+    "order-count",
+    orderApi.getCount,
+    handleTotal,
+  );
 
   return (
     <Box className="p-4">
-      {OrderQuery.isLoading ? <Loading /> : null}
+      {OrderQuery.isLoading && SizeQuery.isLoading ? <Loading /> : null}
       <Grid container className="p-4" direction="column">
         <Grid item md={12}>
           <Paper
@@ -137,17 +146,17 @@ export const OrderList = (props) => {
               rowsText={"hàng"}
               ofText="/"
               manual
-              loading={OrderQuery.isLoading}
+              loading={OrderQuery.isLoading || SizeQuery.isLoading}
               loadingComponent={Loading}
-              defaultPageSize={size}
+              defaultPageSize={_limit}
               showPaginationBottom={true}
               sortable={false}
               resizable={false}
               PaginationComponent={CustomPagination}
               pages={totalPage}
               onFetchData={async (state, instance) => {
-                setPage(state.page);
-                setSize(state.pageSize);
+                setStart(state.page);
+                setLimit(state.pageSize);
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {
