@@ -14,26 +14,25 @@ import { Add, FilterList, Info } from "@mui/icons-material";
 import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
 import { Badge } from "reactstrap";
+import LoadingTable from "../../../components/LoadingTable";
+import { useQueryTable } from "./../../../utils/queryUtils.js";
+import { joinAddress } from "./../../../utils/address";
+import storageApi from "./../../../api/storageApi";
 
 export const StorageList = (props) => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: "CHONKER",
-      phone: "12345678",
-      address: "183/14 Bùi Viện, Phạm Ngũ Lão, Quận 1, TP.HCM",
-      storekeeper: "Chưa có",
-      status: "Đầy",
-    },
-  ]);
+  const [data, setData] = useState([]);
+  const [_start, setStart] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
 
   const columns = useMemo(
     () => [
       {
-        Header: "ID",
-        accessor: "id",
+        Header: "STT",
+        accessor: "stt",
         filterable: false,
         width: 100,
       },
@@ -43,23 +42,18 @@ export const StorageList = (props) => {
         filterable: false,
       },
       {
-        Header: "Số điện thoại",
-        accessor: "phone",
-        filterable: false,
-      },
-      {
         Header: "Địa chỉ",
         accessor: "address",
         filterable: false,
       },
       {
-        Header: "Thủ kho",
-        accessor: "storekeeper",
+        Header: "Diện tích kho",
+        accessor: "size",
         filterable: false,
       },
       {
-        Header: "Tình trạng kho",
-        accessor: "status",
+        Header: "Thủ kho",
+        accessor: "store_managers",
         filterable: false,
       },
       {
@@ -75,20 +69,16 @@ export const StorageList = (props) => {
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
-        status: (
-          <Badge
-            className="px-3"
-            color={prop.status === "Đầy" ? "success" : "danger"}
-          >
-            {prop.status}
-          </Badge>
-        ),
+        stt: _start * _limit + index + 1,
+        address: joinAddress(prop.address),
+        size: prop.size + " m²",
+        store_managers: prop.store_managers[0].name,
         options: (
           <Button
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/storage/info/1")}
+            onClick={() => history.push("/storage/info")}
           >
             Chi tiết
           </Button>
@@ -98,9 +88,26 @@ export const StorageList = (props) => {
     setData(data_table);
   };
 
-  useEffect(() => {
-    if (data.length) handleData(data);
-  }, []);
+  const handleTotal = (data) => {
+    setTotalPage(Math.ceil(data / _limit));
+    setTotal(data)
+  };
+
+  const VehicleQuery = useQueryTable(
+    "vehicle-list",
+    storageApi.getList,
+    handleData,
+    {
+      _start,
+      _limit,
+    },
+  );
+
+  const SizeQuery = useQueryTable(
+    "order-count",
+    storageApi.getCount,
+    handleTotal,
+  );
 
   return (
     <Box className="p-4">
@@ -139,28 +146,35 @@ export const StorageList = (props) => {
             }}
           >
             <ReactTable
+              noDataText="Không có dữ liệu"
               data={data}
               columns={columns}
               previousText={"<"}
               nextText={">"}
               rowsText={"hàng"}
               ofText="/"
-              // loading={<div>aaaa</div>}
-              // LoadingComponent={LoadingTable}
               manual
-              defaultPageSize={10}
+              loading={VehicleQuery.isLoading || SizeQuery.isLoading}
+              LoadingComponent={LoadingTable}
+              defaultPageSize={_limit}
               showPaginationBottom={true}
               sortable={false}
               resizable={false}
-              PaginationComponent={() => <CustomPagination />}
-              // pages={totalPage}
+              PaginationComponent={CustomPagination}
+              pages={totalPage}
+              onFetchData={async (state, instance) => {
+                setStart(state.page);
+                setLimit(state.pageSize);
+                setTotalPage(Math.ceil(total / state.pageSize))
+              }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {
                 return {
                   onClick: (e, handleOriginal) => {
-                    console.log(column);
                     if (column.id !== "options") {
-                      history.push("/storage/info/1223");
+                      history.push("/storage/info", {
+                        id: rowInfo.row.id,
+                      });
                     }
                   },
                 };

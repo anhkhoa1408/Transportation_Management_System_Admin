@@ -1,44 +1,39 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
+import { Add, FilterList, Info } from "@mui/icons-material";
 import {
   Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
+  Button, Grid, Paper,
+  Typography
 } from "@mui/material";
-import ReactTable from "react-table-v6";
-import { Add, FilterList, Info } from "@mui/icons-material";
-import { CustomPagination } from "../../../components/CustomPagination";
+import React, { useMemo, useState } from "react";
+import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
+import ReactTable from "react-table-v6";
+import vehicleApi from "../../../api/vehicleApi";
+import { CustomPagination } from "../../../components/CustomPagination";
+import LoadingTable from "../../../components/LoadingTable";
+import { useQueryTable } from "./../../../utils/queryUtils.js";
+
 
 export const VehicleList = (props) => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      lisence: "CHONKER",
-      manager: "Yoga Shibe",
-      position: "kho Hà Nội",
-      kind: "Container",
-      maxWeight: "10000",
-    },
-  ]);
+  const [data, setData] = useState([]);
+  const [_start, setStart] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
 
   const columns = useMemo(
     () => [
       {
-        Header: "ID",
-        accessor: "id",
+        Header: "STT",
+        accessor: "stt",
         filterable: false,
         width: 100,
       },
       {
         Header: "Biển số xe",
-        accessor: "lisence",
+        accessor: "licence",
         filterable: false,
       },
       {
@@ -47,18 +42,13 @@ export const VehicleList = (props) => {
         filterable: false,
       },
       {
-        Header: "Vị trí",
-        accessor: "position",
-        filterable: false,
-      },
-      {
         Header: "Loại",
-        accessor: "kind",
+        accessor: "type",
         filterable: false,
       },
       {
         Header: "Tải trọng tối đa",
-        accessor: "maxWeight",
+        accessor: "load",
         filterable: false,
       },
       {
@@ -74,13 +64,15 @@ export const VehicleList = (props) => {
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
-        maxWeight: prop.maxWeight + " kg",
+        stt: _start * _limit + index + 1,
+        load: prop.load + " kg",
+        manager: prop.manager.name,
         options: (
           <Button
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/vehicle/detail/1")}
+            onClick={() => history.push("/vehicle/detail")}
           >
             Chi tiết
           </Button>
@@ -90,10 +82,21 @@ export const VehicleList = (props) => {
     setData(data_table);
   };
 
-  useEffect(() => {
-    if (data.length) handleData(data);
-  }, []);
+  const handleTotal = (data) => {
+    setTotalPage(Math.ceil(data / _limit));
+    setTotal(data)
+  };
 
+  const VehicleQuery = useQueryTable("vehicle-list", vehicleApi.getList, handleData, {
+    _start,
+    _limit,
+  });
+
+  const SizeQuery = useQueryTable(
+    "order-count",
+    vehicleApi.getCount,
+    handleTotal,
+  );
   return (
     <Box className="p-4">
       <Grid container className="p-4" direction="column">
@@ -131,28 +134,35 @@ export const VehicleList = (props) => {
             }}
           >
             <ReactTable
+              noDataText="Không có dữ liệu"
               data={data}
               columns={columns}
               previousText={"<"}
               nextText={">"}
               rowsText={"hàng"}
               ofText="/"
-              // loading={<div>aaaa</div>}
-              // LoadingComponent={LoadingTable}
               manual
-              defaultPageSize={10}
+              loading={VehicleQuery.isLoading || SizeQuery.isLoading}
+              LoadingComponent={LoadingTable}
+              defaultPageSize={_limit}
               showPaginationBottom={true}
               sortable={false}
               resizable={false}
-              PaginationComponent={() => <CustomPagination />}
-              // pages={totalPage}
+              PaginationComponent={CustomPagination}
+              pages={totalPage}
+              onFetchData={async (state, instance) => {
+                setStart(state.page);
+                setLimit(state.pageSize);
+                setTotalPage(Math.ceil(total / state.pageSize))
+              }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {
                 return {
                   onClick: (e, handleOriginal) => {
-                    console.log(column);
                     if (column.id !== "options") {
-                      history.push("/vehicle/detail/1223");
+                      history.push("/vehicle/detail", {
+                        id: rowInfo.row.id,
+                      });
                     }
                   },
                 };

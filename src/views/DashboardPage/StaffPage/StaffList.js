@@ -13,25 +13,26 @@ import ReactTable from "react-table-v6";
 import { Add, FilterList, Info } from "@mui/icons-material";
 import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
+import { useQueryTable } from "./../../../utils/queryUtils.js";
+import Loading from "./../../../components/Loading";
+import moment from "moment";
+import LoadingTable from "../../../components/LoadingTable";
+import userApi from './../../../api/userApi'
+import { handleUserRole } from "../../../utils/role";
 
 export const StaffList = (props) => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: "CHONKER",
-      phone: "1241241",
-      position: "Thủ kho",
-      storage: "Hà Nội",
-    },
-  ]);
+  const [data, setData] = useState([]);
+  const [_start, setStart] = useState(0);
+  const [totalPage, setTotal] = useState(0);
+  const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
 
   const columns = useMemo(
     () => [
       {
-        Header: "ID",
-        accessor: "id",
+        Header: "STT",
+        accessor: "stt",
         filterable: false,
         width: 100,
       },
@@ -47,7 +48,7 @@ export const StaffList = (props) => {
       },
       {
         Header: "Chức vụ",
-        accessor: "position",
+        accessor: "role",
         filterable: false,
       },
       {
@@ -65,15 +66,18 @@ export const StaffList = (props) => {
   );
 
   const handleData = (data) => {
-    let data_table = data.map((prop, index) => {
+    let data_table = data.staffs.map((prop, index) => {
       return {
         ...prop,
+        stt: _start * _limit + index + 1,
+        role: handleUserRole(prop.type),
+        storage: prop.storage.name,
         options: (
           <Button
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/staff/info/1")}
+            onClick={() => history.push("/staff/info")}
           >
             Chi tiết
           </Button>
@@ -81,11 +85,14 @@ export const StaffList = (props) => {
       };
     });
     setData(data_table);
+    setTotal(data.totalPage)
   };
 
-  useEffect(() => {
-    if (data.length) handleData(data);
-  }, []);
+  const StaffQuery = useQueryTable("staff-list", userApi.getStaffs, handleData, {
+    _start,
+    _limit,
+  });
+  
 
   return (
     <Box className="p-4">
@@ -124,28 +131,34 @@ export const StaffList = (props) => {
             }}
           >
             <ReactTable
+              noDataText="Không có dữ liệu"
               data={data}
               columns={columns}
               previousText={"<"}
               nextText={">"}
               rowsText={"hàng"}
               ofText="/"
-              // loading={<div>aaaa</div>}
-              // LoadingComponent={LoadingTable}
               manual
-              defaultPageSize={10}
+              loading={StaffQuery.isLoading}
+              LoadingComponent={LoadingTable}
+              defaultPageSize={_limit}
               showPaginationBottom={true}
               sortable={false}
               resizable={false}
-              PaginationComponent={() => <CustomPagination />}
-              // pages={totalPage}
+              PaginationComponent={CustomPagination}
+              pages={totalPage}
+              onFetchData={async (state, instance) => {
+                setStart(state.page);
+                setLimit(state.pageSize);
+              }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {
                 return {
                   onClick: (e, handleOriginal) => {
-                    console.log(column);
                     if (column.id !== "options") {
-                      history.push("/staff/info/1223");
+                      history.push("/staff/info", {
+                        id: rowInfo.row.id,
+                      });
                     }
                   },
                 };

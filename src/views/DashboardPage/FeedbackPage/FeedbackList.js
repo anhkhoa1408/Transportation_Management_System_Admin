@@ -1,58 +1,50 @@
+import { Add, FilterList, Star } from "@mui/icons-material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
-} from "@mui/material";
-import ReactTable from "react-table-v6";
-import { Add, FilterList, Info, Star } from "@mui/icons-material";
-import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
+import ReactTable from "react-table-v6";
+import { CustomPagination } from "../../../components/CustomPagination";
+import { useQueryTable } from "./../../../utils/queryUtils.js";
+import Loading from "./../../../components/Loading";
+import moment from "moment";
+import LoadingTable from "../../../components/LoadingTable";
+import feedbackApi from "../../../api/feedbackApi";
 
 export const FeedbackList = (props) => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      customerName: "Yoga Shibe",
-      date: "12/12/2012",
-      rank: 4,
-      comment: "Tôi rất thích",
-    },
-  ]);
+  const [data, setData] = useState([]);
+  const [_start, setStart] = useState(0);
+  const [totalPage, setTotal] = useState(0);
+  const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
 
   const columns = useMemo(
     () => [
       {
-        Header: "ID",
-        accessor: "id",
+        Header: "STT",
+        accessor: "stt",
         filterable: false,
         width: 100,
       },
       {
         Header: "Tên khách hàng",
-        accessor: "customerName",
+        accessor: "customer",
         filterable: false,
       },
       {
         Header: "Ngày đánh giá",
-        accessor: "date",
+        accessor: "createdAt",
         filterable: false,
       },
       {
         Header: "Xếp hạng",
-        accessor: "rank",
+        accessor: "rating_point",
         filterable: false,
       },
       {
         Header: "Bình luận",
-        accessor: "comment",
+        accessor: "rating_note",
         filterable: false,
       },
     ],
@@ -60,11 +52,17 @@ export const FeedbackList = (props) => {
   );
 
   const handleData = (data) => {
-    let data_table = data.map((prop, index) => {
+    let data_table = data.feedbacks.map((prop, index) => {
       return {
         ...prop,
-        rank:
-          prop.rank === 5 ? (
+        stt: _start * _limit + index + 1,
+        createdAt: moment(prop.createdAt).format("DD/MM/YYYY"),
+        customer: prop.customer.name,
+        rating_note: prop.rating_note || "Chưa có bình luận",
+        rating_point:
+          !prop.rating_point ? (
+            "Chưa có xếp hạng"
+          ) : prop.rating_point === 5 ? (
             <Box>
               {Array.from({ length: 5 }, (_, idx) => (
                 <Star key={idx} color="warning"></Star>
@@ -72,10 +70,10 @@ export const FeedbackList = (props) => {
             </Box>
           ) : (
             <Box>
-              {Array.from({ length: prop.rank }, (_, idx) => (
+              {Array.from({ length: prop.rating_point }, (_, idx) => (
                 <Star key={idx} color="warning"></Star>
               ))}
-              {Array.from({ length: 5 - prop.rank }, (_, idx) => (
+              {Array.from({ length: 5 - prop.rating_point }, (_, idx) => (
                 <Star key={idx} className="text-dark opacity-25"></Star>
               ))}
             </Box>
@@ -83,11 +81,18 @@ export const FeedbackList = (props) => {
       };
     });
     setData(data_table);
+    setTotal(data.totalPage)
   };
 
-  useEffect(() => {
-    if (data.length) handleData(data);
-  }, []);
+  const FeedbackQuery = useQueryTable(
+    "feedback-list",
+    feedbackApi.getList,
+    handleData,
+    {
+      _start,
+      _limit,
+    },
+  );
 
   return (
     <Box className="p-4">
@@ -126,32 +131,38 @@ export const FeedbackList = (props) => {
             }}
           >
             <ReactTable
+              noDataText="Không có dữ liệu"
               data={data}
               columns={columns}
               previousText={"<"}
               nextText={">"}
               rowsText={"hàng"}
               ofText="/"
-              // loading={<div>aaaa</div>}
-              // LoadingComponent={LoadingTable}
               manual
-              defaultPageSize={10}
+              loading={FeedbackQuery.isLoadingyTablfeedbackApi}
+              LoadingComponent={LoadingTable}
+              defaultPageSize={_limit}
               showPaginationBottom={true}
               sortable={false}
               resizable={false}
-              PaginationComponent={() => <CustomPagination />}
-              // pages={totalPage}
+              PaginationComponent={CustomPagination}
+              pages={totalPage}
+              onFetchData={async (state, instance) => {
+                setStart(state.page);
+                setLimit(state.pageSize);
+              }}
               className="-striped -highlight"
-              // getTdProps={(state, rowInfo, column, instance) => {
-              //   return {
-              //     onClick: (e, handleOriginal) => {
-              //       console.log(column);
-              //       if (column.id !== "options") {
-              //         history.push("/report/detail/1223");
-              //       }
-              //     },
-              //   };
-              // }}
+              getTdProps={(state, rowInfo, column, instance) => {
+                return {
+                  onClick: (e, handleOriginal) => {
+                    if (column.id !== "options") {
+                      history.push("/order/detail", {
+                        id: rowInfo.row.id,
+                      });
+                    }
+                  },
+                };
+              }}
             />
           </Paper>
         </Grid>

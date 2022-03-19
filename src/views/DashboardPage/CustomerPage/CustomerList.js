@@ -1,29 +1,30 @@
+import { Add, FilterList, Info } from "@mui/icons-material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
-import { Box, Button, Grid, Paper, Typography } from "@mui/material";
-import ReactTable from "react-table-v6";
-import { Add, FilterList, Info } from "@mui/icons-material";
-import { CustomPagination } from "../../../components/CustomPagination";
 import { useHistory } from "react-router-dom";
+import ReactTable from "react-table-v6";
+import { CustomPagination } from "../../../components/CustomPagination";
+import { useQueryTable } from "./../../../utils/queryUtils.js";
+import Loading from "./../../../components/Loading";
+import moment from "moment";
+import LoadingTable from "../../../components/LoadingTable";
+import userApi from './../../../api/userApi'
+import { handleUserRole } from "../../../utils/role";
 
 export const CustomerList = (props) => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: "aaa",
-      phone: "aaa",
-      rank: "aaa",
-      dateOfBirth: "14/08/2000",
-    },
-  ]);
+  const [data, setData] = useState([]);
+  const [_start, setStart] = useState(0);
+  const [totalPage, setTotal] = useState(0);
+  const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
 
   const columns = useMemo(
     () => [
       {
-        Header: "ID",
-        accessor: "id",
+        Header: "STT",
+        accessor: "stt",
         filterable: false,
         width: 100,
       },
@@ -38,13 +39,13 @@ export const CustomerList = (props) => {
         filterable: false,
       },
       {
-        Header: "Hạng",
-        accessor: "rank",
+        Header: "Loại thành viên",
+        accessor: "type",
         filterable: false,
       },
       {
         Header: "Ngày sinh",
-        accessor: "dateOfBirth",
+        accessor: "birthday",
         filterable: false,
       },
       {
@@ -57,15 +58,17 @@ export const CustomerList = (props) => {
   );
 
   const handleData = (data) => {
-    let data_table = data.map((prop, index) => {
+    let data_table = data.customers.map((prop, index) => {
       return {
         ...prop,
+        type: handleUserRole(prop.type),
+        stt: _start * _limit + index + 1,
         options: (
           <Button
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/customer/info/1")}
+            onClick={() => history.push("/customer/info")}
           >
             Chi tiết
           </Button>
@@ -73,11 +76,13 @@ export const CustomerList = (props) => {
       };
     });
     setData(data_table);
+    setTotal(data.totalPage)
   };
 
-  useEffect(() => {
-    if (data.length) handleData(data);
-  }, []);
+  const CustomerQuery = useQueryTable("customer-list", userApi.getCustomers, handleData, {
+    _start,
+    _limit,
+  });
 
   return (
     <Box className="p-4">
@@ -116,28 +121,34 @@ export const CustomerList = (props) => {
             }}
           >
             <ReactTable
+              noDataText="Không có dữ liệu"
               data={data}
               columns={columns}
               previousText={"<"}
               nextText={">"}
               rowsText={"hàng"}
               ofText="/"
-              // loading={<div>aaaa</div>}
-              // LoadingComponent={LoadingTable}
               manual
-              defaultPageSize={10}
+              loading={CustomerQuery.isLoading}
+              LoadingComponent={LoadingTable}
+              defaultPageSize={_limit}
               showPaginationBottom={true}
               sortable={false}
               resizable={false}
-              PaginationComponent={() => <CustomPagination />}
-              // pages={totalPage}
+              PaginationComponent={CustomPagination}
+              pages={totalPage}
+              onFetchData={async (state, instance) => {
+                setStart(state.page);
+                setLimit(state.pageSize);
+              }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {
                 return {
                   onClick: (e, handleOriginal) => {
-                    console.log(column);
                     if (column.id !== "options") {
-                      history.push("/customer/info");
+                      history.push("/customer/info", {
+                        id: rowInfo.row.id,
+                      });
                     }
                   },
                 };
