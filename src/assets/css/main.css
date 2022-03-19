@@ -9,11 +9,9 @@ body {
   height: 100%;
 }
 
-.fixed-header {
-  /* position: sticky; */
-  top: -220px;
-  /* right: 0px; */
-  /* left: 0px; */
+.header-sticky {
+  top: 50px;
+  z-index: 10;
 }
 
 .banner-img {

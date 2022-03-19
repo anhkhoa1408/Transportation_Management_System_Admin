@@ -43,7 +43,7 @@
   background-color: var(--app-primary);
   color: var(--white);
   border-radius: 7px;
-  box-shadow: 0 0 10px 1px;
+  box-shadow: 0 0 3px 1px;
   transition: 0.3s linear;
 }
 
