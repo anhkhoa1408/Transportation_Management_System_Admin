@@ -13,6 +13,7 @@ import {
 import orderApi from "../../../api/orderApi";
 import * as Bonk from "yup";
 import Detail from "./Detail/Detail";
+import useScroll from "../../../utils/useScroll";
 
 const OrderDetail = (props) => {
   const history = useHistory();
@@ -47,65 +48,72 @@ const OrderDetail = (props) => {
     }
   }, [location]);
 
+  useScroll("detail-header");
+
   return (
     <>
-      <Box className="p-3 position-sticky">
-        <Grid container className="p-4" direction="column">
-          <Grid item md={12} className="d-flex flex-column">
-            <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center shadow-sm">
-              <Box className="px-4 py-2">
-                <Grid container direction="column">
-                  <Grid
-                    id="detail-header"
-                    container
-                    direction="row"
-                    className="mb-1 bg-white position-sticky"
-                  >
-                    <Grid item sm={3} md={4} className="">
-                      <Typography className="mt-3 mb-4 fs-5 fw-bold">
-                        Thông tin chi tiết
-                      </Typography>
-                    </Grid>
-
-                    <Grid
-                      item
-                      sm={9}
-                      md={8}
-                      className="d-flex flex-row align-items-center justify-content-end"
-                    >
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        className="me-2 py-1"
-                      >
-                        Huỷ đơn hàng
-                      </Button>
-                      <UncontrolledDropdown direction="left">
-                        <DropdownToggle className="app-primary-bg-color py-1">
-                          TUỲ CHỌN
-                          <ArrowDropDown />
-                        </DropdownToggle>
-                        <DropdownMenu className="shadow p-0">
-                          <DropdownItem
-                            className="py-3 px-4"
-                            onClick={() => history.push("/package")}
-                          >
-                            Xem kiện hàng
-                          </DropdownItem>
-                          <Divider className="app-primary-color" />
-
-                          <DropdownItem className="py-3 px-4">
-                            Phản hồi
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </UncontrolledDropdown>
-                    </Grid>
-                  </Grid>
+      <Box className="p-3">
+        <Grid
+          item
+          md={12}
+          className="pt-4 px-4 position-sticky d-flex flex-column header-sticky"
+        >
+          <Paper
+            id="detail-header"
+            className="d-flex flex-column pt-2 px-4 col-md-11 align-self-center shadow-none"
+          >
+            <Box className="px-4 py-2">
+              <Grid container direction="row" className="mb-1 bg-white">
+                <Grid item sm={3} md={4} className="">
+                  <Typography className="my-3 fs-5 fw-bold">
+                    Thông tin chi tiết
+                  </Typography>
                 </Grid>
-                <Detail />
-              </Box>
-            </Paper>
-          </Grid>
+
+                <Grid
+                  item
+                  sm={9}
+                  md={8}
+                  className="d-flex flex-row align-items-center justify-content-end"
+                >
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    className="me-2 py-1"
+                  >
+                    Huỷ đơn hàng
+                  </Button>
+                  <UncontrolledDropdown direction="left">
+                    <DropdownToggle className="app-primary-bg-color py-1">
+                      TUỲ CHỌN
+                      <ArrowDropDown />
+                    </DropdownToggle>
+                    <DropdownMenu className="shadow p-0">
+                      <DropdownItem
+                        className="py-3 px-4"
+                        onClick={() => history.push("/package")}
+                      >
+                        Xem kiện hàng
+                      </DropdownItem>
+                      <Divider className="app-primary-color" />
+
+                      <DropdownItem className="py-3 px-4">
+                        Lưu
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </Grid>
+              </Grid>
+            </Box>
+          </Paper>
+        </Grid>
+
+        <Grid item md={12} className="px-4 d-flex flex-column">
+          <Paper className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none">
+            <Box className="px-4 py-2">
+              <Detail />
+            </Box>
+          </Paper>
         </Grid>
       </Box>
     </>

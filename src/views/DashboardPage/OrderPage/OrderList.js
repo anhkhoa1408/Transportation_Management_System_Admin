@@ -1,5 +1,5 @@
 import { FilterList, Info } from "@mui/icons-material";
-import { Box, Button, Grid, Paper, Typography } from "@mui/material";
+import { Box, Button, Chip, Grid, Paper, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -10,14 +10,36 @@ import { CustomPagination } from "../../../components/CustomPagination";
 import { useQueryTable } from "./../../../utils/queryUtils.js";
 import Loading from "./../../../components/Loading";
 import moment from "moment";
+import LoadingTable from "../../../components/LoadingTable";
+import { convertOrderState } from "../../../utils/order";
 
 export const OrderList = (props) => {
   const [data, setData] = useState([]);
   const [_start, setStart] = useState(0);
-  const [totalPage, setTotal] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
   const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
+
+  const handleState = (state) => {
+    switch (state) {
+      case 0:
+        return <Chip variant="outlined" label="Đang xử lý" color="warning" />
+      case 1:
+        return <Chip variant="outlined" label="Chuẩn bị kiện hàng" color="primary" />
+      case 2:
+        return <Chip variant="outlined" label="Đang vận chuyển" color="info" />
+      case 3:
+        return <Chip variant="outlined" label="Chuẩn bị giao hàng" color="secondary" />
+      case 4:
+        return <Chip variant="outlined" label="Giao hàng thành công" color="success" />
+      case 5:
+        return <Chip variant="outlined" label="Đã hủy" color="error" />
+      default:
+        return <Chip variant="outlined" label="Đang xử lý" color="warning" />
+    }
+  }
 
   const columns = useMemo(
     () => [
@@ -67,8 +89,8 @@ export const OrderList = (props) => {
       return {
         ...prop,
         stt: _start * _limit + index + 1,
-        state: <Badge className="bg-warning p-2">{prop.status}</Badge>,
-        createdAt: moment(prop.createdAt).format("DD/MM/YYYY HH:mm:ss"),
+        state: handleState(prop.state),
+        createdAt: moment(prop.createdAt).format("DD/MM/YYYY HH:mm"),
         options: (
           <Button
             variant="contained"
@@ -89,7 +111,8 @@ export const OrderList = (props) => {
   };
 
   const handleTotal = (data) => {
-    setTotal(Math.ceil(data / _limit));
+    setTotalPage(Math.ceil(data / _limit));
+    setTotal(data)
   };
 
   const OrderQuery = useQueryTable("order-list", orderApi.getList, handleData, {
@@ -105,7 +128,6 @@ export const OrderList = (props) => {
 
   return (
     <Box className="p-4">
-      {OrderQuery.isLoading && SizeQuery.isLoading ? <Loading /> : null}
       <Grid container className="p-4" direction="column">
         <Grid item md={12}>
           <Paper
@@ -147,7 +169,7 @@ export const OrderList = (props) => {
               ofText="/"
               manual
               loading={OrderQuery.isLoading || SizeQuery.isLoading}
-              loadingComponent={Loading}
+              LoadingComponent={LoadingTable}
               defaultPageSize={_limit}
               showPaginationBottom={true}
               sortable={false}
@@ -157,12 +179,12 @@ export const OrderList = (props) => {
               onFetchData={async (state, instance) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
+                setTotalPage(Math.ceil(total / state.pageSize))
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {
                 return {
                   onClick: (e, handleOriginal) => {
-                    // console.log(rowInfo, state, instance);
                     if (column.id !== "options") {
                       history.push("/order/detail", {
                         id: rowInfo.row.id,
