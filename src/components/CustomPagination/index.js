@@ -9,7 +9,7 @@ import {
 } from "reactstrap";
 export const CustomPagination = (props) => {
   const { pages, onPageChange, onPageSizeChange } = props;
-  const [rowPerPage, setRowPerPage] = useState(5);
+  const [rowPerPage, setRowPerPage] = useState(10);
 
   const handleChangePage = (page) => {
     onPageChange(page - 1);
