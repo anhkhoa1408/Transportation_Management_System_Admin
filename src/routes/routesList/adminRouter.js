@@ -101,7 +101,7 @@ const adminRouter = [
     component: PackageList,
   },
   {
-    link: "/package/detail/",
+    link: "/package/detail",
     component: PackageDetail,
   },
   {
@@ -109,7 +109,7 @@ const adminRouter = [
     component: VehicleList,
   },
   {
-    link: "/vehicle/detail/",
+    link: "/vehicle/detail",
     component: VehicleDetail,
   },
   {
@@ -117,7 +117,7 @@ const adminRouter = [
     component: StorageList,
   },
   {
-    link: "/storage/info/",
+    link: "/storage/info",
     component: StorageDetail,
   },
   {
@@ -125,7 +125,7 @@ const adminRouter = [
     component: ReportList,
   },
   {
-    link: "/report/detail/",
+    link: "/report/detail",
     component: ReportDetail,
   },
   {
