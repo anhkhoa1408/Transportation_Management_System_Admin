@@ -1,17 +1,14 @@
 import { FilterList, Info } from "@mui/icons-material";
 import { Box, Button, Chip, Grid, Paper, Typography } from "@mui/material";
+import moment from "moment";
 import React, { useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ReactTable from "react-table-v6";
-import { Badge } from "reactstrap";
 import orderApi from "../../../api/orderApi";
 import { CustomPagination } from "../../../components/CustomPagination";
-import { useQueryTable } from "./../../../utils/queryUtils.js";
-import Loading from "./../../../components/Loading";
-import moment from "moment";
 import LoadingTable from "../../../components/LoadingTable";
-import { convertOrderState } from "../../../utils/order";
+import { useQueryTable } from "./../../../utils/queryUtils.js";
 
 export const OrderList = (props) => {
   const [data, setData] = useState([]);
@@ -25,21 +22,35 @@ export const OrderList = (props) => {
   const handleState = (state) => {
     switch (state) {
       case 0:
-        return <Chip variant="outlined" label="Đang xử lý" color="warning" />
+        return <Chip variant="outlined" label="Đang xử lý" color="warning" />;
       case 1:
-        return <Chip variant="outlined" label="Chuẩn bị kiện hàng" color="primary" />
+        return (
+          <Chip variant="outlined" label="Chuẩn bị kiện hàng" color="primary" />
+        );
       case 2:
-        return <Chip variant="outlined" label="Đang vận chuyển" color="info" />
+        return <Chip variant="outlined" label="Đang vận chuyển" color="info" />;
       case 3:
-        return <Chip variant="outlined" label="Chuẩn bị giao hàng" color="secondary" />
+        return (
+          <Chip
+            variant="outlined"
+            label="Chuẩn bị giao hàng"
+            color="secondary"
+          />
+        );
       case 4:
-        return <Chip variant="outlined" label="Giao hàng thành công" color="success" />
+        return (
+          <Chip
+            variant="outlined"
+            label="Giao hàng thành công"
+            color="success"
+          />
+        );
       case 5:
-        return <Chip variant="outlined" label="Đã hủy" color="error" />
+        return <Chip variant="outlined" label="Đã hủy" color="error" />;
       default:
-        return <Chip variant="outlined" label="Đang xử lý" color="warning" />
+        return <Chip variant="outlined" label="Đang xử lý" color="warning" />;
     }
-  }
+  };
 
   const columns = useMemo(
     () => [
@@ -112,7 +123,7 @@ export const OrderList = (props) => {
 
   const handleTotal = (data) => {
     setTotalPage(Math.ceil(data / _limit));
-    setTotal(data)
+    setTotal(data);
   };
 
   const OrderQuery = useQueryTable("order-list", orderApi.getList, handleData, {
@@ -179,7 +190,7 @@ export const OrderList = (props) => {
               onFetchData={async (state, instance) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
-                setTotalPage(Math.ceil(total / state.pageSize))
+                setTotalPage(Math.ceil(total / state.pageSize));
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {

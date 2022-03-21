@@ -1,6 +1,5 @@
 import { ArrowDropDown } from "@mui/icons-material";
 import { Box, Button, Divider, Grid, Paper, Typography } from "@mui/material";
-import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
@@ -11,34 +10,84 @@ import {
   UncontrolledDropdown,
 } from "reactstrap";
 import orderApi from "../../../api/orderApi";
-import * as Bonk from "yup";
-import Detail from "./Detail/Detail";
 import useScroll from "../../../utils/useScroll";
+import Detail from "./Detail/Detail";
+import { useFormik } from "formik";
+import * as Bonk from "yup";
+import { errorNotify, successNotify } from "../../../utils/notification";
 
 const OrderDetail = (props) => {
   const history = useHistory();
   const location = useLocation();
 
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: "aaa",
-      phone: "aaa",
-      rank: "aaa",
-      dateOfBirth: "14/08/2000",
-    },
-  ]);
+  const [data, setData] = useState({
+    id: "",
+    sender_name: "",
+    sender_phone: "",
+    receiver_name: "",
+    receiver_phone: "",
+    from_address: "",
+    to_address: "",
+    current_address: "",
+    fee: 0,
+    remain_fee: 0,
+    created_at: "",
+    packages: [],
+    state: 0,
+  });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: data,
     validationSchema: Bonk.object({
-      receiver_name: Bonk.string().required(),
-      receiver_phone: Bonk.string().required(),
-      sender_name: Bonk.string().required(),
-      sender_phone: Bonk.string().required(),
+      receiver_name: Bonk.string().required("Thông số bắt buộc"),
+      receiver_phone: Bonk.string().required("Thông số bắt buộc"),
+      sender_name: Bonk.string().required("Thông số bắt buộc"),
+      sender_phone: Bonk.string().required("Thông số bắt buộc"),
+      fee: Bonk.number().min(0, "Lớn hơn 0").required("Thông số bắt buộc"),
+      remain_fee: Bonk.number()
+        .min(0, "Lớn hơn 0")
+        .required("Thông số bắt buộc"),
     }),
+    onSubmit: (values) => {
+      handleSubmit(values);
+    },
   });
+
+  const handleSubmit = (values) => {
+    let data = {
+      receiver_name: values.receiver_name,
+      receiver_phone: values.receiver_phone,
+      sender_name: values.sender_name,
+      sender_phone: values.sender_phone,
+      fee: values.fee,
+      remain_fee: values.remain_fee,
+    };
+    orderApi
+      .update(location.state.id, data)
+      .then((response) => {
+        console.log(response);
+        successNotify("Cập nhật thành công");
+        setData(response);
+      })
+      .catch((error) => {
+        errorNotify("Cập nhật thất bại");
+      });
+  };
+
+  const handleReject = () => {
+    orderApi
+      .update(location.state.id, {
+        state: 5,
+      })
+      .then((response) => {
+        successNotify("Cập nhật thành công");
+        setData(response);
+      })
+      .catch((error) => {
+        errorNotify("Cập nhật thất bại");
+      });
+  };
 
   useEffect(() => {
     if (location?.state?.id) {
@@ -46,7 +95,7 @@ const OrderDetail = (props) => {
         .getDetail(location.state.id)
         .then((response) => setData(response));
     }
-  }, [location]);
+  }, [location.state.id]);
 
   useScroll("detail-header");
 
@@ -78,10 +127,11 @@ const OrderDetail = (props) => {
                 >
                   <Button
                     variant="outlined"
-                    color="error"
+                    color="success"
                     className="me-2 py-1"
+                    onClick={formik.submitForm}
                   >
-                    Huỷ đơn hàng
+                    Lưu
                   </Button>
                   <UncontrolledDropdown direction="left">
                     <DropdownToggle className="app-primary-bg-color py-1">
@@ -91,14 +141,23 @@ const OrderDetail = (props) => {
                     <DropdownMenu className="shadow p-0">
                       <DropdownItem
                         className="py-3 px-4"
-                        onClick={() => history.push("/package")}
+                        onClick={() =>
+                          history.push("/package", {
+                            packages: data.packages,
+                            order: data.id,
+                          })
+                        }
                       >
                         Xem kiện hàng
                       </DropdownItem>
                       <Divider className="app-primary-color" />
 
-                      <DropdownItem className="py-3 px-4">
-                        Lưu
+                      <DropdownItem
+                        disabled={data.state === 5}
+                        className="py-3 px-4 text-danger"
+                        onClick={handleReject}
+                      >
+                        Hủy đơn hàng
                       </DropdownItem>
                     </DropdownMenu>
                   </UncontrolledDropdown>
@@ -111,7 +170,7 @@ const OrderDetail = (props) => {
         <Grid item md={12} className="px-4 d-flex flex-column">
           <Paper className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none">
             <Box className="px-4 py-2">
-              <Detail />
+              <Detail formik={formik} />
             </Box>
           </Paper>
         </Grid>
