@@ -27,7 +27,7 @@ export const CustomPagination = (props) => {
           <Paper className="d-flex flex-row align-items-center p-2">
             <DropdownToggle className="bg-white d-flex flex-row align-items-center d-25 border-white p-0 shadow-none">
               <Typography className="me-1 text-dark">
-                Số hàng mỗi trang:
+                Hiển thị:
               </Typography>
 
               <Typography className="text-dark">{rowPerPage}</Typography>
@@ -37,6 +37,7 @@ export const CustomPagination = (props) => {
           <DropdownMenu>
             {[5, 10, 15, 20].map((item) => (
               <DropdownItem
+                className="w-100 pe-5"
                 key={item}
                 onClick={() => handleChangePageSize(item)}
               >

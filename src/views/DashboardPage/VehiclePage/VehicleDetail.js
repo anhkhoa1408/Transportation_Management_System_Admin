@@ -115,6 +115,7 @@ const VehicleDetail = (props) => {
                     <TextField
                       fullWidth
                       label="Số điện thoại"
+                      value={"aaaaa"}
                       inputProps={{
                         style: {
                           backgroundColor: "#F8F9FA",
