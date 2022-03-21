@@ -13,6 +13,10 @@ class StorageApi {
     const url = process.env.MAIN_URL.concat("/storages/count");
     return axiosClient.get(url);
   };
+  update = (id, data) => {
+    const url = process.env.MAIN_URL.concat(`/storages/${id}`);
+    return axiosClient.put(url, data);
+  };
 }
 
 const storageApi = new StorageApi();

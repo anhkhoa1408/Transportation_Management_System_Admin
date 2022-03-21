@@ -13,6 +13,10 @@ class ReportApi {
     const url = process.env.MAIN_URL.concat("/reports/count");
     return axiosClient.get(url);
   };
+  update = (id, data) => {
+    const url = process.env.MAIN_URL.concat(`/reports/${id}`);
+    return axiosClient.put(url, data);
+  };
 }
 
 const reportApi = new ReportApi();
