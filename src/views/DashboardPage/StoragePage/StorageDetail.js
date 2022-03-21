@@ -1,35 +1,94 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
 import {
-  Avatar,
   Box,
   Button,
-  Container,
   Grid,
-  IconButton,
+  InputAdornment,
+  MenuItem,
   Paper,
+  Select,
   TextField,
   Typography,
-  Select,
-  MenuItem,
-  InputAdornment,
 } from "@mui/material";
-import ReactTable from "react-table-v6";
-import { Add, FilterList } from "@mui/icons-material";
-import { CustomPagination } from "../../../components/CustomPagination";
-import { useHistory } from "react-router-dom";
-import img from "./../../../assets/img/delivery.jpg";
+import { useFormik } from "formik";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { useLocation } from "react-router-dom";
+import storageApi from "../../../api/storageApi";
+import { errorNotify, successNotify } from "../../../utils/notification";
+import * as Bonk from "yup";
+import { joinAddress } from "../../../utils/address";
+import moment from "moment";
+import userApi from "../../../api/userApi";
+// import TimePicker from "../../../components/DatePicker";
 
 const StorageDetail = (props) => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: "aaa",
-      phone: "aaa",
-      rank: "aaa",
-      dateOfBirth: "14/08/2000",
+  const location = useLocation();
+  const [data, setData] = useState({
+    name: "",
+    address: "",
+    size: "",
+    store_managers: [
+      {
+        id: "",
+        name: "",
+      },
+    ],
+    createdAt: "",
+  });
+
+  const [stockers, setStockers] = useState([]);
+  const [selectStockers, setSelectStockers] = useState([]);
+  const [date, setDate] = useState();
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: data,
+    validationSchema: Bonk.object({
+      name: Bonk.string().required("Thông số bắt buộc"),
+      size: Bonk.number().min(0, "Lớn hơn 0").required("Thông số bắt buộc"),
+    }),
+    onSubmit: (values) => {
+      handleSubmit(values);
     },
-  ]);
+  });
+
+  const handleSubmit = (values) => {
+    storageApi
+      .update(location.state.id, {
+        ...values,
+        store_managers: selectStockers
+      })
+      .then((response) => {
+        console.log(response);
+        successNotify("Cập nhật thành công");
+        setData(response);
+        setSelectStockers(response.store_managers.map((item) => item.id));
+      })
+      .catch((error) => {
+        errorNotify("Cập nhật thất bại");
+      });
+  };
+
+  const handleChangeStocker = (e) => {
+    let { value } = e.target;
+    setSelectStockers(value);
+  };
+
+  useEffect(() => {
+    if (location?.state?.id) {
+      Promise.all([
+        storageApi.getDetail(location.state.id),
+        userApi.getStaffs({
+          type: "Stocker",
+        }),
+      ]).then((response) => {
+        setData(response[0]);
+        setDate(response[0].createdAt)
+        setSelectStockers(response[0].store_managers.map((item) => item.id));
+        setStockers(response[1].staffs);
+      });
+    }
+  }, [location.state.id]);
 
   return (
     <Box className="p-4">
@@ -52,6 +111,7 @@ const StorageDetail = (props) => {
                     <Button
                       variant="contained"
                       className="app-primary-bg-color"
+                      onClick={formik.submitForm}
                     >
                       Lưu lại
                     </Button>
@@ -75,6 +135,7 @@ const StorageDetail = (props) => {
                           backgroundColor: "#F8F9FA",
                         },
                       }}
+                      {...formik.getFieldProps("name")}
                     />
                   </Grid>
                 </Grid>
@@ -88,6 +149,7 @@ const StorageDetail = (props) => {
                   </Grid>
                   <Grid item md={9}>
                     <TextField
+                      {...formik.getFieldProps("address")}
                       fullWidth
                       label="Địa chỉ"
                       inputProps={{
@@ -95,6 +157,11 @@ const StorageDetail = (props) => {
                           backgroundColor: "#F8F9FA",
                         },
                       }}
+                      value={
+                        formik.values.address &&
+                        joinAddress(formik.values.address)
+                      }
+                      disabled
                     />
                   </Grid>
                 </Grid>
@@ -120,6 +187,7 @@ const StorageDetail = (props) => {
                           <InputAdornment position="start">m²</InputAdornment>
                         ),
                       }}
+                      {...formik.getFieldProps("size")}
                     />
                   </Grid>
                 </Grid>
@@ -132,15 +200,27 @@ const StorageDetail = (props) => {
                     <Typography>Thủ kho</Typography>
                   </Grid>
                   <Grid item md={9}>
-                    <TextField
+                    <Select
+                      multiple
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
                       fullWidth
-                      label="Thủ kho"
+                      label="Loại"
                       inputProps={{
                         style: {
                           backgroundColor: "#F8F9FA",
                         },
                       }}
-                    />
+                      value={selectStockers}
+                      onChange={handleChangeStocker}
+                    >
+                      {stockers.length &&
+                        stockers.map((item, index) => (
+                          <MenuItem key={index} value={item.id}>
+                            {item.name}
+                          </MenuItem>
+                        ))}
+                    </Select>
                   </Grid>
                 </Grid>
                 <Grid container className="mb-4">
@@ -160,6 +240,10 @@ const StorageDetail = (props) => {
                           backgroundColor: "#F8F9FA",
                         },
                       }}
+                      {...formik.getFieldProps("createdAt")}
+                      value={moment(formik.values.createdAt).format(
+                        "DD/MM/YYYY",
+                      )}
                     />
                   </Grid>
                 </Grid>

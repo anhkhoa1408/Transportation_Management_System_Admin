@@ -78,7 +78,9 @@ export const StorageList = (props) => {
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/storage/info")}
+            onClick={() => history.push("/storage/info", {
+              id: prop.id
+            })}
           >
             Chi tiết
           </Button>
@@ -173,7 +175,7 @@ export const StorageList = (props) => {
                   onClick: (e, handleOriginal) => {
                     if (column.id !== "options") {
                       history.push("/storage/info", {
-                        id: rowInfo.row.id,
+                        id: rowInfo.row["_original"].id,
                       });
                     }
                   },
