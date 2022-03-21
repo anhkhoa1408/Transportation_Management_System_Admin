@@ -1,253 +1,123 @@
-import React, { useEffect, useMemo, useState } from "react";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
+import { useFormik } from "formik";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  TextField,
-  Typography,
-  Select,
-  MenuItem,
-  InputAdornment,
-} from "@mui/material";
-import ReactTable from "react-table-v6";
-import { Add, ArrowDropDown, FilterList } from "@mui/icons-material";
-import { CustomPagination } from "../../../components/CustomPagination";
-import { useHistory } from "react-router-dom";
-import img from "./../../../assets/img/delivery.jpg";
-import {
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledDropdown,
-} from "reactstrap";
+import { useHistory, useLocation } from "react-router-dom";
+import * as Bonk from "yup";
+import packageApi from "../../../api/packageApi";
+import { errorNotify, successNotify } from "../../../utils/notification";
+import useScroll from "../../../utils/useScroll";
+import Detail from "./Detail/Detail";
 
 const PackageDetail = (props) => {
-  const history = useHistory();
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: "aaa",
-      phone: "aaa",
-      rank: "aaa",
-      dateOfBirth: "14/08/2000",
+  const location = useLocation();
+  const [data, setData] = useState({
+    id: "",
+    name: "",
+    size: {
+      len: 0,
+      width: 0,
+      height: 0,
     },
-  ]);
+    weight: 0,
+    quantity: 0,
+    note: "",
+    package_type: "normal",
+  });
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      ...data,
+      len: data.size.len,
+      width: data.size.width,
+      height: data.size.height,
+    },
+    validationSchema: Bonk.object({
+      len: Bonk.number().min(0, "Lớn hơn 0").required("Thông số bắt buộc"),
+      width: Bonk.number().min(0, "Lớn hơn 0").required("Thông số bắt buộc"),
+      height: Bonk.number().min(0, "Lớn hơn 0").required("Thông số bắt buộc"),
+      weight: Bonk.number().min(0, "Lớn hơn 0").required("Thông số bắt buộc"),
+      quantity: Bonk.number().min(0, "Lớn hơn 0").required("Thông số bắt buộc"),
+    }),
+    onSubmit: (values) => {
+      handleSubmit(values);
+    },
+  });
+
+  const handleSubmit = (values) => {
+    packageApi
+      .update(location.state.id, values)
+      .then((response) => {
+        console.log(response);
+        successNotify("Cập nhật thành công")
+        setData({
+          ...response,
+          size: {
+            len: response.size.len,
+            width: response.size.width,
+            height: response.size.height,
+          },
+        })
+      })
+      .catch(error => {
+        errorNotify("Cập nhật thất bại")
+      })
+  };
+
+  useEffect(() => {
+    if (location?.state?.id) {
+      packageApi
+        .getDetail(location.state.id)
+        .then((response) => setData(response));
+    }
+  }, [location.state.id]);
+
+  useScroll("detail-header");
 
   return (
-    <Box className="p-4">
-      <Grid container className="p-4" direction="column">
-        <Grid item md={12} className="d-flex flex-column">
-          <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center">
-            <Box className="px-5 py-2">
-              <Grid container spacing={1} direction="column">
-                <Grid container direction="row" className="mb-1">
-                  <Grid item md={12}>
-                    <Typography className="mt-3 mb-4 fs-5 fw-bold">
-                      Chi tiết kiện hàng
-                    </Typography>
-                  </Grid>
-                </Grid>
-
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Mã QR</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      disabled
-                      fullWidth
-                      label="Mã QR"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Tên kiện hàng</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Tên kiện hàng"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Chiều dài</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Chiều dài"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="start">cm</InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Chiều rộng</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Chiều rộng"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="start">cm</InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Chiều cao</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Chiều cao"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="start">cm</InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Số lượng</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="SDT người gửi"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="start">Cái</InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Đến</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={1}
-                      fullWidth
-                      label="Loại"
-                      // onChange={handleChange}
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    >
-                      <MenuItem value={1}>Dễ vỡ</MenuItem>
-                      <MenuItem value={2}>Vải</MenuItem>
-                      <MenuItem value={3}>Gia dụng</MenuItem>
-                    </Select>
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Ghi chú</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      multiline
-                      rows={3}
-                      fullWidth
-                      label="Ghi chú"
-                      inputProps={{
-                        style: {
-                          // backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
+    <Box className="p-3">
+      <Grid
+        item
+        md={12}
+        className="pt-4 px-4 position-sticky d-flex flex-column header-sticky"
+      >
+        <Paper
+          id="detail-header"
+          className="d-flex flex-column pt-2 px-4 col-md-11 align-self-center shadow-none"
+        >
+          <Box className="px-4 py-2">
+            <Grid container direction="row" className="mb-1 bg-white">
+              <Grid item sm={3} md={4} className="">
+                <Typography className="my-3 fs-5 fw-bold">
+                  Chi tiết kiện hàng
+                </Typography>
               </Grid>
-            </Box>
-          </Paper>
-        </Grid>
+
+              <Grid
+                item
+                sm={9}
+                md={8}
+                className="d-flex flex-row align-items-center justify-content-end"
+              >
+                <Button
+                  variant="outlined"
+                  color="success"
+                  className="py-1"
+                  onClick={formik.submitForm}
+                >
+                  Lưu
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
+      </Grid>
+
+      <Grid item md={12} className="px-4 d-flex flex-column">
+        <Paper className="d-flex flex-column col-md-11 align-self-center shadow-none">
+          <Detail formik={formik} />
+        </Paper>
       </Grid>
     </Box>
   );

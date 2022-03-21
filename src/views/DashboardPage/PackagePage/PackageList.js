@@ -1,55 +1,52 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
+import { FilterList, Info } from "@mui/icons-material";
 import {
   Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
+  Button, Grid, Paper,
+  Typography
 } from "@mui/material";
+import React, { useEffect, useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { useHistory, useLocation } from "react-router-dom";
 import ReactTable from "react-table-v6";
-import { Add, FilterList, Info } from "@mui/icons-material";
+import packageApi from "../../../api/packageApi";
 import { CustomPagination } from "../../../components/CustomPagination";
-import { useHistory } from "react-router-dom";
-import { Badge } from "reactstrap";
+import LoadingTable from "../../../components/LoadingTable";
+import { useQueryTable } from "../../../utils/queryUtils";
 
-export const PackageList = (props) => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      QRCode: "CHONKER",
-      size: "10m x 10m x 10m",
-      weight: "1000 kg",
-      quantity: "1000 thùng",
-      currentLocation: "Kho Hà Nội",
-    },
-  ]);
+
+export const PackageList = () => {
+  const [data, setData] = useState([]);
+  const [_start, setStart] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [totalPage, setTotalPage] = useState(0);
+  const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
+  const location = useLocation();
 
   const columns = useMemo(
     () => [
       {
-        Header: "ID",
-        accessor: "id",
+        Header: "STT",
+        accessor: "stt",
         filterable: false,
         width: 100,
       },
       {
         Header: "Mã QR",
-        accessor: "QRCode",
+        accessor: "id",
         filterable: false,
+        width: 250
       },
       {
         Header: "Kích thước",
         accessor: "size",
         filterable: false,
+        width: 250
       },
       {
         Header: "Khối lượng",
-        accessor: "size",
+        accessor: "weight",
         filterable: false,
       },
       {
@@ -59,7 +56,7 @@ export const PackageList = (props) => {
       },
       {
         Header: "Vị trí hiện tại",
-        accessor: "currentLocation",
+        accessor: "current_address",
         filterable: false,
       },
       {
@@ -75,17 +72,19 @@ export const PackageList = (props) => {
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
-        // status: (
-        //   <Badge className="bg-warning p-1">
-        //     <Typography component="span">{prop.status}</Typography>
-        //   </Badge>
-        // ),
+        stt: _start * _limit + index + 1,
+        size: `${(prop?.size?.len || 0)} m x ${(prop?.size?.width || 0)} m x ${(prop?.size?.height || 0)} m`,
+        quantity: prop.quantity + ' kiện',
+        weight: prop.weight + ' kg',
+        current_address: prop?.current_address?.city || "Đang xử lý",
         options: (
           <Button
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/order/detail/1")}
+            onClick={() => history.push("/package/detail", {
+              package: prop
+            })}
           >
             Chi tiết
           </Button>
@@ -93,18 +92,27 @@ export const PackageList = (props) => {
       };
     });
     setData(data_table);
+    setTotalPage(Math.ceil(data.length / _limit))
   };
 
-  useEffect(() => {
-    if (data.length) handleData(data);
-  }, []);
+  // useEffect(() => {
+  //   if (location?.state?.packages) {
+  //     setData(location.state.packages)
+  //     handleData(location.state.packages);
+  //   }
+  // }, [location?.state?.packages]);
+
+
+  const PackageQuery = useQueryTable("package-list", packageApi.getList, handleData, {
+    order: location.state.order
+  })
 
   return (
     <Box className="p-4">
       <Grid container className="p-4" direction="column">
         <Grid item md={12}>
           <Paper
-            className="d-flex flex-row align-items-center p-4 rounded-top"
+            className="d-flex flex-row align-items-center p-4 rounded-top shadow-sm"
             sx={{
               bgcolor: "#F8F9FC",
               borderBottomRightRadius: 0,
@@ -126,35 +134,38 @@ export const PackageList = (props) => {
         </Grid>
         <Grid item md={12} xs={12}>
           <Paper
-            className="p-4"
+            className="p-4 shadow-sm"
             sx={{
               borderTopRightRadius: 0,
               borderTopLeftRadius: 0,
             }}
           >
             <ReactTable
+              noDataText="Không có dữ liệu"
               data={data}
               columns={columns}
               previousText={"<"}
               nextText={">"}
               rowsText={"hàng"}
               ofText="/"
-              // loading={<div>aaaa</div>}
-              // LoadingComponent={LoadingTable}
-              manual
+              LoadingComponent={LoadingTable}
+              loading={PackageQuery.isLoading}
+              // manual
               defaultPageSize={10}
               showPaginationBottom={true}
               sortable={false}
               resizable={false}
-              PaginationComponent={() => <CustomPagination />}
-              // pages={totalPage}
+              PaginationComponent={CustomPagination}
+              pages={totalPage}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {
                 return {
                   onClick: (e, handleOriginal) => {
-                    console.log(column);
+                    console.log(rowInfo)
                     if (column.id !== "options") {
-                      history.push("/package/detail/1223");
+                      history.push("/package/detail", {
+                        id: rowInfo.row.id
+                      });
                     }
                   },
                 };
