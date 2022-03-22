@@ -19,11 +19,6 @@ function Detail({ formik }) {
             fullWidth
             label="Mã đơn hàng"
             value={formik.values.id}
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             {...formik.getFieldProps("id")}
             />
         </Grid>
@@ -39,11 +34,6 @@ function Detail({ formik }) {
             fullWidth
             label="Từ"
             value={(formik.values.from_address && joinAddress(formik.values.from_address))}
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
           />
         </Grid>
       </Grid>
@@ -56,11 +46,6 @@ function Detail({ formik }) {
             fullWidth
             label="Người gửi"
             value={formik.values.sender_name}
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             error={
               formik.touched.sender_name && formik.errors.sender_name
                 ? true
@@ -80,11 +65,6 @@ function Detail({ formik }) {
             fullWidth
             label="SDT người gửi"
             value={formik.values.sender_phone}
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             error={
               formik.touched.sender_phone && formik.errors.sender_phone
                 ? true
@@ -105,11 +85,6 @@ function Detail({ formik }) {
             fullWidth
             disabled
             label="Đến"
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             value={(formik.values.to_address && joinAddress(formik.values.to_address))}
           />
         </Grid>
@@ -123,11 +98,6 @@ function Detail({ formik }) {
             fullWidth
             label="Người nhận"
             value={formik.values.receiver_name}
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             error={
               formik.touched.receiver_name && formik.errors.receiver_name
                 ? true
@@ -147,11 +117,6 @@ function Detail({ formik }) {
             fullWidth
             label="SDT người nhận"
             value={formik.values.receiver_phone}
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             error={
               formik.touched.receiver_phone && formik.errors.receiver_phone
                 ? true
@@ -170,11 +135,6 @@ function Detail({ formik }) {
           <TextField
             fullWidth
             label="Vị trí hiện tại"
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
           />
         </Grid>
       </Grid> */}
@@ -188,11 +148,6 @@ function Detail({ formik }) {
             disabled
             label="Thời gian đặt hàng"
             value={moment(formik.values.createdAt).format("DD/MM/YYYY HH:mm")}
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
           />
         </Grid>
       </Grid>
@@ -205,11 +160,6 @@ function Detail({ formik }) {
             fullWidth
             value={formik.values.fee}
             label="Tổng chi phí"
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">VND</InputAdornment>
@@ -234,11 +184,6 @@ function Detail({ formik }) {
             fullWidth
             label="Chi phí còn lại"
             value={formik.values.remain_fee}
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">VND</InputAdornment>

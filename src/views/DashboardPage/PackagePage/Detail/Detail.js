@@ -22,11 +22,6 @@ function Detail({ formik }) {
             disabled
             fullWidth
             label="Mã QR"
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             {...formik.getFieldProps("id")}
           />
         </Grid>
@@ -40,11 +35,6 @@ function Detail({ formik }) {
             disabled
             fullWidth
             label="Tên kiện hàng"
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             {...formik.getFieldProps("name")}
           />
         </Grid>
@@ -57,11 +47,6 @@ function Detail({ formik }) {
           <TextField
             fullWidth
             label="Chiều dài"
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             InputProps={{
               endAdornment: <InputAdornment position="end">cm</InputAdornment>,
             }}
@@ -83,11 +68,6 @@ function Detail({ formik }) {
           <TextField
             fullWidth
             label="Chiều rộng"
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             InputProps={{
               endAdornment: <InputAdornment position="end">cm</InputAdornment>,
             }}
@@ -109,11 +89,6 @@ function Detail({ formik }) {
           <TextField
             fullWidth
             label="Chiều cao"
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             InputProps={{
               endAdornment: <InputAdornment position="end">cm</InputAdornment>,
             }}
@@ -135,11 +110,6 @@ function Detail({ formik }) {
           <TextField
             fullWidth
             label="Số lượng"
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             InputProps={{
               endAdornment: <InputAdornment position="end">cái</InputAdornment>,
             }}
@@ -161,11 +131,6 @@ function Detail({ formik }) {
           <TextField
             fullWidth
             label="Khối lượng"
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             InputProps={{
               endAdornment: <InputAdornment position="end">kg</InputAdornment>,
             }}
@@ -190,11 +155,6 @@ function Detail({ formik }) {
             fullWidth
             label="Loại"
             value={formik.values.package_type}
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             {...formik.getFieldProps("package_type")}
           >
             {packages.map((item, index) => (
@@ -215,11 +175,6 @@ function Detail({ formik }) {
             rows={3}
             fullWidth
             label="Ghi chú"
-            inputProps={{
-              style: {
-                backgroundColor: "#F8F9FA",
-              },
-            }}
             {...formik.getFieldProps("note")}
           />
         </Grid>
