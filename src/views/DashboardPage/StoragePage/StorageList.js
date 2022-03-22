@@ -51,11 +51,11 @@ export const StorageList = (props) => {
         accessor: "size",
         filterable: false,
       },
-      {
-        Header: "Thủ kho",
-        accessor: "store_managers",
-        filterable: false,
-      },
+      // {
+      //   Header: "Thủ kho",
+      //   accessor: "store_managers",
+      //   filterable: false,
+      // },
       {
         Header: "Tuỳ chọn",
         accessor: "options",
@@ -72,7 +72,7 @@ export const StorageList = (props) => {
         stt: _start * _limit + index + 1,
         address: joinAddress(prop.address),
         size: prop.size + " m²",
-        store_managers: prop.store_managers[0].name,
+        // store_managers: prop.store_managers[0].name,
         options: (
           <Button
             variant="contained"
@@ -130,7 +130,9 @@ export const StorageList = (props) => {
               Danh sách kho hàng
             </Typography>
             <Box>
-              <Button variant="outlined" className="me-2" endIcon={<Add />}>
+              <Button variant="outlined" className="me-2" endIcon={<Add />} onClick={() => history.push("/storage/create", {
+                create: true
+              })}>
                 Thêm
               </Button>
               <Button variant="outlined" endIcon={<FilterList />}>

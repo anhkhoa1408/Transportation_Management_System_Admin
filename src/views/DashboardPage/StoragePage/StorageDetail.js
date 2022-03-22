@@ -19,7 +19,7 @@ import * as Bonk from "yup";
 import { joinAddress } from "../../../utils/address";
 import moment from "moment";
 import userApi from "../../../api/userApi";
-// import TimePicker from "../../../components/DatePicker";
+import TimePicker from "../../../components/DatePicker";
 
 const StorageDetail = (props) => {
   const location = useLocation();
@@ -33,7 +33,7 @@ const StorageDetail = (props) => {
         name: "",
       },
     ],
-    createdAt: "",
+    createdAt: new Date(),
   });
 
   const [stockers, setStockers] = useState([]);
@@ -48,7 +48,11 @@ const StorageDetail = (props) => {
       size: Bonk.number().min(0, "Lớn hơn 0").required("Thông số bắt buộc"),
     }),
     onSubmit: (values) => {
-      handleSubmit(values);
+      if (location?.state?.create) {
+        handleCreate(values)
+      } else {
+        handleSubmit(values);
+      }
     },
   });
 
@@ -56,7 +60,26 @@ const StorageDetail = (props) => {
     storageApi
       .update(location.state.id, {
         ...values,
-        store_managers: selectStockers
+        store_managers: selectStockers,
+        
+      })
+      .then((response) => {
+        console.log(response);
+        successNotify("Cập nhật thành công");
+        setData(response);
+        setSelectStockers(response.store_managers.map((item) => item.id));
+      })
+      .catch((error) => {
+        errorNotify("Cập nhật thất bại");
+      });
+  };
+
+  const handleCreate = (values) => {
+    storageApi
+      .create({
+        store_managers: selectStockers,
+        name: values.name,
+        size: values.size
       })
       .then((response) => {
         console.log(response);
@@ -83,12 +106,18 @@ const StorageDetail = (props) => {
         }),
       ]).then((response) => {
         setData(response[0]);
-        setDate(response[0].createdAt)
+        setDate(response[0].createdAt);
         setSelectStockers(response[0].store_managers.map((item) => item.id));
         setStockers(response[1].staffs);
       });
+    } else {
+      userApi.getStaffs({
+        type: "Stocker",
+      }).then((response) => {
+        setStockers(response.staffs);
+      });
     }
-  }, [location.state.id]);
+  }, []);
 
   return (
     <Box className="p-4">
@@ -175,6 +204,7 @@ const StorageDetail = (props) => {
                   </Grid>
                   <Grid item md={9}>
                     <TextField
+                      type="number"
                       fullWidth
                       label="Diện tích"
                       inputProps={{
