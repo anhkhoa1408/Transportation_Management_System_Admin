@@ -66,13 +66,15 @@ export const VehicleList = (props) => {
         ...prop,
         stt: _start * _limit + index + 1,
         load: prop.load + " kg",
-        manager: prop.manager.name,
+        manager: prop?.manager?.name || "Trống",
         options: (
           <Button
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/vehicle/detail")}
+            onClick={() => history.push("/vehicle/detail", {
+              id: prop.id
+            })}
           >
             Chi tiết
           </Button>
@@ -102,7 +104,7 @@ export const VehicleList = (props) => {
       <Grid container className="p-4" direction="column">
         <Grid item md={12}>
           <Paper
-            className="d-flex flex-row align-items-center p-4 rounded-top"
+            className="d-flex flex-row align-items-center p-4 rounded-top shadow-sm"
             sx={{
               bgcolor: "#F8F9FC",
               borderBottomRightRadius: 0,
@@ -127,7 +129,7 @@ export const VehicleList = (props) => {
         </Grid>
         <Grid item md={12} xs={12}>
           <Paper
-            className="p-4"
+            className="p-4 shadow-sm"
             sx={{
               borderTopRightRadius: 0,
               borderTopLeftRadius: 0,
@@ -161,7 +163,7 @@ export const VehicleList = (props) => {
                   onClick: (e, handleOriginal) => {
                     if (column.id !== "options") {
                       history.push("/vehicle/detail", {
-                        id: rowInfo.row.id,
+                        id: rowInfo.row._original.id,
                       });
                     }
                   },

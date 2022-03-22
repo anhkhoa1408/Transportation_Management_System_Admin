@@ -121,6 +121,10 @@ const adminRouter = [
     component: StorageDetail,
   },
   {
+    link: "/storage/create",
+    component: StorageDetail,
+  },
+  {
     link: "/report",
     component: ReportList,
   },

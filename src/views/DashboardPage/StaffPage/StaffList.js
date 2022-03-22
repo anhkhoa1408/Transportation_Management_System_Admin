@@ -71,7 +71,7 @@ export const StaffList = (props) => {
         ...prop,
         stt: _start * _limit + index + 1,
         role: handleUserRole(prop.type),
-        storage: prop.storage.name,
+        storage: prop?.storage?.name || "Chưa phân công",
         options: (
           <Button
             variant="contained"
