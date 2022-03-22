@@ -65,7 +65,6 @@ export const ReportList = (props) => {
   );
 
   const handleData = (data) => {
-    console.log(data[0].stocker.name)
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
@@ -79,7 +78,9 @@ export const ReportList = (props) => {
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/report/detail")}
+            onClick={() => history.push("/report/detail", {
+              id: prop.id
+            })}
           >
             Chi tiết
           </Button>
@@ -123,9 +124,6 @@ export const ReportList = (props) => {
               Danh sách báo cáo
             </Typography>
             <Box>
-              <Button variant="outlined" className="me-2" endIcon={<Add />}>
-                Thêm
-              </Button>
               <Button variant="outlined" endIcon={<FilterList />}>
                 Lọc
               </Button>
@@ -167,7 +165,7 @@ export const ReportList = (props) => {
                   onClick: (e, handleOriginal) => {
                     if (column.id !== "options") {
                       history.push("/report/detail", {
-                        id: rowInfo.row.id,
+                        id: rowInfo.row._original.id,
                       });
                     }
                   },
