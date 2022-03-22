@@ -17,6 +17,10 @@ class StorageApi {
     const url = process.env.MAIN_URL.concat(`/storages/${id}`);
     return axiosClient.put(url, data);
   };
+  create = (data) => {
+    const url = process.env.MAIN_URL.concat(`/storages`);
+    return axiosClient.post(url, data);
+  };
 }
 
 const storageApi = new StorageApi();
