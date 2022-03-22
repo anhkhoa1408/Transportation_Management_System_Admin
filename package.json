@@ -17,6 +17,7 @@
     "apexcharts": "^3.33.1",
     "axios": "^0.26.1",
     "clsx": "^1.1.1",
+    "dayjs": "^1.11.0",
     "formik": "^2.2.9",
     "moment": "^2.29.1",
     "query-string": "^7.1.1",

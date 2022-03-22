@@ -1,0 +1,11 @@
+@import url("./_variable.css");
+
+.MuiOutlinedInput-input,
+.MuiInputAdornment-root,
+.MuiOutlinedInput-input {
+  background-color: #FFF !important;
+}
+
+.MuiOutlinedInput-root {
+  height: 52px;
+}

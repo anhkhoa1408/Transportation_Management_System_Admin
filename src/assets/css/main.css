@@ -1,8 +1,4 @@
-:root {
-  --app-primary: #7fc3dc;
-  --app-primary-neutral: #cce7f1;
-  --white: #fff;
-}
+@import url("_variable.css");
 
 html,
 body {
@@ -61,3 +57,5 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background-color: #7cd3f3;
 }
+
+

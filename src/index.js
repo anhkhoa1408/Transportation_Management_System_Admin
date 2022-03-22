@@ -5,5 +5,6 @@ import "react-table-v6/react-table.css";
 import "./assets/css/table.css";
 import "./assets/css/main.css";
 import "react-toastify/dist/ReactToastify.css";
+import "./assets/css/input.css"
 
 ReactDOM.render(<App />, document.getElementById("root"));
