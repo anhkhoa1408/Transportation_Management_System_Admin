@@ -17,7 +17,7 @@ import { useQueryTable } from "./../../../utils/queryUtils.js";
 import Loading from "./../../../components/Loading";
 import moment from "moment";
 import LoadingTable from "../../../components/LoadingTable";
-import userApi from './../../../api/userApi'
+import userApi from "./../../../api/userApi";
 import { handleUserRole } from "../../../utils/role";
 
 export const StaffList = (props) => {
@@ -77,7 +77,11 @@ export const StaffList = (props) => {
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/staff/info")}
+            onClick={() =>
+              history.push("/staff/info", {
+                id: prop.id,
+              })
+            }
           >
             Chi tiết
           </Button>
@@ -85,14 +89,18 @@ export const StaffList = (props) => {
       };
     });
     setData(data_table);
-    setTotal(data.totalPage)
+    setTotal(data.totalPage);
   };
 
-  const StaffQuery = useQueryTable("staff-list", userApi.getStaffs, handleData, {
-    _start,
-    _limit,
-  });
-  
+  const StaffQuery = useQueryTable(
+    "staff-list",
+    userApi.getStaffs,
+    handleData,
+    {
+      _start,
+      _limit,
+    },
+  );
 
   return (
     <Box className="p-4">
@@ -157,7 +165,7 @@ export const StaffList = (props) => {
                   onClick: (e, handleOriginal) => {
                     if (column.id !== "options") {
                       history.push("/staff/info", {
-                        id: rowInfo.row.id,
+                        id: rowInfo.row._original.id,
                       });
                     }
                   },
@@ -170,9 +178,4 @@ export const StaffList = (props) => {
     </Box>
   );
 };
-
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(StaffList);
+export default StaffList;
