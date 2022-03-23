@@ -1,0 +1,32 @@
+.d-50 {
+  width: 50%;
+}
+
+.img-cropper {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.img-fit-container {
+  display: block;
+  object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.hover-sm {
+  transform: scale(1);
+  transition: ease 0.3s;
+}
+
+.hover-sm:hover {
+  transform: scale(1.2);
+  transition: ease 0.3s;
+}
+
+.hover-danger-sm:hover {
+  background-color: #dc3545;
+  color: #FFF
+}
