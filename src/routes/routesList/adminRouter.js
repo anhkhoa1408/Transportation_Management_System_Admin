@@ -89,6 +89,10 @@ const adminRouter = [
     component: StaffInfo,
   },
   {
+    link: "/staff/create",
+    component: StaffInfo,
+  },
+  {
     link: "/order",
     component: OrderList,
   },

@@ -121,7 +121,9 @@ export const StaffList = (props) => {
               Danh sách nhân viên
             </Typography>
             <Box>
-              <Button variant="outlined" className="me-2" endIcon={<Add />}>
+              <Button variant="outlined" className="me-2" endIcon={<Add />} onClick={() => history.push("/staff/create", {
+                create: true
+              })}>
                 Thêm
               </Button>
               <Button variant="outlined" endIcon={<FilterList />}>

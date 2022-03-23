@@ -16,6 +16,7 @@ import { useLocation } from "react-router-dom";
 import { handleUserRole } from "../../../../utils/role";
 
 function Detail({ formik, storage }) {
+  const location = useLocation();
   return (
     <>
       <Grid container className="mb-4">
@@ -32,6 +33,41 @@ function Detail({ formik, storage }) {
           />
         </Grid>
       </Grid>
+      <Grid container className="mb-4">
+        <Grid item md={3} className="align-items-center d-flex flex-row">
+          <Typography>Tên tài khoản</Typography>
+        </Grid>
+        <Grid item md={9}>
+          <TextField
+            fullWidth
+            label="Tên tài khoản"
+            error={
+              formik.touched.username && formik.errors.username ? true : false
+            }
+            helperText={formik.touched.username && formik.errors.username}
+            {...formik.getFieldProps("username")}
+          />
+        </Grid>
+      </Grid>
+      {location?.state?.create && (
+        <Grid container className="mb-4">
+          <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Typography>Mật khẩu</Typography>
+          </Grid>
+          <Grid item md={9}>
+            <TextField
+              fullWidth
+              label="Mật khẩu"
+              type="password"
+              error={
+                formik.touched.password && formik.errors.password ? true : false
+              }
+              helperText={formik.touched.password && formik.errors.password}
+              {...formik.getFieldProps("password")}
+            />
+          </Grid>
+        </Grid>
+      )}
       <Grid container className="mb-4">
         <Grid item md={3} className="align-items-center d-flex flex-row">
           <Typography>Địa chỉ email</Typography>

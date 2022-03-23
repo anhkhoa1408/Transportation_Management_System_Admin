@@ -18,11 +18,15 @@ import { handleUserRole } from "../../../utils/role";
 import Detail from "./Detail/Detail";
 import storageApi from "../../../api/storageApi";
 import { errorNotify, successNotify } from "../../../utils/notification";
+import { useHistory } from "react-router-dom";
+import ConfirmAlert from "../../../components/Alert/ConfirmAlert";
 
 const StaffInfo = (props) => {
   const location = useLocation();
+  const history = useHistory();
   const [avatar, setAvatar] = useState(null);
   const [storage, setStorage] = useState([]);
+  const [roles, setRoles] = useState([]);
   const [data, setData] = useState({
     name: "",
     email: "",
@@ -31,7 +35,10 @@ const StaffInfo = (props) => {
     storage: {
       id: "",
     },
+    username: "",
+    password: "",
   });
+  const [alert, setAlert] = useState(null);
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -41,21 +48,32 @@ const StaffInfo = (props) => {
     },
     validationSchema: Bonk.object({
       name: Bonk.string().required("Thông số bắt buộc"),
+      username: Bonk.string().required("Thông số bắt buộc"),
       phone: Bonk.string().required("Thông số bắt buộc"),
       email: Bonk.string().required("Thông số bắt buộc"),
       type: Bonk.string().required("Thông số bắt buộc"),
+      storage: Bonk.string().required("Thông số bắt buộc"),
     }),
     onSubmit: (values) => {
       if (location?.state?.create) {
-        // handleCreate(values)
+        handleCreate(values);
       } else {
         handleUpdate(values);
       }
     },
   });
+
   const handleUpdate = (values) => {
+    let userRole = roles.find((item) => item.name === values.type);
     userApi
-      .update(location.state.id)
+      .update(location.state.id, {
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+        type: values.type,
+        role: userRole,
+        storage: values.storage,
+      })
       .then((response) => {
         setData(response);
         successNotify("Cập nhật thành công");
@@ -76,7 +94,62 @@ const StaffInfo = (props) => {
     }
   };
 
-  const handleCreate = (values) => {};
+  const handleCreate = (values) => {
+    let userRole = roles.find((item) => item.name === values.type);
+    let userData = {
+      name: values.name,
+      username: values.username,
+      email: values.email,
+      phone: values.phone,
+      type: values.type,
+      password: values.password,
+      storage: values.storage,
+      role: userRole,
+    };
+    userApi
+      .create(userData)
+      .then((response) => {
+        successNotify("Thêm nhân viên thành công");
+        if (avatar && avatar.path) {
+          return userApi.updateAvatar(avatar, response.id, "");
+        }
+      })
+      .then((response) => {
+        successNotify("Cập nhật ảnh đại diện thành công");
+        history.push("/staff");
+      })
+      .catch((error) => {
+        errorNotify("Thêm nhân viên thất bại");
+        errorNotify("Cập nhật ảnh đại diện thất bại");
+      });
+  };
+
+  const handleDelete = () => {
+    if (location?.state?.id) {
+      setAlert(null);
+      userApi
+        .delete(location.state.id)
+        .then((response) => {
+          history.push("/staff");
+          successNotify("Xóa người dùng thành công");
+        })
+        .catch((error) => {
+          errorNotify("Xóa người dùng thất bại");
+        });
+    }
+  };
+
+  const handleConfirm = () => {
+    setAlert(
+      <ConfirmAlert
+        onClose={() => setAlert(null)}
+        onConfirm={handleDelete}
+        confirmBtnText={"Chấp nhận"}
+        cancelBtnText={"Hủy bỏ"}
+        title="Bạn có thật sự muốn xóa người dùng này không ?"
+      />,
+    );
+  };
 
   useEffect(() => {
     if (location?.state?.id) {
@@ -87,13 +160,15 @@ const StaffInfo = (props) => {
         }
       });
     }
-    storageApi.getList().then((response) => {
-      setStorage(response);
+    Promise.all([storageApi.getList(), userApi.getRoles()]).then((response) => {
+      setStorage(response[0]);
+      setRoles(response[1].roles);
     });
   }, []);
 
   return (
     <Box className="p-4">
+      {alert}
       <Grid item md={12} className="p-4 d-flex flex-column">
         <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center shadow-sm">
           <Box className="d-flex flex-row align-items-center px-5 py-2">
@@ -109,7 +184,12 @@ const StaffInfo = (props) => {
                 {handleUserRole(data.type)}
               </Typography>
             </Box>
-            <Button variant="outlined" color="error" className="me-3">
+            <Button
+              variant="outlined"
+              color="error"
+              className="me-3"
+              onClick={handleConfirm}
+            >
               Xoá người dùng
             </Button>
             <Button
