@@ -1,0 +1,11 @@
+.badge-position {
+  position: absolute;
+  bottom: 0;
+  right: -10px;
+}
+
+.badge-style {
+  padding: 5px;
+  border: 0;
+  z-index: 999;
+}
