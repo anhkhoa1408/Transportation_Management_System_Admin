@@ -17,6 +17,10 @@ class VehicleApi {
     const url = process.env.MAIN_URL.concat(`/cars/${id}`);
     return axiosClient.put(url, data);
   };
+  create = (data) => {
+    const url = process.env.MAIN_URL.concat(`/cars`);
+    return axiosClient.post(url, data);
+  };
   getBroken = (data) => {
     const url = process.env.MAIN_URL.concat(`/car-brokens`);
     return axiosClient.get(url, data);

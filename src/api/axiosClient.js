@@ -4,32 +4,30 @@ import getToken from "./token";
 
 const axiosClient = axios.create({
   baseURL: process.env.MAIN_URL,
-  headers: {
-    "content-type": "application/json",
-  },
   paramsSerializer: (params) => {
     return queryString.stringify(params);
   },
 });
 
-axiosClient.interceptors.request.use(async (config) => {
+axiosClient.interceptors.request.use(async config => {
   let token = await getToken();
-  if (token !== "")
+  if (token !== '')
     config.headers = {
-      Authorization: "Bearer " + token,
+      ...config.headers,
+      Authorization: 'Bearer ' + token,
+      Accept: '*/*',
     };
   return config;
 });
 
 axiosClient.interceptors.response.use(
-  (response) => {
+  response => {
     if (response && response.data) {
       return response.data;
     }
     return response;
   },
-  (error) => {
-    // Handle errors
+  error => {
     throw error;
   },
 );
