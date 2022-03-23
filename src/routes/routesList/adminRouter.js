@@ -113,6 +113,10 @@ const adminRouter = [
     component: VehicleDetail,
   },
   {
+    link: "/vehicle/create",
+    component: VehicleDetail,
+  },
+  {
     link: "/storage",
     component: StorageList,
   },

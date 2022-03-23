@@ -46,7 +46,7 @@ const Drawer = styled(MuiDrawer, {
 const routerList = [
   {
     link: "/customer",
-    title: "Người dùng",
+    title: "Khách hàng",
     icon: <AccountCircle />,
   },
   { link: "/staff", title: "Nhân viên", icon: <People /> },
