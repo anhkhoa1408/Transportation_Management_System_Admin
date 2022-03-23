@@ -1,16 +1,21 @@
 import {
   Box,
+  FormControl,
+  FormHelperText,
   Grid,
   InputAdornment,
+  InputLabel,
   MenuItem,
   Paper,
   Select,
   TextField,
   Typography,
 } from "@mui/material";
-import React, {memo} from "react";
+import React, { memo } from "react";
+import { useLocation } from "react-router-dom";
 
 function Detail({ formik, drivers }) {
+  const location = useLocation();
   return (
     <>
       <Grid item md={12} className="px-4 d-flex flex-column">
@@ -24,7 +29,7 @@ function Detail({ formik, drivers }) {
                 <TextField
                   fullWidth
                   label="Biển số"
-                  disabled
+                  disabled={location?.state?.id}
                   {...formik.getFieldProps("licence")}
                 />
               </Grid>
@@ -56,15 +61,18 @@ function Detail({ formik, drivers }) {
                 <Typography>Loại xe</Typography>
               </Grid>
               <Grid item md={9}>
-                <Select
-                  fullWidth
-                  label="Loại xe"
-                  value={formik.values.type}
-                  {...formik.getFieldProps("type")}
-                >
-                  <MenuItem value="Container">Xe container</MenuItem>
-                  <MenuItem value="Truck">Xe tải</MenuItem>
-                </Select>
+                <FormControl className="w-100">
+                  <InputLabel>Loại xe</InputLabel>
+                  <Select
+                    fullWidth
+                    label="Loại xe"
+                    value={formik.values.type}
+                    {...formik.getFieldProps("type")}
+                  >
+                    <MenuItem value="Container">Xe container</MenuItem>
+                    <MenuItem value="Truck">Xe tải</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
             <Grid container className="mb-4">
@@ -72,18 +80,32 @@ function Detail({ formik, drivers }) {
                 <Typography>Người quản lý</Typography>
               </Grid>
               <Grid item md={9}>
-                <Select
-                  fullWidth
-                  label="Người quản lý"
-                  {...formik.getFieldProps("manager")}
-                  value={formik.values.manager}
-                  onChange={(e) => {
-                    formik.setFieldValue("manager", e.target.value)}}
-                >
-                  {
-                    drivers?.staffs?.map((item) => (<MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>))
+                <FormControl
+                  error={
+                    formik.touched.manager && formik.errors.manager
+                      ? true
+                      : false
                   }
-                </Select>
+                  className="w-100"
+                >
+                  <InputLabel>Người quản lý</InputLabel>
+                  <Select
+                    fullWidth
+                    label="Người quản lý"
+                    {...formik.getFieldProps("manager")}
+                    value={formik.values.manager}
+                    onChange={(e) => {
+                      formik.setFieldValue("manager", e.target.value);
+                    }}
+                  >
+                    {drivers?.staffs?.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>{formik.errors.manager}</FormHelperText>
+                </FormControl>
               </Grid>
             </Grid>
           </Box>
@@ -94,8 +116,12 @@ function Detail({ formik, drivers }) {
         <Paper className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none">
           <Box className="px-4 py-2">
             <Box className="my-4">
-              <Typography className="fs-5 fw-bold">Kích thước thùng hàng</Typography>
-              <Typography variant="subtitle2 opacity-50">Điều chỉnh kích thước xe chở hàng</Typography>
+              <Typography className="fs-5 fw-bold">
+                Kích thước thùng hàng
+              </Typography>
+              <Typography variant="subtitle2 opacity-50">
+                Điều chỉnh kích thước xe chở hàng
+              </Typography>
             </Box>
             <Grid container className="mb-4">
               <Grid item md={3} className="align-items-center d-flex flex-row">

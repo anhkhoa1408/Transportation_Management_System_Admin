@@ -1,31 +1,26 @@
 import {
   Box,
   Button,
-  Grid,
-  InputAdornment,
-  Paper,
-  TextField,
-  Typography,
+  Grid, Paper, Typography
 } from "@mui/material";
+import { useFormik } from "formik";
+import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import ReactTable from "react-table-v6";
+import * as Bonk from "yup";
+import userApi from "../../../api/userApi";
 import vehicleApi from "../../../api/vehicleApi";
+import { CustomPagination } from "../../../components/CustomPagination";
+import LoadingTable from "../../../components/LoadingTable";
 import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../utils/useScroll";
 import Detail from "./Detail/Detail";
-import * as Bonk from "yup";
-import { useFormik } from "formik";
-import userApi from "../../../api/userApi";
-import { useHistory } from "react-router-dom";
-import ReactTable from "react-table-v6";
-import { CustomPagination } from "../../../components/CustomPagination";
-import LoadingTable from "../../../components/LoadingTable";
-import { useQueryTable } from "./../../../utils/queryUtils.js";
-import moment from "moment";
 
 const VehicleDetail = (props) => {
   const location = useLocation();
+  const history = useHistory();
   const [drivers, setDrivers] = useState([]);
   const [brokens, setBrokens] = useState([]);
   const [data, setData] = useState({
@@ -61,17 +56,23 @@ const VehicleDetail = (props) => {
       width: Bonk.number().min(1, "Lớn hơn 0").required("Thông số bắt buộc"),
       height: Bonk.number().min(1, "Lớn hơn 0").required("Thông số bắt buộc"),
       load: Bonk.number().min(1, "Lớn hơn 0").required("Thông số bắt buộc"),
+      manager: Bonk.string().required("Thông tin bắt buộc"),
     }),
     onSubmit: (values) => {
-      handleSubmit(values);
+      if (location?.state?.id) {
+        handleUpdate(values);
+      } else if (location?.state?.create) {
+        handleCreate(values);
+      }
     },
   });
 
-  const handleSubmit = (values) => {
+  const handleUpdate = (values) => {
     vehicleApi
       .update(location.state.id, {
         type: values.type,
         manager: values.manager,
+        load: values.load,
         size: {
           ...values.size,
           len: values.len,
@@ -91,6 +92,41 @@ const VehicleDetail = (props) => {
       .catch((error) => {
         errorNotify("Cập nhật thất bại");
       });
+  };
+
+  const handleCreate = (values) => {
+    vehicleApi
+      .create({
+        licence: values.licence,
+        type: values.type,
+        manager: values.manager,
+        load: values.load,
+        size: {
+          ...values.size,
+          len: values.len,
+          width: values.width,
+          height: values.height,
+        },
+      })
+      .then((response) => {
+        successNotify("Cập nhật thành công");
+        history.pushState("/vehicle");
+      })
+      .catch((error) => {
+        errorNotify("Cập nhật thất bại");
+      });
+  };
+
+  const handleBrokens = (data) => {
+    let newData = data.map((item, index) => {
+      return {
+        ...item,
+        stt: index + 1,
+        time: moment(item.time).format("DD/MM/YYYY HH:mm"),
+      };
+    });
+
+    setBrokens(newData);
   };
 
   const columns = useMemo(
@@ -116,36 +152,36 @@ const VehicleDetail = (props) => {
     [],
   );
 
-  const handleBrokens = (data) => {
-    let newData = data.map((item, index) => {
-      return {
-        ...item,
-        stt: index + 1,
-        time: moment(item.time).format("DD/MM/YYYY HH:mm")
-      }
-    })
-
-    setBrokens(newData)
-  }
-
   useEffect(() => {
     if (location?.state?.id) {
       Promise.all([
         vehicleApi.getDetail(location.state.id),
         userApi.getStaffs({ type: "Driver" }),
-        vehicleApi.getBroken({car: location.state.id})
+        vehicleApi.getBroken({ car: location.state.id }),
       ])
-
         .then((response) => {
           setData(response[0]);
           setDrivers(response[1]);
-          handleBrokens(response[2])
+          handleBrokens(response[2]);
+        })
+        .catch((error) => {
+          errorNotify("Có lỗi xảy ra");
+        });
+    } else if (location?.state?.create) {
+      userApi
+        .getStaffs({ type: "Driver" })
+        .then((response) => {
+          let data = response.staffs.filter((item) => !item?.car);
+          setDrivers({
+            ...response,
+            staffs: data,
+          });
         })
         .catch((error) => {
           errorNotify("Có lỗi xảy ra");
         });
     }
-  }, [location.state.id]);
+  }, []);
 
   useScroll("detail-header");
 
@@ -182,44 +218,41 @@ const VehicleDetail = (props) => {
       </Grid>
       <Detail formik={formik} drivers={drivers} />
 
-      <Grid item className="px-4">
-        <Grid className="mt-3 p-5" item md={12} xs={12}>
-          <Paper
-            className="p-4 shadow-sm"
-            sx={{
-              borderTopRightRadius: 0,
-              borderTopLeftRadius: 0,
-            }}
-          >
-            <Typography className="fs-5 fw-bold mb-4">
-            Trạng thái xe
-          </Typography>
-            <ReactTable
-              noDataText="Không có dữ liệu"
-              data={brokens}
-              columns={columns}
-              previousText={"<"}
-              nextText={">"}
-              rowsText={"hàng"}
-              ofText="/"
-              LoadingComponent={LoadingTable}
-              defaultPageSize={5}
-              showPaginationBottom={true}
-              sortable={false}
-              resizable={false}
-              PaginationComponent={CustomPagination}
-              // pages={1}
-              className="-striped -highlight"
-            />
-          </Paper>
+      {!location?.state?.create && (
+        <Grid item className="px-4">
+          <Grid className="mt-3 p-5" item md={12} xs={12}>
+            <Paper
+              className="p-4 shadow-sm"
+              sx={{
+                borderTopRightRadius: 0,
+                borderTopLeftRadius: 0,
+              }}
+            >
+              <Typography className="fs-5 fw-bold mb-4">
+                Trạng thái xe
+              </Typography>
+              <ReactTable
+                noDataText="Không có dữ liệu"
+                data={brokens}
+                columns={columns}
+                previousText={"<"}
+                nextText={">"}
+                rowsText={"hàng"}
+                ofText="/"
+                LoadingComponent={LoadingTable}
+                defaultPageSize={5}
+                showPaginationBottom={true}
+                sortable={false}
+                resizable={false}
+                PaginationComponent={CustomPagination}
+                className="-striped -highlight"
+              />
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
     </Grid>
   );
 };
 
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(VehicleDetail);
+export default VehicleDetail;

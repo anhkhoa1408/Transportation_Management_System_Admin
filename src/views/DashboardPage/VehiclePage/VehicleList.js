@@ -118,7 +118,9 @@ export const VehicleList = (props) => {
               Danh sách phương tiện
             </Typography>
             <Box>
-              <Button variant="outlined" className="me-2" endIcon={<Add />}>
+              <Button variant="outlined" className="me-2" endIcon={<Add />} onClick={() => history.push("/vehicle/create", {
+                create: true
+              })}>
                 Thêm
               </Button>
               <Button variant="outlined" endIcon={<FilterList />}>
