@@ -1,24 +1,46 @@
-import { Add, FilterList, Info } from "@mui/icons-material";
+import { Info } from "@mui/icons-material";
 import { Box, Button, Grid, Paper, Typography } from "@mui/material";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ReactTable from "react-table-v6";
 import { CustomPagination } from "../../../components/CustomPagination";
-import { useQueryTable } from "./../../../utils/queryUtils.js";
-import Loading from "./../../../components/Loading";
-import moment from "moment";
+import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
-import userApi from './../../../api/userApi'
+import { customerType } from "../../../utils/filterParams";
 import { handleUserRole } from "../../../utils/role";
+import userApi from "./../../../api/userApi";
+import { useQueryTable } from "./../../../utils/queryUtils.js";
 
 export const CustomerList = (props) => {
+  const history = useHistory();
+
   const [data, setData] = useState([]);
   const [_start, setStart] = useState(0);
   const [totalPage, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
 
-  const history = useHistory();
+  // Filter section
+  const filterParam = [
+    {
+      value: "name",
+      name: "Tên",
+      type: "input",
+    },
+    {
+      value: "phone",
+      name: "Số điện thoại",
+      type: "input",
+    },
+    {
+      value: "type",
+      name: "Loại thành viên",
+      type: "select",
+      params: customerType,
+    },
+  ];
+  const [filterName, setFilterName] = useState(filterParam[0].value);
+  const [filterValue, setFilterValue] = useState("");
 
   const columns = useMemo(
     () => [
@@ -68,7 +90,11 @@ export const CustomerList = (props) => {
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/customer/info")}
+            onClick={() =>
+              history.push("/customer/info", {
+                id: prop.id,
+              })
+            }
           >
             Chi tiết
           </Button>
@@ -76,20 +102,31 @@ export const CustomerList = (props) => {
       };
     });
     setData(data_table);
-    setTotal(data.totalPage)
+    setTotal(data.totalPage);
   };
 
-  const CustomerQuery = useQueryTable("customer-list", userApi.getCustomers, handleData, {
-    _start,
-    _limit,
-  });
+  const CustomerQuery = useQueryTable(
+    "customer-list",
+    userApi.getCustomers,
+    handleData,
+    filterName && filterValue
+      ? {
+          _start,
+          _limit,
+          [filterName]: filterValue,
+        }
+      : {
+          _start,
+          _limit,
+        },
+  );
 
   return (
     <Box className="p-4">
       <Grid container className="p-4" direction="column">
         <Grid item md={12}>
           <Paper
-            className="d-flex flex-row align-items-center p-4 rounded-top"
+            className="d-flex flex-row align-items-center p-4 rounded-top shadow-sm"
             sx={{
               bgcolor: "#F8F9FC",
               borderBottomRightRadius: 0,
@@ -103,18 +140,22 @@ export const CustomerList = (props) => {
               Danh sách khách hàng
             </Typography>
             <Box>
-              <Button variant="outlined" className="me-2" endIcon={<Add />}>
+              {/* <Button variant="outlined" className="me-2" endIcon={<Add />}>
                 Thêm
-              </Button>
-              <Button variant="outlined" endIcon={<FilterList />}>
-                Lọc
-              </Button>
+              </Button> */}
+              <Filter
+                name={filterName}
+                value={filterValue}
+                listParam={filterParam}
+                onChangeName={setFilterName}
+                onChangeValue={setFilterValue}
+              />
             </Box>
           </Paper>
         </Grid>
         <Grid item md={12} xs={12}>
           <Paper
-            className="p-4"
+            className="p-4 shadow-sm"
             sx={{
               borderTopRightRadius: 0,
               borderTopLeftRadius: 0,
@@ -147,7 +188,7 @@ export const CustomerList = (props) => {
                   onClick: (e, handleOriginal) => {
                     if (column.id !== "options") {
                       history.push("/customer/info", {
-                        id: rowInfo.row.id,
+                        id: rowInfo.row._original.id,
                       });
                     }
                   },
