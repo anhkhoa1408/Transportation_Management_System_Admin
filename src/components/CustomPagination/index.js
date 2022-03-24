@@ -24,7 +24,7 @@ export const CustomPagination = (props) => {
     <Grid container className="mt-4">
       <Grid item md={3} className="d-flex flex-row align-items-center">
         <UncontrolledDropdown direction="up">
-          <Paper className="d-flex flex-row align-items-center p-2">
+          <Paper className="d-flex flex-row align-items-center p-2 shadow-sm">
             <DropdownToggle className="bg-white d-flex flex-row align-items-center d-25 border-white p-0 shadow-none">
               <Typography className="me-1 text-dark">
                 Hiển thị:

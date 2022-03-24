@@ -44,6 +44,14 @@ class UserApi {
     const url = process.env.MAIN_URL.concat(`/users-permissions/roles`);
     return axiosClient.get(url);
   };
+  getFurloughs = (params) => {
+    const url = process.env.MAIN_URL.concat(`/furloughs`);
+    return axiosClient.get(url, { params });
+  };
+  updateFurlough = (data) => {
+    const url = process.env.MAIN_URL.concat(`/furloughs/${data.id}`);
+    return axiosClient.put(url, data.body);
+  };
 }
 
 const userApi = new UserApi();
