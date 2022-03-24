@@ -11,7 +11,7 @@ const customerType = [
     value: "Diamond",
     label: "VIP",
   },
-]
+];
 
 const staffType = [
   {
@@ -26,7 +26,7 @@ const staffType = [
     value: "Assistance",
     label: "Người hỗ trợ",
   },
-]
+];
 
 const orderState = [
   {
@@ -53,12 +53,40 @@ const orderState = [
     value: "5",
     label: "Đã huỷ",
   },
-  
+];
+
+const vehicle = [
+  {
+    value: "Container",
+    label: "Xe Container",
+  },
+  {
+    value: "Truck",
+    label: "Xe tải",
+  },
+];
+
+const ratingPoint = [
+  {
+    value: "1",
+    label: "1 sao",
+  },
+  {
+    value: "2",
+    label: "2 sao",
+  },
+  {
+    value: "3",
+    label: "3 sao",
+  },
+  {
+    value: "4",
+    label: "4 sao",
+  },
+  {
+    value: "5",
+    label: "5 sao",
+  },
 ]
 
-
-export {
-  customerType,
-  staffType,
-  orderState
-}
+export { customerType, staffType, orderState, vehicle, ratingPoint };
