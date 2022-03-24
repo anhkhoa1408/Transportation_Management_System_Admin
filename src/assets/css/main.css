@@ -29,6 +29,10 @@ body {
   background-color: var(--app-primary) !important;
 }
 
+.dropdown-item {
+  padding: 12px !important;
+}
+
 .dropdown-item:active {
   background-color: var(--app-primary);
 }
@@ -36,6 +40,10 @@ body {
 .dropdown-menu {
   min-width: inherit;
   max-height: inherit;
+  box-shadow: 0 0px 10px 0 rgba(0,0,0,0.1);
+  border: none;
+  right: 12px !important;
+  z-index: 10;
 }
 
 /* width */
