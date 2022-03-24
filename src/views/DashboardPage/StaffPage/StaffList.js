@@ -1,30 +1,46 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
+import { Add, FilterList, Info } from "@mui/icons-material";
 import {
   Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
+  Button, Grid, Paper,
+  Typography
 } from "@mui/material";
-import ReactTable from "react-table-v6";
-import { Add, FilterList, Info } from "@mui/icons-material";
-import { CustomPagination } from "../../../components/CustomPagination";
+import React, { useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useQueryTable } from "./../../../utils/queryUtils.js";
-import Loading from "./../../../components/Loading";
-import moment from "moment";
+import ReactTable from "react-table-v6";
+import { CustomPagination } from "../../../components/CustomPagination";
+import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
-import userApi from "./../../../api/userApi";
+import { staffType } from "../../../utils/filterParams";
 import { handleUserRole } from "../../../utils/role";
+import userApi from "./../../../api/userApi";
+import { useQueryTable } from "./../../../utils/queryUtils.js";
 
 export const StaffList = (props) => {
   const [data, setData] = useState([]);
   const [_start, setStart] = useState(0);
   const [totalPage, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
+
+  const filterParam = [
+    {
+      value: "name",
+      name: "Tên",
+      type: "input",
+    },
+    {
+      value: "phone",
+      name: "Số điện thoại",
+      type: "input",
+    },
+    {
+      value: "type",
+      name: "Chức vụ",
+      type: "select",
+      params: staffType,
+    },
+  ];
+  const [filterName, setFilterName] = useState(filterParam[0].value);
+  const [filterValue, setFilterValue] = useState("");
 
   const history = useHistory();
 
@@ -96,10 +112,16 @@ export const StaffList = (props) => {
     "staff-list",
     userApi.getStaffs,
     handleData,
-    {
-      _start,
-      _limit,
-    },
+    filterName && filterValue
+      ? {
+          _start,
+          _limit,
+          [filterName]: filterValue,
+        }
+      : {
+          _start,
+          _limit,
+        },
   );
 
   return (
@@ -107,7 +129,7 @@ export const StaffList = (props) => {
       <Grid container className="p-4" direction="column">
         <Grid item md={12}>
           <Paper
-            className="d-flex flex-row align-items-center p-4 rounded-top"
+            className="d-flex flex-row align-items-center p-4 rounded-top shadow-sm"
             sx={{
               bgcolor: "#F8F9FC",
               borderBottomRightRadius: 0,
@@ -120,21 +142,25 @@ export const StaffList = (props) => {
             >
               Danh sách nhân viên
             </Typography>
-            <Box>
-              <Button variant="outlined" className="me-2" endIcon={<Add />} onClick={() => history.push("/staff/create", {
+            <Box className="d-flex flex-row">
+              <Filter
+                name={filterName}
+                value={filterValue}
+                listParam={filterParam}
+                onChangeName={setFilterName}
+                onChangeValue={setFilterValue}
+              />
+              <Button variant="outlined" className="ms-2" endIcon={<Add />} onClick={() => history.push("/staff/create", {
                 create: true
               })}>
                 Thêm
-              </Button>
-              <Button variant="outlined" endIcon={<FilterList />}>
-                Lọc
               </Button>
             </Box>
           </Paper>
         </Grid>
         <Grid item md={12} xs={12}>
           <Paper
-            className="p-4"
+            className="p-4 shadow-sm"
             sx={{
               borderTopRightRadius: 0,
               borderTopLeftRadius: 0,

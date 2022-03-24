@@ -20,10 +20,14 @@ import storageApi from "../../../api/storageApi";
 import { errorNotify, successNotify } from "../../../utils/notification";
 import { useHistory } from "react-router-dom";
 import ConfirmAlert from "../../../components/Alert/ConfirmAlert";
+import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
+import clsx from "clsx";
+import FurloughList from "./FurloughList";
 
 const StaffInfo = (props) => {
   const location = useLocation();
   const history = useHistory();
+
   const [avatar, setAvatar] = useState(null);
   const [storage, setStorage] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -39,6 +43,7 @@ const StaffInfo = (props) => {
     password: "",
   });
   const [alert, setAlert] = useState(null);
+  const [activeTab, setActive] = useState("1");
 
   const formik = useFormik({
     enableReinitialize: true,
@@ -115,12 +120,13 @@ const StaffInfo = (props) => {
         }
       })
       .then((response) => {
-        successNotify("Cập nhật ảnh đại diện thành công");
+        if (response) {
+          successNotify("Thêm ảnh đại diện thành công");
+        }
         history.push("/staff");
       })
       .catch((error) => {
         errorNotify("Thêm nhân viên thất bại");
-        errorNotify("Cập nhật ảnh đại diện thất bại");
       });
   };
 
@@ -167,10 +173,10 @@ const StaffInfo = (props) => {
   }, []);
 
   return (
-    <Box className="p-4">
+    <Grid container className="px-5">
       {alert}
-      <Grid item md={12} className="p-4 d-flex flex-column">
-        <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center shadow-sm">
+      <Grid item md={12} sm={12} className="p-4 d-flex flex-column">
+        <Paper className="d-flex flex-column p-2 rounded-top w-100 align-self-center shadow-sm">
           <Box className="d-flex flex-row align-items-center px-5 py-2">
             <AvatarUpload avatar={avatar} setAvatar={setAvatar} />
             <Box className="flex-grow-1">
@@ -201,15 +207,57 @@ const StaffInfo = (props) => {
             </Button>
           </Box>
           <Box className="px-5 py-2">
-            <Typography className="mt-3 mb-4 fs-5 fw-bold">
-              Thông tin chi tiết
-            </Typography>
-
-            <Detail formik={formik} storage={storage} />
+            <Nav tabs className="my-2 border-none">
+              <NavItem>
+                <NavLink
+                  className={clsx("cursor-pointer", {
+                    active: activeTab === "1",
+                  })}
+                  onClick={() => setActive("1")}
+                >
+                  Thông tin chi tiết
+                </NavLink>
+              </NavItem>
+              {location?.state?.id && (
+                <NavItem>
+                  <NavLink
+                    className={clsx("cursor-pointer", {
+                      active: activeTab === "2",
+                    })}
+                    onClick={() => setActive("2")}
+                  >
+                    Nghỉ phép
+                  </NavLink>
+                </NavItem>
+              )}
+            </Nav>
           </Box>
         </Paper>
       </Grid>
-    </Box>
+
+      <Grid item md={12} sm={12} className="px-4 py-2">
+        <Paper className="p-2 w-100 shadow-sm">
+          <Box className="px-5">
+            <TabContent activeTab={activeTab}>
+              <TabPane tabId="1">
+                <Typography className="fs-5 fw-bold py-3 mb-4 w-100 border-bottom">
+                  Thông tin người dùng
+                </Typography>
+                <Detail formik={formik} storage={storage} />
+              </TabPane>
+
+              <TabPane tabId="2">
+                <Typography className="fs-5 fw-bold py-3 mb-4 w-100 border-bottom">
+                  Số lần nghỉ phép
+                </Typography>
+                {/* <Detail formik={formik} storage={storage} /> */}
+                <FurloughList id={location?.state?.id} />
+              </TabPane>
+            </TabContent>
+          </Box>
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 

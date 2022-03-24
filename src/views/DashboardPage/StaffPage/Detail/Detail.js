@@ -1,19 +1,10 @@
 import {
-  Box,
-  Button,
-  Grid,
-  MenuItem,
-  Paper,
-  Select,
+  FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select,
   TextField,
-  Typography,
-  FormControl,
-  InputLabel,
-  FormHelperText,
+  Typography
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useLocation } from "react-router-dom";
-import { handleUserRole } from "../../../../utils/role";
 
 function Detail({ formik, storage }) {
   const location = useLocation();
