@@ -10,12 +10,25 @@ import Loading from "./../../../components/Loading";
 import moment from "moment";
 import LoadingTable from "../../../components/LoadingTable";
 import feedbackApi from "../../../api/feedbackApi";
+import { ratingPoint } from "../../../utils/filterParams";
+import Filter from "../../../components/FilterTable";
 
 export const FeedbackList = (props) => {
   const [data, setData] = useState([]);
   const [_start, setStart] = useState(0);
   const [totalPage, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
+
+  const filterParam = [
+    {
+      value: "rating_point",
+      name: "Đánh giá",
+      type: "select",
+      params: ratingPoint,
+    },
+  ];
+  const [filterName, setFilterName] = useState(filterParam[0].value);
+  const [filterValue, setFilterValue] = useState("");
 
   const history = useHistory();
 
@@ -59,39 +72,44 @@ export const FeedbackList = (props) => {
         createdAt: moment(prop.createdAt).format("DD/MM/YYYY"),
         customer: prop.customer.name,
         rating_note: prop.rating_note || "Chưa có bình luận",
-        rating_point:
-          !prop.rating_point ? (
-            "Chưa có xếp hạng"
-          ) : prop.rating_point === 5 ? (
-            <Box>
-              {Array.from({ length: 5 }, (_, idx) => (
-                <Star key={idx} color="warning"></Star>
-              ))}
-            </Box>
-          ) : (
-            <Box>
-              {Array.from({ length: prop.rating_point }, (_, idx) => (
-                <Star key={idx} color="warning"></Star>
-              ))}
-              {Array.from({ length: 5 - prop.rating_point }, (_, idx) => (
-                <Star key={idx} className="text-dark opacity-25"></Star>
-              ))}
-            </Box>
-          ),
+        rating_point: !prop.rating_point ? (
+          "Chưa có xếp hạng"
+        ) : prop.rating_point === 5 ? (
+          <Box>
+            {Array.from({ length: 5 }, (_, idx) => (
+              <Star key={idx} color="warning"></Star>
+            ))}
+          </Box>
+        ) : (
+          <Box>
+            {Array.from({ length: prop.rating_point }, (_, idx) => (
+              <Star key={idx} color="warning"></Star>
+            ))}
+            {Array.from({ length: 5 - prop.rating_point }, (_, idx) => (
+              <Star key={idx} className="text-dark opacity-25"></Star>
+            ))}
+          </Box>
+        ),
       };
     });
     setData(data_table);
-    setTotal(data.totalPage)
+    setTotal(data.totalPage);
   };
 
   const FeedbackQuery = useQueryTable(
     "feedback-list",
     feedbackApi.getList,
     handleData,
-    {
-      _start,
-      _limit,
-    },
+    filterName && filterValue
+      ? {
+          _start,
+          _limit,
+          [filterName]: filterValue,
+        }
+      : {
+          _start,
+          _limit,
+        },
   );
 
   return (
@@ -113,12 +131,13 @@ export const FeedbackList = (props) => {
               Danh sách đánh giá
             </Typography>
             <Box>
-              <Button variant="outlined" className="me-2" endIcon={<Add />}>
-                Thêm
-              </Button>
-              <Button variant="outlined" endIcon={<FilterList />}>
-                Lọc
-              </Button>
+              <Filter
+                name={filterName}
+                value={filterValue}
+                listParam={filterParam}
+                onChangeName={setFilterName}
+                onChangeValue={setFilterValue}
+              />
             </Box>
           </Paper>
         </Grid>
@@ -152,17 +171,17 @@ export const FeedbackList = (props) => {
                 setLimit(state.pageSize);
               }}
               className="-striped -highlight"
-              getTdProps={(state, rowInfo, column, instance) => {
-                return {
-                  onClick: (e, handleOriginal) => {
-                    if (column.id !== "options") {
-                      history.push("/order/detail", {
-                        id: rowInfo.row.id,
-                      });
-                    }
-                  },
-                };
-              }}
+              // getTdProps={(state, rowInfo, column, instance) => {
+              //   return {
+              //     onClick: (e, handleOriginal) => {
+              //       if (column.id !== "options") {
+              //         history.push("/order/detail", {
+              //           id: rowInfo.row.id,
+              //         });
+              //       }
+              //     },
+              //   };
+              // }}
             />
           </Paper>
         </Grid>

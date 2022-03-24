@@ -18,6 +18,7 @@ import LoadingTable from "../../../components/LoadingTable";
 import { useQueryTable } from "./../../../utils/queryUtils.js";
 import { joinAddress } from "./../../../utils/address";
 import storageApi from "./../../../api/storageApi";
+import Filter from "../../../components/FilterTable";
 
 export const StorageList = (props) => {
   const [data, setData] = useState([]);
@@ -27,6 +28,26 @@ export const StorageList = (props) => {
   const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
+
+  const filterParam = [
+    {
+      value: "name",
+      name: "Tên",
+      type: "input",
+    },
+    {
+      value: "size_gte",
+      name: "Diện tích lớn hơn",
+      type: "input",
+    },
+    {
+      value: "size_lte",
+      name: "Diện tích nhỏ hơn",
+      type: "input",
+    },
+  ];
+  const [filterName, setFilterName] = useState(filterParam[0].value);
+  const [filterValue, setFilterValue] = useState("");
 
   const columns = useMemo(
     () => [
@@ -80,9 +101,11 @@ export const StorageList = (props) => {
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/storage/info", {
-              id: prop.id
-            })}
+            onClick={() =>
+              history.push("/storage/info", {
+                id: prop.id,
+              })
+            }
           >
             Chi tiết
           </Button>
@@ -94,17 +117,23 @@ export const StorageList = (props) => {
 
   const handleTotal = (data) => {
     setTotalPage(Math.ceil(data / _limit));
-    setTotal(data)
+    setTotal(data);
   };
 
-  const VehicleQuery = useQueryTable(
-    "vehicle-list",
+  const StorageQuery = useQueryTable(
+    "storage-list",
     storageApi.getList,
     handleData,
-    {
-      _start,
-      _limit,
-    },
+    filterName && filterValue
+      ? {
+          _start,
+          _limit,
+          [filterName]: filterValue,
+        }
+      : {
+          _start,
+          _limit,
+        },
   );
 
   const SizeQuery = useQueryTable(
@@ -131,14 +160,25 @@ export const StorageList = (props) => {
             >
               Danh sách kho hàng
             </Typography>
-            <Box>
-              <Button variant="outlined" className="me-2" endIcon={<Add />} onClick={() => history.push("/storage/create", {
-                create: true
-              })}>
+            <Box className="d-flex flex-row">
+              <Filter
+                name={filterName}
+                value={filterValue}
+                listParam={filterParam}
+                onChangeName={setFilterName}
+                onChangeValue={setFilterValue}
+              />
+              <Button
+                variant="outlined"
+                className="ms-2"
+                endIcon={<Add />}
+                onClick={() =>
+                  history.push("/storage/create", {
+                    create: true,
+                  })
+                }
+              >
                 Thêm
-              </Button>
-              <Button variant="outlined" endIcon={<FilterList />}>
-                Lọc
               </Button>
             </Box>
           </Paper>
@@ -160,7 +200,7 @@ export const StorageList = (props) => {
               rowsText={"hàng"}
               ofText="/"
               manual
-              loading={VehicleQuery.isLoading || SizeQuery.isLoading}
+              loading={StorageQuery.isLoading || SizeQuery.isLoading}
               LoadingComponent={LoadingTable}
               defaultPageSize={_limit}
               showPaginationBottom={true}
@@ -171,7 +211,7 @@ export const StorageList = (props) => {
               onFetchData={async (state, instance) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
-                setTotalPage(Math.ceil(total / state.pageSize))
+                setTotalPage(Math.ceil(total / state.pageSize));
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {

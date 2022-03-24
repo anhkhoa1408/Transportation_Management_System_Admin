@@ -7,7 +7,9 @@ import { useHistory } from "react-router-dom";
 import ReactTable from "react-table-v6";
 import orderApi from "../../../api/orderApi";
 import { CustomPagination } from "../../../components/CustomPagination";
+import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
+import { orderState } from "../../../utils/filterParams";
 import { useQueryTable } from "./../../../utils/queryUtils.js";
 
 export const OrderList = (props) => {
@@ -18,6 +20,27 @@ export const OrderList = (props) => {
   const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
+
+  const filterParam = [
+    {
+      value: "sender_name",
+      name: "Tên khách hàng",
+      type: "input",
+    },
+    {
+      value: "sender_phone",
+      name: "Số điện thoại",
+      type: "input",
+    },
+    {
+      value: "state",
+      name: "Trạng thái đơn hàng",
+      type: "select",
+      params: orderState,
+    },
+  ];
+  const [filterName, setFilterName] = useState(filterParam[0].value);
+  const [filterValue, setFilterValue] = useState("");
 
   const handleState = (state) => {
     switch (state) {
@@ -126,10 +149,21 @@ export const OrderList = (props) => {
     setTotal(data);
   };
 
-  const OrderQuery = useQueryTable("order-list", orderApi.getList, handleData, {
-    _start,
-    _limit,
-  });
+  const OrderQuery = useQueryTable(
+    "order-list",
+    orderApi.getList,
+    handleData,
+    filterName && filterValue
+      ? {
+          _start,
+          _limit,
+          [filterName]: filterValue,
+        }
+      : {
+          _start,
+          _limit,
+        },
+  );
 
   const SizeQuery = useQueryTable(
     "order-count",
@@ -156,9 +190,13 @@ export const OrderList = (props) => {
               Danh sách đơn hàng
             </Typography>
             <Box>
-              <Button variant="outlined" endIcon={<FilterList />}>
-                Lọc
-              </Button>
+              <Filter
+                name={filterName}
+                value={filterValue}
+                listParam={filterParam}
+                onChangeName={setFilterName}
+                onChangeValue={setFilterValue}
+              />
             </Box>
           </Paper>
         </Grid>

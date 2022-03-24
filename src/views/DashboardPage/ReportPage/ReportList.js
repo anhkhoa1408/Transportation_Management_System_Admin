@@ -1,23 +1,19 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
+import { Info } from "@mui/icons-material";
 import {
   Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  Typography,
+  Button, Grid, Paper,
+  Typography
 } from "@mui/material";
-import ReactTable from "react-table-v6";
-import { Add, FilterList, Info } from "@mui/icons-material";
-import { CustomPagination } from "../../../components/CustomPagination";
-import { useHistory } from "react-router-dom";
-import { useQueryTable } from "./../../../utils/queryUtils.js";
-import Loading from "./../../../components/Loading";
 import moment from "moment";
+import React, { useMemo, useState } from "react";
+import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
+import ReactTable from "react-table-v6";
+import { CustomPagination } from "../../../components/CustomPagination";
+import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
-import reportApi from './../../../api/reportApi'
+import reportApi from "./../../../api/reportApi";
+import { useQueryTable } from "./../../../utils/queryUtils.js";
 
 export const ReportList = (props) => {
   const [data, setData] = useState([]);
@@ -26,6 +22,21 @@ export const ReportList = (props) => {
   const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
+
+  const filterParam = [
+    {
+      value: "storage.name",
+      name: "Thuộc kho",
+      type: "input",
+    },
+    {
+      value: "stocker.name",
+      name: "Người thực hiện",
+      type: "input",
+    },
+  ];
+  const [filterName, setFilterName] = useState(filterParam[0].value);
+  const [filterValue, setFilterValue] = useState("");
 
   const columns = useMemo(
     () => [
@@ -78,9 +89,11 @@ export const ReportList = (props) => {
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/report/detail", {
-              id: prop.id
-            })}
+            onClick={() =>
+              history.push("/report/detail", {
+                id: prop.id,
+              })
+            }
           >
             Chi tiết
           </Button>
@@ -94,10 +107,21 @@ export const ReportList = (props) => {
     setTotal(Math.ceil(data / _limit));
   };
 
-  const ReportQuery = useQueryTable("report-list", reportApi.getList, handleData, {
-    _start,
-    _limit,
-  });
+  const ReportQuery = useQueryTable(
+    "report-list",
+    reportApi.getList,
+    handleData,
+    filterName && filterValue
+      ? {
+          _start,
+          _limit,
+          [filterName]: filterValue,
+        }
+      : {
+          _start,
+          _limit,
+        },
+  );
 
   const SizeQuery = useQueryTable(
     "report-count",
@@ -124,9 +148,13 @@ export const ReportList = (props) => {
               Danh sách báo cáo
             </Typography>
             <Box>
-              <Button variant="outlined" endIcon={<FilterList />}>
-                Lọc
-              </Button>
+              <Filter
+                name={filterName}
+                value={filterValue}
+                listParam={filterParam}
+                onChangeName={setFilterName}
+                onChangeValue={setFilterValue}
+              />
             </Box>
           </Paper>
         </Grid>

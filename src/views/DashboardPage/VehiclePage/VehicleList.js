@@ -1,18 +1,15 @@
 import { Add, FilterList, Info } from "@mui/icons-material";
-import {
-  Box,
-  Button, Grid, Paper,
-  Typography
-} from "@mui/material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ReactTable from "react-table-v6";
 import vehicleApi from "../../../api/vehicleApi";
 import { CustomPagination } from "../../../components/CustomPagination";
+import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
+import { vehicle } from "../../../utils/filterParams";
 import { useQueryTable } from "./../../../utils/queryUtils.js";
-
 
 export const VehicleList = (props) => {
   const [data, setData] = useState([]);
@@ -22,6 +19,37 @@ export const VehicleList = (props) => {
   const [_limit, setLimit] = useState(10);
 
   const history = useHistory();
+
+  const filterParam = [
+    {
+      value: "licence",
+      name: "Biển số",
+      type: "input",
+    },
+    {
+      value: "manager.name",
+      name: "Người quản lý",
+      type: "input",
+    },
+    {
+      value: "load_gte",
+      name: "Tải trọng lớn hơn",
+      type: "input",
+    },
+    {
+      value: "load_lte",
+      name: "Tải trọng nhỏ hơn",
+      type: "input",
+    },
+    {
+      value: "type",
+      name: "Loại xe",
+      type: "select",
+      params: vehicle,
+    },
+  ];
+  const [filterName, setFilterName] = useState(filterParam[0].value);
+  const [filterValue, setFilterValue] = useState("");
 
   const columns = useMemo(
     () => [
@@ -72,9 +100,11 @@ export const VehicleList = (props) => {
             variant="contained"
             endIcon={<Info />}
             className="app-primary-bg-color"
-            onClick={() => history.push("/vehicle/detail", {
-              id: prop.id
-            })}
+            onClick={() =>
+              history.push("/vehicle/detail", {
+                id: prop.id,
+              })
+            }
           >
             Chi tiết
           </Button>
@@ -86,13 +116,24 @@ export const VehicleList = (props) => {
 
   const handleTotal = (data) => {
     setTotalPage(Math.ceil(data / _limit));
-    setTotal(data)
+    setTotal(data);
   };
 
-  const VehicleQuery = useQueryTable("vehicle-list", vehicleApi.getList, handleData, {
-    _start,
-    _limit,
-  });
+  const VehicleQuery = useQueryTable(
+    "vehicle-list",
+    vehicleApi.getList,
+    handleData,
+    filterName && filterValue
+      ? {
+          _start,
+          _limit,
+          [filterName]: filterValue,
+        }
+      : {
+          _start,
+          _limit,
+        },
+  );
 
   const SizeQuery = useQueryTable(
     "order-count",
@@ -117,14 +158,26 @@ export const VehicleList = (props) => {
             >
               Danh sách phương tiện
             </Typography>
-            <Box>
-              <Button variant="outlined" className="me-2" endIcon={<Add />} onClick={() => history.push("/vehicle/create", {
-                create: true
-              })}>
+
+            <Box className="d-flex flex-row">
+              <Filter
+                name={filterName}
+                value={filterValue}
+                listParam={filterParam}
+                onChangeName={setFilterName}
+                onChangeValue={setFilterValue}
+              />
+              <Button
+                variant="outlined"
+                className="ms-2"
+                endIcon={<Add />}
+                onClick={() =>
+                  history.push("/vehicle/create", {
+                    create: true,
+                  })
+                }
+              >
                 Thêm
-              </Button>
-              <Button variant="outlined" endIcon={<FilterList />}>
-                Lọc
               </Button>
             </Box>
           </Paper>
@@ -157,7 +210,7 @@ export const VehicleList = (props) => {
               onFetchData={async (state, instance) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
-                setTotalPage(Math.ceil(total / state.pageSize))
+                setTotalPage(Math.ceil(total / state.pageSize));
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {
