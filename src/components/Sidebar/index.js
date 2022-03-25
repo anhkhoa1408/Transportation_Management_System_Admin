@@ -108,6 +108,24 @@ const Sidebar = (props) => {
         </ListItem>
       </NavLink>
 
+      <NavLink className="nav-link" to="/shipment/arrange">
+        <ListItem
+          button
+          className="app-primary-color d-flex align-items-center justify-content-center"
+        >
+          {!toggle ? (
+            <>
+              <ListItemIcon className="m-0 w-0">
+                <Home />
+              </ListItemIcon>
+              <ListItemText primary="Sắp xếp chuyến xe" />
+            </>
+          ) : (
+            <Home />
+          )}
+        </ListItem>
+      </NavLink>
+
       <Box
         sx={{
           padding: theme.spacing(0, 4),
