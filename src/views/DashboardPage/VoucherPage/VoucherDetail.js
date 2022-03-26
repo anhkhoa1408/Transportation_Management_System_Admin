@@ -1,27 +1,18 @@
-import { Download } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Grid,
-  InputAdornment,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import { useLocation } from "react-router-dom";
-import reportApi from "../../../api/reportApi";
-import { errorNotify, successNotify } from "../../../utils/notification";
-import * as Bonk from "yup";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { useFormik } from "formik";
-import moment from "moment";
-import Detail from "./Detail/Detail";
-import useScroll from "../../../utils/useScroll";
+import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
+import * as Bonk from "yup";
 import voucherApi from "../../../api/voucherApi";
+import ConfirmAlert from "../../../components/Alert/ConfirmAlert";
+import { errorNotify, successNotify } from "../../../utils/notification";
+import useScroll from "../../../utils/useScroll";
+import Detail from "./Detail/Detail";
 
 const VoucherDetail = (props) => {
   const location = useLocation();
+  const history = useHistory();
+  const [alert, setAlert] = useState(null);
   const [data, setData] = useState({
     name: "",
     description: "",
@@ -33,7 +24,7 @@ const VoucherDetail = (props) => {
     voucher_img: {
       url: "",
     },
-    expired: new Date()
+    expired: new Date(),
   });
 
   const formik = useFormik({
@@ -52,8 +43,7 @@ const VoucherDetail = (props) => {
           } else {
             return value < 10000 ? false : true;
           }
-        })
-        ,
+        }),
       sale_max: Bonk.number()
         .min(1000, "Giá trị không hợp lệ")
         .required("Thông tin bắt buộc"),
@@ -62,7 +52,11 @@ const VoucherDetail = (props) => {
         .required("Thông tin bắt buộc"),
     }),
     onSubmit: (values) => {
-      handleSubmit(values);
+      if (location?.state?.id) {
+        handleSubmit(values);
+      } else if (location?.state?.create) {
+        handleCreate(values);
+      }
     },
   });
 
@@ -81,12 +75,71 @@ const VoucherDetail = (props) => {
       });
   };
 
+  const handleCreate = (values) => {
+    let {
+      name,
+      description,
+      sale,
+      sale_max,
+      sale_type,
+      minimum_order,
+      customer_type,
+      expired,
+    } = values;
+    // console.log(values);
+    // return;
+    voucherApi
+      .create({
+        name,
+        description,
+        sale,
+        sale_max,
+        sale_type,
+        minimum_order,
+        customer_type,
+        expired,
+      })
+      .then((response) => {
+        successNotify("Cập nhật thành công");
+        history.push("/voucher");
+      })
+      .catch((error) => {
+        errorNotify("Cập nhật thất bại");
+      });
+  };
+
+  const handleDelete = () => {
+    if (location?.state?.id) {
+      setAlert(null);
+      voucherApi
+        .delete(location.state.id)
+        .then((response) => {
+          history.push("/voucher");
+          successNotify("Xóa thành công");
+        })
+        .catch((error) => {
+          errorNotify("Xóa thất bại");
+        });
+    }
+  };
+
+  const handleConfirm = () => {
+    setAlert(
+      <ConfirmAlert
+        onClose={() => setAlert(null)}
+        onConfirm={handleDelete}
+        confirmBtnText={"Chấp nhận"}
+        cancelBtnText={"Hủy bỏ"}
+        title="Bạn có thật sự muốn xóa thông tin này không ?"
+      />,
+    );
+  };
+
   useEffect(() => {
     if (location?.state?.id) {
       voucherApi
         .getDetail(location.state.id)
         .then((response) => {
-          console.log(response)
           setData(response);
         })
         .catch((error) => {
@@ -99,6 +152,7 @@ const VoucherDetail = (props) => {
 
   return (
     <Grid container className="p-4">
+      {alert}
       <Grid
         item
         md={12}
@@ -116,6 +170,16 @@ const VoucherDetail = (props) => {
                 </Typography>
               </Grid>
               <Grid item md={4} className="d-flex flex-row justify-content-end">
+                {location?.state?.id && (
+                  <Button
+                    onClick={handleConfirm}
+                    variant="outlined"
+                    color="error"
+                    className="me-2"
+                  >
+                    Xóa
+                  </Button>
+                )}
                 <Button
                   variant="outlined"
                   color="success"

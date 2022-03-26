@@ -153,10 +153,10 @@ function Detail({ formik }) {
             error={formik.errors.customer_type ? true : false}
             className="w-100"
           >
-            <InputLabel>Loại hình</InputLabel>
+            <InputLabel>Khách hàng</InputLabel>
             <Select
               fullWidth
-              label="Loại hình"
+              label="Khách hàng"
               {...formik.getFieldProps("customer_type")}
               value={formik.values.customer_type}
               onChange={(e) => {

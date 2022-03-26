@@ -1,4 +1,4 @@
-import { Info } from "@mui/icons-material";
+import { Add, Info } from "@mui/icons-material";
 import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import moment from "moment";
 import React, { useMemo, useState } from "react";
@@ -11,6 +11,7 @@ import LoadingTable from "../../../components/LoadingTable";
 import { useQueryTable } from "./../../../utils/queryUtils.js";
 import voucher_alt from "./../../../assets/img/voucher_alt.jpg";
 import { handleUserRole } from "../../../utils/role";
+import { customerType, saleType } from "../../../utils/filterParams";
 
 export const VoucherList = (props) => {
   const [data, setData] = useState([]);
@@ -22,13 +23,31 @@ export const VoucherList = (props) => {
 
   const filterParam = [
     {
-      value: "storage.name",
-      name: "Thuộc kho",
+      value: "name",
+      name: "Tên voucher",
       type: "input",
     },
     {
-      value: "stocker.name",
-      name: "Người thực hiện",
+      value: "sale_type",
+      name: "Loại hình giảm giá",
+      type: "select",
+      params: saleType,
+    },
+    {
+      value: "customer_type",
+      name: "Khách hàng áp dụng",
+      type: "select",
+      params: [
+        {
+          value: "All",
+          label: "Tất cả",
+        },
+        ...customerType,
+      ],
+    },
+    {
+      value: "sale_max_lte",
+      name: "Giảm tối đa",
       type: "input",
     },
   ];
@@ -49,8 +68,8 @@ export const VoucherList = (props) => {
         filterable: false,
       },
       {
-        Header: "Mô tả",
-        accessor: "description",
+        Header: "Ngày hết hạn",
+        accessor: "expired",
         filterable: false,
       },
       {
@@ -77,8 +96,8 @@ export const VoucherList = (props) => {
       return {
         ...prop,
         stt: _start * _limit + index + 1,
-        description: prop.description || "Chưa có mô tả",
         customer_type: handleUserRole(prop.customer_type),
+        expired: moment(prop.expired).format("DD/MM/YYYY"),
         voucher_img: prop.voucher_img ? (
           <div className="img-cropper__rounded-sm-small shadow-sm">
             <img
@@ -89,11 +108,7 @@ export const VoucherList = (props) => {
           </div>
         ) : (
           <div className="img-cropper__rounded-sm-small shadow">
-            <img
-              alt=""
-              src={voucher_alt}
-              className="img-fit-container"
-            />
+            <img alt="" src={voucher_alt} className="img-fit-container" />
           </div>
         ),
         options: (
@@ -159,7 +174,7 @@ export const VoucherList = (props) => {
             >
               Danh sách mã giảm giá
             </Typography>
-            <Box>
+            <Box className="d-flex flex-row">
               <Filter
                 name={filterName}
                 value={filterValue}
@@ -167,6 +182,18 @@ export const VoucherList = (props) => {
                 onChangeName={setFilterName}
                 onChangeValue={setFilterValue}
               />
+              <Button
+                variant="outlined"
+                className="ms-2"
+                endIcon={<Add />}
+                onClick={() =>
+                  history.push("/voucher/create", {
+                    create: true,
+                  })
+                }
+              >
+                Thêm
+              </Button>
             </Box>
           </Paper>
         </Grid>
