@@ -39,7 +39,7 @@ export default function AvatarUpload({ avatar, setAvatar }) {
           </Button>
 
           {!isDragActive && !file && (
-            <div className="img-cropper">
+            <div className="d-100 img-cropper">
               <img
                 className="img-fit-container hover-sm"
                 src={
@@ -52,7 +52,7 @@ export default function AvatarUpload({ avatar, setAvatar }) {
           )}
 
           {file && (
-            <div key={file.name} className="img-cropper">
+            <div key={file.name} className="d-100 img-cropper">
               <img
                 className="img-fit-container hover-sm"
                 src={file.preview}

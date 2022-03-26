@@ -123,7 +123,7 @@ const StorageDetail = (props) => {
     <Box className="p-4">
       <Grid container className="p-4" direction="column">
         <Grid item md={12} className="d-flex flex-column">
-          <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center">
+          <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center shadow-sm">
             <Box className="px-5 py-2">
               <Grid container spacing={1} direction="column">
                 <Grid container className="mt-3 mb-4">
