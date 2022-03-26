@@ -25,6 +25,21 @@ class VoucherApi {
     const url = process.env.MAIN_URL.concat(`/vouchers/${id}`);
     return axiosClient.delete(url);
   };
+  updateImage = (id, image) => {
+    const url = process.env.MAIN_URL.concat(`/vouchers/image`);
+
+    let formData = new FormData();
+
+    formData.append(
+      "image",
+      new File([image], image.name, { type: image.type }),
+    );
+    formData.append("ref", "voucher");
+    formData.append("refId", id);
+    formData.append("field", "voucher_img");
+
+    return axiosClient.post(url, formData);
+  };
 }
 
 const voucherApi = new VoucherApi();

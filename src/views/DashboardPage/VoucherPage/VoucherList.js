@@ -99,7 +99,7 @@ export const VoucherList = (props) => {
         customer_type: handleUserRole(prop.customer_type),
         expired: moment(prop.expired).format("DD/MM/YYYY"),
         voucher_img: prop.voucher_img ? (
-          <div className="img-cropper__rounded-sm-small shadow-sm">
+          <div className="img-cropper__rounded-sm-small d-50 shadow-sm">
             <img
               alt=""
               src={process.env.MAIN_URL + prop.voucher_img.url}
@@ -107,7 +107,7 @@ export const VoucherList = (props) => {
             />
           </div>
         ) : (
-          <div className="img-cropper__rounded-sm-small shadow">
+          <div className="img-cropper__rounded-sm-small d-50 shadow">
             <img alt="" src={voucher_alt} className="img-fit-container" />
           </div>
         ),

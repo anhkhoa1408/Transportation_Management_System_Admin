@@ -5,6 +5,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import * as Bonk from "yup";
 import voucherApi from "../../../api/voucherApi";
 import ConfirmAlert from "../../../components/Alert/ConfirmAlert";
+import ImageUpload from "../../../components/Upload/ImageUpload";
 import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../utils/useScroll";
 import Detail from "./Detail/Detail";
@@ -13,6 +14,8 @@ const VoucherDetail = (props) => {
   const location = useLocation();
   const history = useHistory();
   const [alert, setAlert] = useState(null);
+  const [image, setImage] = useState(null);
+
   const [data, setData] = useState({
     name: "",
     description: "",
@@ -53,14 +56,28 @@ const VoucherDetail = (props) => {
     }),
     onSubmit: (values) => {
       if (location?.state?.id) {
-        handleSubmit(values);
+        handleUpdate(values);
       } else if (location?.state?.create) {
         handleCreate(values);
       }
     },
   });
 
-  const handleSubmit = (values) => {
+  const handleUpdate = (values) => {
+    if (image && image.path) {
+      voucherApi
+        .updateImage(location.state.id, image)
+        .then((response) => {
+          setImage(process.env.MAIN_URL + response.url);
+          successNotify("Cập nhật ảnh thành công");
+        })
+        .catch((error) => {
+          errorNotify("Cập nhật ảnh thất bại");
+        });
+    } else if (!image) {
+      errorNotify("Chưa thêm hình ảnh khuyến mãi");
+      return;
+    }
     voucherApi
       .update(location.state.id, values)
       .then((response) => {
@@ -76,6 +93,20 @@ const VoucherDetail = (props) => {
   };
 
   const handleCreate = (values) => {
+    if (image && image.path) {
+      voucherApi
+        .updateImage(location.state.id, image)
+        .then((response) => {
+          setImage(process.env.MAIN_URL + response.url);
+          successNotify("Cập nhật ảnh thành công");
+          history.push("/voucher");
+        })
+        .catch((error) => {
+          errorNotify("Cập nhật ảnh thất bại");
+        });
+    } else if (!image) {
+      errorNotify("Chưa thêm hình ảnh khuyến mãi");
+    }
     let {
       name,
       description,
@@ -86,8 +117,6 @@ const VoucherDetail = (props) => {
       customer_type,
       expired,
     } = values;
-    // console.log(values);
-    // return;
     voucherApi
       .create({
         name,
@@ -101,7 +130,6 @@ const VoucherDetail = (props) => {
       })
       .then((response) => {
         successNotify("Cập nhật thành công");
-        history.push("/voucher");
       })
       .catch((error) => {
         errorNotify("Cập nhật thất bại");
@@ -141,12 +169,16 @@ const VoucherDetail = (props) => {
         .getDetail(location.state.id)
         .then((response) => {
           setData(response);
+          console.log(response);
+          if (response.voucher_img) {
+            setImage(process.env.MAIN_URL + response.voucher_img.url);
+          }
         })
         .catch((error) => {
           errorNotify("Có lỗi xảy ra");
         });
     }
-  }, [location.state.id]);
+  }, []);
 
   useScroll("detail-header");
 
@@ -197,6 +229,12 @@ const VoucherDetail = (props) => {
         <Paper className="d-flex flex-column px-4 pt-1 rounded-top col-md-11 align-self-center shadow-none">
           <Box className="px-4">
             <Detail formik={formik} />
+          </Box>
+          <Box className="d-flex flex-column px-4 py-3">
+            <Typography>Hình ảnh mã giảm giá</Typography>
+            <Box className="align-self-start mt-3">
+              <ImageUpload image={image} setImage={setImage} />
+            </Box>
           </Box>
         </Paper>
       </Grid>
