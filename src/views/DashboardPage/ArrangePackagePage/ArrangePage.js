@@ -65,14 +65,14 @@ const Customer = (props) => {
     padding: "16px",
     margin: `0 0 8px 0`,
     background: 'white',
-    boxShadow: "0 0 8px 0 rgba(0,0,0,0.1)",
+    boxShadow: "0 0 6px 0 rgba(0,0,0,0.1)",
     ...draggableStyle,
   });
 
   const getListStyle = (isDraggingOver) => ({
     background: isDraggingOver ? "#b6f3fc" : "#F8F9FC",
     padding: "8px 5px 8px 8px",
-    width: "30%",
+    width: "32%",
     height: 500,
     overflowY: "scroll",
   });

@@ -15,7 +15,7 @@ function handleUserRole(role) {
     case "Diamond":
       return "Thành viên VIP"
     default:
-      return ""
+      return "Tất cả"
   }
 }
 

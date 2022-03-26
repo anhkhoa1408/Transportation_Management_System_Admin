@@ -150,11 +150,11 @@ const Customer = (props) => {
   }, []);
 
   return (
-    <Grid container className="px-5">
+    <Grid container className="px-5 py-4">
       {alert}
       <Grid item md={12} sm={12} className="p-4 d-flex flex-column">
-        <Paper className="d-flex flex-column p-2 rounded-top w-100 align-self-center shadow-sm">
-          <Box className="d-flex flex-row align-items-center px-5 py-2">
+        <Paper className="d-flex flex-column pt-2 px-4 rounded-top w-100 align-self-center shadow-sm">
+          <Box className="d-flex flex-row align-items-center px-4 py-2">
             <AvatarUpload avatar={avatar} setAvatar={setAvatar} />
             <Box className="flex-grow-1">
               <Typography variant="h5">
@@ -183,7 +183,7 @@ const Customer = (props) => {
               Lưu
             </Button>
           </Box>
-          <Box className="px-5 py-2">
+          <Box className="px-4 py-2">
             <Nav tabs className="my-2 border-none">
               <NavItem>
                 <NavLink

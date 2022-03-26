@@ -100,82 +100,80 @@ const OrderDetail = (props) => {
   useScroll("detail-header");
 
   return (
-    <>
-      <Box className="p-3">
-        <Grid
-          item
-          md={12}
-          className="pt-4 px-4 position-sticky d-flex flex-column header-sticky"
+    <Grid container className="p-4">
+      <Grid
+        item
+        md={12}
+        className="pt-4 px-4 position-sticky d-flex flex-column header-sticky"
+      >
+        <Paper
+          id="detail-header"
+          className="d-flex flex-column pt-2 px-4 col-md-11 align-self-center shadow-none"
         >
-          <Paper
-            id="detail-header"
-            className="d-flex flex-column pt-2 px-4 col-md-11 align-self-center shadow-none"
-          >
-            <Box className="px-4 py-2">
-              <Grid container direction="row" className="mb-1 bg-white">
-                <Grid item sm={3} md={4} className="">
-                  <Typography className="my-3 fs-5 fw-bold">
-                    Thông tin chi tiết
-                  </Typography>
-                </Grid>
-
-                <Grid
-                  item
-                  sm={9}
-                  md={8}
-                  className="d-flex flex-row align-items-center justify-content-end"
-                >
-                  <Button
-                    variant="outlined"
-                    color="success"
-                    className="me-2 py-1"
-                    onClick={formik.submitForm}
-                  >
-                    Lưu
-                  </Button>
-                  <UncontrolledDropdown direction="left">
-                    <DropdownToggle className="app-primary-bg-color py-1">
-                      TUỲ CHỌN
-                      <ArrowDropDown />
-                    </DropdownToggle>
-                    <DropdownMenu className="shadow p-0">
-                      <DropdownItem
-                        className="py-3 px-4"
-                        onClick={() =>
-                          history.push("/package", {
-                            packages: data.packages,
-                            order: data.id,
-                          })
-                        }
-                      >
-                        Xem kiện hàng
-                      </DropdownItem>
-                      <Divider className="app-primary-color" />
-
-                      <DropdownItem
-                        disabled={data.state === 5}
-                        className="py-3 px-4 text-danger"
-                        onClick={handleReject}
-                      >
-                        Hủy đơn hàng
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </UncontrolledDropdown>
-                </Grid>
+          <Box className="px-4 py-2">
+            <Grid container direction="row" className="mb-1 bg-white">
+              <Grid item sm={3} md={4} className="">
+                <Typography className="my-3 fs-5 fw-bold">
+                  Thông tin chi tiết
+                </Typography>
               </Grid>
-            </Box>
-          </Paper>
-        </Grid>
 
-        <Grid item md={12} className="px-4 d-flex flex-column">
-          <Paper className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none">
-            <Box className="px-4 py-2">
-              <Detail formik={formik} />
-            </Box>
-          </Paper>
-        </Grid>
-      </Box>
-    </>
+              <Grid
+                item
+                sm={9}
+                md={8}
+                className="d-flex flex-row align-items-center justify-content-end"
+              >
+                <Button
+                  variant="outlined"
+                  color="success"
+                  className="me-2 py-1"
+                  onClick={formik.submitForm}
+                >
+                  Lưu
+                </Button>
+                <UncontrolledDropdown direction="left">
+                  <DropdownToggle className="app-primary-bg-color py-1">
+                    TUỲ CHỌN
+                    <ArrowDropDown />
+                  </DropdownToggle>
+                  <DropdownMenu className="shadow p-0">
+                    <DropdownItem
+                      className="py-3 px-4"
+                      onClick={() =>
+                        history.push("/package", {
+                          packages: data.packages,
+                          order: data.id,
+                        })
+                      }
+                    >
+                      Xem kiện hàng
+                    </DropdownItem>
+                    <Divider className="app-primary-color" />
+
+                    <DropdownItem
+                      disabled={data.state === 5}
+                      className="py-3 px-4 text-danger"
+                      onClick={handleReject}
+                    >
+                      Hủy đơn hàng
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
+      </Grid>
+
+      <Grid item md={12} className="px-4 d-flex flex-column">
+        <Paper className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none">
+          <Box className="px-4 py-2">
+            <Detail formik={formik} />
+          </Box>
+        </Paper>
+      </Grid>
+    </Grid>
   );
 };
 

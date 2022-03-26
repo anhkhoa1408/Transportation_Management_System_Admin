@@ -173,7 +173,7 @@ const StaffInfo = (props) => {
   }, []);
 
   return (
-    <Grid container className="px-5">
+    <Grid container className="px-5 py-4">
       {alert}
       <Grid item md={12} sm={12} className="p-4 d-flex flex-column">
         <Paper className="d-flex flex-column p-2 rounded-top w-100 align-self-center shadow-sm">
