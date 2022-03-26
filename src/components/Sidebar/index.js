@@ -52,7 +52,7 @@ const routerList = [
   { link: "/staff", title: "Nhân viên", icon: <People /> },
   { link: "/order", title: "Đơn hàng", icon: <ListAlt /> },
   { link: "/vehicle", title: "Phương tiện", icon: <LocalShipping /> },
-  { link: "/asdsa", title: "Khuyến mãi", icon: <ConfirmationNumber /> },
+  { link: "/voucher", title: "Khuyến mãi", icon: <ConfirmationNumber /> },
   { link: "/storage", title: "Kho", icon: <Storage /> },
 ];
 

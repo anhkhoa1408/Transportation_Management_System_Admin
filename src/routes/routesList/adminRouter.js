@@ -63,6 +63,10 @@ const FeedbackList = lazy(() =>
   import("./../../views/DashboardPage/FeedbackPage/FeedbackList"),
 );
 
+const VoucherList = lazy(() => import("./../../views/DashboardPage/VoucherPage/VoucherList"))
+
+const VoucherDetail = lazy(() => import("./../../views/DashboardPage/VoucherPage/VoucherDetail"))
+
 const AccountPage = lazy(() =>
   import("./../../views/AuthPage/AccountPage/AccountPage"),
 );
@@ -146,6 +150,18 @@ const adminRouter = [
   {
     link: "/feedback",
     component: FeedbackList,
+  },
+  {
+    link: "/voucher",
+    component: VoucherList,
+  },
+  {
+    link: "/voucher/detail",
+    component: VoucherDetail,
+  },
+  {
+    link: "/voucher/create",
+    component: VoucherDetail,
   },
   {
     link: "/account/info",

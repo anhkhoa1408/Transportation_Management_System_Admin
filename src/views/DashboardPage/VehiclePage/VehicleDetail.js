@@ -17,12 +17,16 @@ import LoadingTable from "../../../components/LoadingTable";
 import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../utils/useScroll";
 import Detail from "./Detail/Detail";
+import ConfirmAlert from "../../../components/Alert/ConfirmAlert";
+
 
 const VehicleDetail = (props) => {
   const location = useLocation();
   const history = useHistory();
   const [drivers, setDrivers] = useState([]);
   const [brokens, setBrokens] = useState([]);
+  const [alert, setAlert] = useState(null);
+
   const [data, setData] = useState({
     id: 1,
     licence: "",
@@ -152,6 +156,33 @@ const VehicleDetail = (props) => {
     [],
   );
 
+  const handleDelete = () => {
+    if (location?.state?.id) {
+      setAlert(null);
+      vehicleApi
+        .delete(location.state.id)
+        .then((response) => {
+          history.push("/vehicle");
+          successNotify("Xóa thành công");
+        })
+        .catch((error) => {
+          errorNotify("Xóa thất bại");
+        });
+    }
+  };
+
+  const handleConfirm = () => {
+    setAlert(
+      <ConfirmAlert
+        onClose={() => setAlert(null)}
+        onConfirm={handleDelete}
+        confirmBtnText={"Chấp nhận"}
+        cancelBtnText={"Hủy bỏ"}
+        title="Bạn có thật sự muốn xóa thông tin này không ?"
+      />,
+    );
+  };
+
   useEffect(() => {
     if (location?.state?.id) {
       Promise.all([
@@ -187,6 +218,7 @@ const VehicleDetail = (props) => {
 
   return (
     <Grid className="p-4">
+      {alert}
       <Grid
         item
         md={12}
@@ -194,9 +226,9 @@ const VehicleDetail = (props) => {
       >
         <Paper
           id="detail-header"
-          className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none"
+          className="d-flex flex-column px-4 pt-2 rounded-top col-md-11 align-self-center shadow-none"
         >
-          <Box className="px-4 pt-2">
+          <Box className="px-4 py-2">
             <Grid container className="my-3">
               <Grid item md={8}>
                 <Typography className="fs-5 fw-bold">
@@ -204,6 +236,16 @@ const VehicleDetail = (props) => {
                 </Typography>
               </Grid>
               <Grid item md={4} className="d-flex flex-row justify-content-end">
+                {
+                  location?.state?.id && <Button
+                  onClick={handleConfirm}
+                  variant="outlined"
+                  color="error"
+                  className="me-2"
+                >
+                  Xóa
+                </Button>
+                }
                 <Button
                   onClick={formik.submitForm}
                   variant="contained"
@@ -220,9 +262,9 @@ const VehicleDetail = (props) => {
 
       {!location?.state?.create && (
         <Grid item className="px-4">
-          <Grid className="mt-3 p-5" item md={12} xs={12}>
+          <Grid className="p-5" item md={12} xs={12}>
             <Paper
-              className="p-4 shadow-sm"
+              className="p-4 shadow-none"
               sx={{
                 borderTopRightRadius: 0,
                 borderTopLeftRadius: 0,
