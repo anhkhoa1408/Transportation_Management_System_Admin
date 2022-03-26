@@ -1,20 +1,19 @@
 import { ArrowDropDown } from "@mui/icons-material";
 import { Box, Button, Divider, Grid, Paper, Typography } from "@mui/material";
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  UncontrolledDropdown,
+  UncontrolledDropdown
 } from "reactstrap";
+import * as Bonk from "yup";
 import orderApi from "../../../api/orderApi";
+import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../utils/useScroll";
 import Detail from "./Detail/Detail";
-import { useFormik } from "formik";
-import * as Bonk from "yup";
-import { errorNotify, successNotify } from "../../../utils/notification";
 
 const OrderDetail = (props) => {
   const history = useHistory();
@@ -177,8 +176,5 @@ const OrderDetail = (props) => {
   );
 };
 
-const mapStateToProps = (state) => ({});
 
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(OrderDetail);
+export default OrderDetail;

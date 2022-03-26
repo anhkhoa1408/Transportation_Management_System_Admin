@@ -114,7 +114,7 @@ const VehicleDetail = (props) => {
       })
       .then((response) => {
         successNotify("Cập nhật thành công");
-        history.pushState("/vehicle");
+        history.push("/vehicle");
       })
       .catch((error) => {
         errorNotify("Cập nhật thất bại");

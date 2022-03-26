@@ -1,9 +1,7 @@
 import { Grid, InputAdornment, TextField, Typography } from "@mui/material";
-import { useFormik } from "formik";
-import React, {memo} from "react";
-import * as Bonk from 'yup'
-import { joinAddress } from "../../../../utils/address";
 import moment from "moment";
+import React, { memo } from "react";
+import { joinAddress } from "../../../../utils/address";
 
 function Detail({ formik }) {
   

@@ -89,4 +89,15 @@ const ratingPoint = [
   },
 ]
 
-export { customerType, staffType, orderState, vehicle, ratingPoint };
+const saleType = [
+  {
+    value: "percentage",
+    label: "Theo phần trăm",
+  },
+  {
+    value: "value",
+    label: "Theo giá trị",
+  },
+]
+
+export { customerType, staffType, orderState, vehicle, ratingPoint, saleType };

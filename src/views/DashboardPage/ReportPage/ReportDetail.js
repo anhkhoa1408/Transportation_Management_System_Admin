@@ -2,22 +2,17 @@ import { Download } from "@mui/icons-material";
 import {
   Box,
   Button,
-  Grid,
-  InputAdornment,
-  Paper,
-  TextField,
-  Typography,
+  Grid, Paper, Typography
 } from "@mui/material";
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
+import * as Bonk from "yup";
 import reportApi from "../../../api/reportApi";
 import { errorNotify, successNotify } from "../../../utils/notification";
-import * as Bonk from "yup";
-import { useFormik } from "formik";
-import moment from "moment";
-import Detail from "./Detail/Detail";
 import useScroll from "../../../utils/useScroll";
+import Detail from "./Detail/Detail";
 
 const ReportDetail = (props) => {
   const location = useLocation();
