@@ -58,13 +58,14 @@ body {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--app-primary);
+  /* background: var(--gray); */
+  background-color: #DDD;
   border-radius: 10px;
 }
 
 /* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background-color: #7cd3f3;
-}
+/* ::-webkit-scrollbar-thumb:hover {
+  background-color: #CCC;
+} */
 
 

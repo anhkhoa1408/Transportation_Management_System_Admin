@@ -20,6 +20,7 @@ import {
   ModeComment,
   Description,
   People,
+  TurnSharpRight,
 } from "@mui/icons-material";
 import { connect } from "react-redux";
 import { toggleSidebar } from "../../actions/actions";
@@ -116,12 +117,12 @@ const Sidebar = (props) => {
           {!toggle ? (
             <>
               <ListItemIcon className="m-0 w-0">
-                <Home />
+                <TurnSharpRight />
               </ListItemIcon>
-              <ListItemText primary="Sắp xếp chuyến xe" />
+              <ListItemText primary="Chuyến xe" />
             </>
           ) : (
-            <Home />
+            <TurnSharpRight />
           )}
         </ListItem>
       </NavLink>

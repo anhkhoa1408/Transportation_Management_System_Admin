@@ -1,4 +1,11 @@
-import { ArrowDropDown, Check, Close, Search } from "@mui/icons-material";
+import {
+  ArrowDropDown,
+  ArrowRight,
+  Check,
+  Close,
+  Inventory2,
+  Search,
+} from "@mui/icons-material";
 import {
   Button,
   Divider,
@@ -19,11 +26,29 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { Collapse } from "reactstrap";
 import orderApi from "../../../api/orderApi";
 import storageApi from "../../../api/storageApi";
+import userApi from "../../../api/userApi";
+import vehicleApi from "../../../api/vehicleApi";
+import { joinAddress } from "../../../utils/address";
+import { errorNotify } from "../../../utils/notification";
 
 const Customer = (props) => {
   const [search, setSearch] = useState(false);
+  const [split, setSplit] = useState(null);
+
   const [storage, setSelectedStorage] = useState("");
   const [storages, setStorages] = useState([]);
+
+  const [listFrom, setListFrom] = useState([]);
+  const [from, setFrom] = useState("");
+
+  const [listTo, setListTo] = useState([]);
+  const [to, setTo] = useState("");
+
+  const [car, setCar] = useState("");
+  const [cars, setCars] = useState([]);
+
+  const [assistance, setAssistance] = useState("");
+  const [assistances, setAssistances] = useState([]);
 
   const types = [
     {
@@ -41,40 +66,28 @@ const Customer = (props) => {
   ];
   const [type, setType] = useState("");
 
-  const [orderData, setOrder] = useState(
-    Array.from({ length: 5 }, (v, k) => k).map((k) => ({
-      id: `item-${k}`,
-      content: `item ${k}`,
-    })),
-  );
-  const [packageData, setPackages] = useState(
-    Array.from({ length: 5 }, (v, k) => k).map((k) => ({
-      id: `item-${k + 10}`,
-      content: `item ${k + 10}`,
-    })),
-  );
-  const [shipmentData, setShipments] = useState(
-    Array.from({ length: 5 }, (v, k) => k).map((k) => ({
-      id: `item-${k + 20}`,
-      content: `item ${k + 20}`,
-    })),
-  );
+  const [orderData, setOrder] = useState();
+  const [packageData, setPackages] = useState([]);
+  const [shipmentData, setShipments] = useState([]);
+
+  const [exceedPackage, setExceed] = useState([])
 
   const getItemStyle = (isDragging, draggableStyle) => ({
     userSelect: "none",
     padding: "16px",
-    margin: `0 0 8px 0`,
-    background: 'white',
+    margin: `0 0 12px 0`,
+    background: "white",
     boxShadow: "0 0 6px 0 rgba(0,0,0,0.1)",
     ...draggableStyle,
   });
 
   const getListStyle = (isDraggingOver) => ({
     background: isDraggingOver ? "#b6f3fc" : "#F8F9FC",
-    padding: "8px 5px 8px 8px",
-    width: "32%",
+    padding: "8px",
     height: 500,
-    overflowY: "scroll",
+    flex: 1,
+    margin: "0px 10px",
+    overflowY: "auto",
   });
 
   const onDragEnd = (result) => {
@@ -147,28 +160,157 @@ const Customer = (props) => {
     return result;
   };
 
+  const handleSplit = (item, index) => {
+    let tempArray = [...packageData]
+    let tempPack = {
+      ...tempArray[index],
+      quantity: 30
+    }
+    delete tempPack.id
+    delete tempPack._id
+    tempArray[index] = {
+      ...tempArray[index],
+      quantity: tempArray[index].quantity - 30
+    }
+    tempArray.splice(index, 0, tempPack)
+    setPackages(tempArray)
+    setSplit(null)
+    setExceed([...exceedPackage, tempPack])
+  }
+
+
+  const handleCreate = () => {
+    if (type === "collect") {
+      console.log(packageData)
+    }
+  }
+
   useEffect(() => {
-    storageApi.getList().then((response) => {
-      setStorages(response);
-    });
+    Promise.all([
+      storageApi.getList(),
+      userApi.getStaffs({
+        type: "Assistance",
+      }),
+    ])
+      .then((response) => {
+        setStorages(response[0]);
+        setAssistances(response[1].staffs);
+      })
+      .catch((error) => {
+        errorNotify("Có lỗi xảy ra");
+      });
   }, []);
+
+  useEffect(() => {
+    if (storage) {
+      vehicleApi
+        .getList({
+          "manager.storage": storage,
+          type: type === "interdepart" ? "Container" : "Truck",
+        })
+        .then((response) => {
+          setCars(response);
+          if (response?.shipments && response?.shipments[0]?.assistance?.id) {
+            setAssistance(response?.shipments[0]?.assistance?.id);
+          }
+        })
+        .catch((error) => {
+          errorNotify("Có lỗi xảy ra");
+        });
+    }
+  }, [storage, type]);
 
   useEffect(() => {
     if (type) {
       let storeAddress = storages.find((item) => item.id === storage)?.address
         ?.city;
-      console.log(storeAddress);
       if (type === "collect") {
-        orderApi.getList({ "from_address.city": storeAddress, state: 0 })
-          .then(response => {
-            console.log(response)
+        orderApi
+          .getList({
+            from_address: JSON.stringify({
+              city: storeAddress,
+            }),
+            state: 0,
           })
+          .then((response) => {
+            let temp = response.map((item) => ({
+              value: {
+                ...item,
+                address: item.to_address,
+                packages: item.packages,
+              },
+              label: joinAddress(item.from_address),
+            }));
+
+            let store = storages.find((item) => item.id === storage);
+            setListFrom([
+              {
+                value: store.address,
+                label: store.name,
+              },
+            ]);
+            setListTo(temp);
+          })
+          .catch((error) => {
+            errorNotify("Có lỗi xảy ra");
+          });
+      } else if (type === "ship") {
+        orderApi
+          .getList({
+            to_address: JSON.stringify({
+              city: storeAddress,
+            }),
+            state: 3,
+          })
+          .then((response) => {
+            let temp = response.map((item) => ({
+              value: {
+                ...item,
+                address: item.to_address,
+                packages: item.packages,
+              },
+              label: joinAddress(item.to_address),
+            }));
+            let store = storages.find((item) => item.id === storage);
+            setListFrom(temp);
+            setListTo([
+              {
+                value: store.address,
+                label: store.name,
+              },
+            ]);
+          })
+          .catch((error) => {
+            errorNotify("Có lỗi xảy ra");
+          });
+      } else {
+        let store = storages.find((item) => item.id === storage);
+        setListFrom([
+          {
+            value: store.address,
+            label: store.name,
+          },
+        ]);
+        setListTo(
+          storages
+            .map((item) => ({
+              value: item.id,
+              label: item.name,
+            }))
+            .filter((item) => item.value !== storage),
+        );
       }
     }
-  }, [type]);
+  }, [type, storage]);
 
   return (
     <Grid container className="p-5">
+      <Grid item sm={12} md={12}>
+        <Paper className="d-flex flex-row justify-content-between align-items-center px-4 py-2 shadow-sm mb-4">
+          <Typography className="fw-bold fs-5">Sắp xếp</Typography>
+          <Button onClick={handleCreate}>Tạo</Button>
+        </Paper>
+      </Grid>
       <Grid item sm={12} md={12}>
         <Paper className="shadow-sm mb-3 p-4">
           <Box className="p-2">
@@ -217,19 +359,42 @@ const Customer = (props) => {
               <Grid item md={6} sm={6} className="p-2">
                 <FormControl fullWidth>
                   <InputLabel>Nơi đi</InputLabel>
-                  <Select fullWidth>
-                    {/* <MenuItem>Gom hàng</MenuItem>
-                    <MenuItem>Giao hàng</MenuItem>
-                    <MenuItem>Liên tỉnh</MenuItem> */}
+                  <Select
+                    fullWidth
+                    label="Nơi đi"
+                    value={from}
+                    onChange={(e) => {
+                      setFrom(e.target.value);
+                      if (e.target.value.packages)
+                        setPackages(e.target.value.packages);
+                    }}
+                  >
+                    {listFrom.map((item) => (
+                      <MenuItem key={item.value} value={item.value}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
               <Grid item md={6} sm={6} className="p-2">
                 <FormControl fullWidth>
                   <InputLabel>Nơi đến</InputLabel>
-                  <Select fullWidth>
-                    {/* <MenuItem>Nội thành</MenuItem>
-                    <MenuItem>Liên tỉnh</MenuItem> */}
+                  <Select
+                    fullWidth
+                    label="Nơi đến"
+                    value={to}
+                    onChange={(e) => {
+                      setTo(e.target.value);
+                      if (e.target.value.packages)
+                        setPackages(e.target.value.packages);
+                    }}
+                  >
+                    {listTo.map((item) => (
+                      <MenuItem key={item.value} value={item.value}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
@@ -238,31 +403,37 @@ const Customer = (props) => {
             <Grid container>
               <Grid item md={6} sm={6} className="p-2">
                 <FormControl fullWidth>
-                  <InputLabel>Biển số xe</InputLabel>
-                  <Select fullWidth>
-                    <MenuItem>Gom hàng</MenuItem>
-                    <MenuItem>Giao hàng</MenuItem>
-                    <MenuItem>Liên tỉnh</MenuItem>
+                  <InputLabel>Xe vận chuyển</InputLabel>
+                  <Select
+                    fullWidth
+                    label="Xe vận chuyển"
+                    value={car}
+                    onChange={(e) => setCar(e.target.value)}
+                  >
+                    {cars.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.licence}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
               <Grid item md={6} sm={6} className="p-2">
                 <FormControl fullWidth>
                   <InputLabel>Người hỗ trợ</InputLabel>
-                  <Select fullWidth>
-                    <MenuItem>Nội thành</MenuItem>
-                    <MenuItem>Liên tỉnh</MenuItem>
+                  <Select
+                    fullWidth
+                    label="Xe vận chuyển"
+                    value={assistance}
+                    onChange={(e) => setAssistance(e.target.value)}
+                  >
+                    {assistances.map((item) => (
+                      <MenuItem key={item.id} value={item.id}>
+                        {item.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
-              </Grid>
-            </Grid>
-
-            <Grid container>
-              <Grid item md={6} sm={6} className="p-2">
-                <Typography>Thể tích còn lại</Typography>
-              </Grid>
-              <Grid item md={6} sm={6} className="p-2">
-                <Typography>Khối lượng còn lại</Typography>
               </Grid>
             </Grid>
           </Grid>
@@ -274,12 +445,20 @@ const Customer = (props) => {
           <Box className="p-2 mb-3">
             <Typography variant="h5">Hàng hóa</Typography>
             <Typography variant="subtitle2">
-              Sắp xếp hàng hóa cho mỗi chuyến xe
+              Sắp xếp lượng hàng hóa phù hợp cho mỗi chuyến xe
             </Typography>
           </Box>
+          <Grid container>
+            <Grid item md={6} sm={6} className="p-2">
+              <Typography>Thể tích còn lại</Typography>
+            </Grid>
+            <Grid item md={6} sm={6} className="p-2">
+              <Typography>Khối lượng còn lại</Typography>
+            </Grid>
+          </Grid>
           <Box className="d-flex flex-row justify-content-between">
             <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable key="orderDrop" droppableId="orderDrop">
+              <Droppable key="packageDrop" droppableId="packDrop">
                 {(provided, snapshot) => (
                   <div
                     {...provided.droppableProps}
@@ -287,15 +466,20 @@ const Customer = (props) => {
                     style={getListStyle(snapshot.isDraggingOver)}
                   >
                     <Box className="py-1">
-                      <Button
-                        className="d-flex flex-row justify-content-between align-items-center w-100 mb-2 app-primary-color"
-                        onClick={() => setSearch(!search)}
-                      >
-                        <Typography className="my-2">
-                          Danh sách đơn hàng
-                        </Typography>
-                        <ArrowDropDown />
-                      </Button>
+                      <Box className="d-flex flex-row">
+                        <Button
+                          className="d-flex flex-row justify-content-between align-items-center w-100 mb-2 app-primary-color flex-grow-1"
+                          onClick={() => setSearch(!search)}
+                        >
+                          <Typography className="my-2">
+                            Danh sách kiện hàng
+                          </Typography>
+                          <ArrowDropDown />
+                        </Button>
+                        <Button className="d-flex flex-row justify-content-center align-items-center mb-2 text-warning">
+                          <ArrowRight />
+                        </Button>
+                      </Box>
                       <Collapse isOpen={search}>
                         <TextField
                           label="Tìm kiếm"
@@ -310,52 +494,6 @@ const Customer = (props) => {
                         ></TextField>
                       </Collapse>
                     </Box>
-                    {orderData.map((item, index) => (
-                      <>
-                        <Draggable
-                          key={item.id}
-                          draggableId={item.id}
-                          index={index}
-                        >
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              style={getItemStyle(
-                                snapshot.isDragging,
-                                provided.draggableProps.style,
-                              )}
-                            >
-                              {item.content}
-                            </div>
-                          )}
-                        </Draggable>
-                      </>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-
-              <Droppable key="packageDrop" droppableId="packDrop">
-                {(provided, snapshot) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    style={getListStyle(snapshot.isDraggingOver)}
-                  >
-                    <Box className="py-1">
-                      <Button
-                        className="d-flex flex-row justify-content-between align-items-center w-100 mb-2 app-primary-color"
-                        // onClick={() => setSearch(!search)}
-                      >
-                        <Typography className="my-2">
-                          Danh sách kiện hàng
-                        </Typography>
-                        {/* <ArrowDropDown /> */}
-                      </Button>
-                    </Box>
                     {packageData.map((item, index) => (
                       <Draggable
                         key={item.id}
@@ -364,6 +502,7 @@ const Customer = (props) => {
                       >
                         {(provided, snapshot) => (
                           <div
+                            className="d-flex flex-column"
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
@@ -372,7 +511,48 @@ const Customer = (props) => {
                               provided.draggableProps.style,
                             )}
                           >
-                            {item.content}
+                            <Box className="d-flex flex-row align-items-start p-1">
+                              <Box className="p-2 bg-color-gray me-3">
+                                <Inventory2
+                                  className="app-primary-color hover-sm"
+                                  sx={{ fontSize: 30 }}
+                                ></Inventory2>
+                              </Box>
+                              <Box className="flex-grow-1">
+                                <Typography
+                                  variant="subtitle1"
+                                  className="fw-bold"
+                                >
+                                  Tên kiện hàng: {item.name || "Không có"}
+                                </Typography>
+                                <Typography>
+                                  Khối lượng: {item.weight} kg
+                                </Typography>
+                                <Typography>
+                                  Số lượng: {item.quantity} kiện
+                                </Typography>
+                              </Box>
+                              <Button onClick={() => setSplit(index)}>
+                                Tách
+                              </Button>
+                            </Box>
+                            <Collapse
+                              isOpen={split === index ? true : false}
+                              className={clsx("flex-row justify-content-center mt-2 py-2", {
+                                "d-flex": split === index
+                              })}
+                            >
+                              <TextField
+                                label="Số lượng"
+                                className="flex-grow-1 w-100 me-2"
+                              ></TextField>
+                              <Button color="success" onClick={() => handleSplit(item, index)}>
+                                <Check />
+                              </Button>
+                              <Button color="error" onClick={() => setSplit(null)}>
+                                <Close />
+                              </Button>
+                            </Collapse>
                           </div>
                         )}
                       </Draggable>
@@ -396,7 +576,7 @@ const Customer = (props) => {
                     >
                       <Button
                         className="d-flex flex-row justify-content-between align-items-center w-100 app-primary-color"
-                        // onClick={() => setSearch(!search)}
+                        onClick={() => setSearch(!search)}
                       >
                         <Typography className="my-2">
                           Kiện hàng đã chọn
@@ -405,18 +585,8 @@ const Customer = (props) => {
                       </Button>
                       <Collapse isOpen={search}>
                         <Divider />
-                        <Button
-                          className="d-flex flex-row justify-content-between align-items-center w-100 px-2 text-lowercase"
-                          sx={{
-                            color: "lightgreen",
-                          }}
-                        >
-                          <Typography className="my-2">Xác nhận</Typography>
-                          <Check />
-                        </Button>
-
-                        <Button className="d-flex flex-row justify-content-between align-items-center w-100 text-danger px-2 text-lowercase">
-                          <Typography className="my-2">Hủy bỏ</Typography>
+                        <Button className="d-flex flex-row justify-content-between align-items-center w-100 text-danger px-2">
+                          <Typography className="my-2">Hủy chọn</Typography>
                           <Close />
                         </Button>
                       </Collapse>
@@ -437,7 +607,28 @@ const Customer = (props) => {
                               provided.draggableProps.style,
                             )}
                           >
-                            {item.content}
+                            <Box className="d-flex flex-row align-items-start p-1">
+                              <Box className="p-2 bg-color-gray me-3">
+                                <Inventory2
+                                  className="app-primary-color hover-sm"
+                                  sx={{ fontSize: 30 }}
+                                ></Inventory2>
+                              </Box>
+                              <Box>
+                                <Typography
+                                  variant="subtitle1"
+                                  className="fw-bold"
+                                >
+                                  Tên kiện hàng: {item.name || "Không có"}
+                                </Typography>
+                                <Typography>
+                                  Khối lượng: {item.weight} kg
+                                </Typography>
+                                <Typography>
+                                  Số lượng: {item.quantity} kiện
+                                </Typography>
+                              </Box>
+                            </Box>
                           </div>
                         )}
                       </Draggable>

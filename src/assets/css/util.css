@@ -47,3 +47,11 @@
   background-color: #dc3545;
   color: #FFF
 }
+
+.color-gray {
+  color: var(--gray)
+}
+
+.bg-color-gray {
+  background-color: var(--gray)
+}
