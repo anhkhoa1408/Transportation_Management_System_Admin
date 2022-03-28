@@ -4,7 +4,7 @@ import { Typography } from "@mui/material";
 
 export default function Loading() {
   return (
-    <div className="d-flex flex-column align-items-center justify-content-center bg-white h-100 w-100 position-fixed top-0 bottom-0">
+    <div className="d-flex flex-column align-items-center justify-content-center bg-white h-100 w-100 position-fixed top-0 bottom-0" style={{zIndex: 9999}}>
       <Audio
         wrapperClass="mb-3"
         heigth="150"

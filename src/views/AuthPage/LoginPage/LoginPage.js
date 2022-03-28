@@ -21,6 +21,7 @@ import img from "./../../../../src/assets/img/delivery.jpg";
 import LOGO from "./../../../../src/assets/img/logo.png";
 import authApi from "./../../../api/authApi";
 import { errorNotify } from "./../../../utils/notification.js";
+import Loading from "../../../components/Loading";
 
 function Copyright(props) {
   return (
@@ -45,6 +46,7 @@ const theme = createTheme();
 export default function LoginPage() {
   const dispatch = useDispatch();
   const history = useHistory();
+  const [loading, setLoading] = useState(null)
 
   const [data, setData] = useState({
     identifier: "",
@@ -64,18 +66,23 @@ export default function LoginPage() {
   });
 
   const handleSubmit = (values) => {
-    console.log(values);
+    setLoading(<Loading />)
     authApi
       .login(values)
       .then((response) => {
+        setLoading(null)
         dispatch(saveInfoSuccess(response));
         history.push("/dashboard");
       })
-      .catch((error) => errorNotify("Đăng nhập thất bại"));
+      .catch((error) => {
+        setLoading(null)
+        errorNotify("Đăng nhập thất bại")
+      });
   };
 
   return (
     <ThemeProvider theme={theme}>
+      {loading}
       <Grid container component="main" sx={{ height: "100vh" }}>
         <CssBaseline />
         <Grid
@@ -170,18 +177,7 @@ export default function LoginPage() {
               >
                 Đăng nhập
               </Button>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Quên mật khẩu?
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Chưa có mật khẩu? Đăng ký"}
-                  </Link>
-                </Grid>
-              </Grid>
+              
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
