@@ -17,6 +17,10 @@ class OrderApi {
     const url = process.env.MAIN_URL.concat(`/orders/${id}`);
     return axiosClient.put(url, data);
   };
+  create = (data) => {
+    const url = process.env.MAIN_URL.concat(`/orders`);
+    return axiosClient.post(url, data);
+  };
 }
 
 const orderApi = new OrderApi();

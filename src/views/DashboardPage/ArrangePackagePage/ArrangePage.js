@@ -3,8 +3,10 @@ import {
   ArrowRight,
   Check,
   Close,
+  ErrorOutline,
   Inventory2,
   Search,
+  Sort,
 } from "@mui/icons-material";
 import {
   Button,
@@ -19,17 +21,24 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Box } from "@mui/system";
+import { Box, keys } from "@mui/system";
 import clsx from "clsx";
+import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { Collapse } from "reactstrap";
+import { Collapse, Tooltip, UncontrolledTooltip } from "reactstrap";
 import orderApi from "../../../api/orderApi";
+import shipmentApi from "../../../api/shipmentApi";
 import storageApi from "../../../api/storageApi";
 import userApi from "../../../api/userApi";
 import vehicleApi from "../../../api/vehicleApi";
 import { joinAddress } from "../../../utils/address";
-import { errorNotify } from "../../../utils/notification";
+import { errorNotify, successNotify } from "../../../utils/notification";
+import useScroll from "../../../utils/useScroll";
+import * as Bonk from "yup";
+import { validate } from "schema-utils";
+import { validateFit } from "../../../services/packing";
+import packageApi from "../../../api/packageApi";
 
 const Customer = (props) => {
   const [search, setSearch] = useState(false);
@@ -70,7 +79,11 @@ const Customer = (props) => {
   const [packageData, setPackages] = useState([]);
   const [shipmentData, setShipments] = useState([]);
 
-  const [exceedPackage, setExceed] = useState([])
+  const [exceedPackage, setExceed] = useState([]);
+
+  const [quantity, setQuantity] = useState(1);
+
+  const [validate, setValidate] = useState({});
 
   const getItemStyle = (isDragging, draggableStyle) => ({
     userSelect: "none",
@@ -161,29 +174,170 @@ const Customer = (props) => {
   };
 
   const handleSplit = (item, index) => {
-    let tempArray = [...packageData]
+    let tempArray = [...packageData];
     let tempPack = {
       ...tempArray[index],
-      quantity: 30
-    }
-    delete tempPack.id
-    delete tempPack._id
+      quantity: quantity,
+    };
+    delete tempPack.id;
+    delete tempPack._id;
     tempArray[index] = {
       ...tempArray[index],
-      quantity: tempArray[index].quantity - 30
-    }
-    tempArray.splice(index, 0, tempPack)
-    setPackages(tempArray)
-    setSplit(null)
-    setExceed([...exceedPackage, tempPack])
-  }
-
+      quantity: tempArray[index].quantity - quantity,
+    };
+    tempArray.splice(index, 0, tempPack);
+    setPackages(tempArray);
+    setSplit(null);
+    setExceed([...exceedPackage, tempPack]);
+    setQuantity(1);
+  };
 
   const handleCreate = () => {
-    if (type === "collect") {
-      console.log(packageData)
+    if (!shipmentData.length) {
+      errorNotify("Chưa thêm kiện hàng");
+      return;
     }
-  }
+    if (type === "collect") {
+      if (exceedPackage) {
+        Promise.all(
+          exceedPackage.map((item) =>
+            packageApi.update(item.id, {
+              ...item,
+              len: item.size.len,
+              width: item.size.width,
+              height: item.size.height,
+            }),
+          ),
+        )
+          .then((response) => {
+            setShipments([]);
+          })
+          .catch((error) => {
+            errorNotify("Tạo chuyến xe thất bại");
+            return;
+          });
+
+        delete to.from_address.id;
+        delete to.from_address._id;
+        delete to.from_address.__v;
+        delete to.to_address.id;
+        delete to.to_address._id;
+        delete to.to_address.__v;
+
+        let {
+          customer,
+          note,
+          sender_name,
+          sender_phone,
+          receiver_name,
+          receiver_phone,
+          name,
+          from_address,
+          to_address,
+        } = to;
+
+        let data = {
+          customer: customer.id,
+          state: 1,
+          note,
+          sender_name,
+          sender_phone,
+          receiver_name,
+          receiver_phone,
+          name,
+          from_address,
+          to_address,
+          packages: shipmentData.map((item) => {
+            let temp = { ...item };
+            delete temp.current_address;
+            delete temp.id;
+            delete temp._id;
+            delete temp.__v;
+            delete temp.order;
+            delete temp.size.id;
+            delete temp.size._id;
+            delete temp.size.__v;
+            return temp;
+          }),
+        };
+
+        orderApi
+          .create(data)
+          .then((response) => {
+            setPackages(packageData);
+            setValidate(validateFit(packageData, car));
+          })
+          .catch((error) => {
+            errorNotify("Tạo chuyến xe thất bại");
+            return;
+          });
+      }
+    }
+    let packages = shipmentData.map((item) => item.id);
+    shipmentApi
+      .create({
+        from_address: {
+          street: from.address.street,
+          ward: from.address.ward,
+          province: from.address.province,
+          city: from.address.city,
+          longitude: from.address.longitude,
+        },
+        to_address: {
+          street: to.address.street,
+          ward: to.address.ward,
+          province: to.address.province,
+          city: to.address.city,
+          longitude: to.address.longitude,
+        },
+        driver: car.manager.id,
+        assistance: assistance,
+        packages: packages,
+      })
+      .then((response) => {
+        successNotify("Tạo chuyến xe thành công");
+      })
+      .catch((error) => {
+        errorNotify("Tạo chuyến xe thất bại");
+      });
+  };
+
+  const handleQuickSort = () => {
+    if (Object.keys(validate).length && !shipmentData.length) {
+      let tempShip = [];
+      let tempPack = [];
+      for (let item of packageData) {
+        let unfitPack = packageData.find(
+          (pack) =>
+            pack.id === Object.keys(validate).find((id) => id === item.id),
+        );
+        if (!unfitPack) {
+          tempShip.push(item);
+        } else {
+          let unshipPack = {
+            ...unfitPack,
+            quantity: validate[unfitPack.id],
+          };
+          tempPack.push(unshipPack);
+
+          if (unfitPack.quantity - validate[unfitPack.id]) {
+            console.log(validate[unfitPack.id]);
+            let shipPack = {
+              ...unfitPack,
+              quantity: unfitPack.quantity - validate[unfitPack.id],
+            };
+            tempShip.push(shipPack);
+          }
+        }
+      }
+      setShipments(tempShip);
+      setPackages(tempPack);
+      setValidate({});
+      setExceed(tempPack);
+    } else {
+      setShipments(packageData);
+    }
+  };
 
   useEffect(() => {
     Promise.all([
@@ -218,9 +372,6 @@ const Customer = (props) => {
           errorNotify("Có lỗi xảy ra");
         });
     }
-  }, [storage, type]);
-
-  useEffect(() => {
     if (type) {
       let storeAddress = storages.find((item) => item.id === storage)?.address
         ?.city;
@@ -245,7 +396,7 @@ const Customer = (props) => {
             let store = storages.find((item) => item.id === storage);
             setListFrom([
               {
-                value: store.address,
+                value: store,
                 label: store.name,
               },
             ]);
@@ -275,7 +426,7 @@ const Customer = (props) => {
             setListFrom(temp);
             setListTo([
               {
-                value: store.address,
+                value: store,
                 label: store.name,
               },
             ]);
@@ -287,7 +438,7 @@ const Customer = (props) => {
         let store = storages.find((item) => item.id === storage);
         setListFrom([
           {
-            value: store.address,
+            value: store,
             label: store.name,
           },
         ]);
@@ -303,18 +454,24 @@ const Customer = (props) => {
     }
   }, [type, storage]);
 
+  useScroll("detail-header");
+
   return (
     <Grid container className="p-5">
-      <Grid item sm={12} md={12}>
-        <Paper className="d-flex flex-row justify-content-between align-items-center px-4 py-2 shadow-sm mb-4">
-          <Typography className="fw-bold fs-5">Sắp xếp</Typography>
+      <Grid item sm={12} md={12} className="pt-4 header-sticky">
+        <Paper
+          id="detail-header"
+          className="d-flex flex-row justify-content-between align-items-center px-4 py-3 shadow-sm mb-4"
+        >
+          <Typography variant="h5">Sắp xếp</Typography>
           <Button onClick={handleCreate}>Tạo</Button>
         </Paper>
       </Grid>
+
       <Grid item sm={12} md={12}>
         <Paper className="shadow-sm mb-3 p-4">
           <Box className="p-2">
-            <Typography variant="h5">Tùy chỉnh</Typography>
+            <Typography variant="h6">Tùy chỉnh</Typography>
             <Typography variant="subtitle2">
               Điều chỉnh các thông tin cần thiết cho chuyến xe nội thành (liên
               tỉnh)
@@ -408,10 +565,13 @@ const Customer = (props) => {
                     fullWidth
                     label="Xe vận chuyển"
                     value={car}
-                    onChange={(e) => setCar(e.target.value)}
+                    onChange={(e) => {
+                      setCar(e.target.value);
+                      setValidate(validateFit(packageData, e.target.value));
+                    }}
                   >
                     {cars.map((item) => (
-                      <MenuItem key={item.id} value={item.id}>
+                      <MenuItem key={item.id} value={item}>
                         {item.licence}
                       </MenuItem>
                     ))}
@@ -443,7 +603,7 @@ const Customer = (props) => {
       <Grid item sm={12} md={12}>
         <Paper className="d-flex flex-column w-100 align-self-center p-4 shadow-sm">
           <Box className="p-2 mb-3">
-            <Typography variant="h5">Hàng hóa</Typography>
+            <Typography variant="h6">Hàng hóa</Typography>
             <Typography variant="subtitle2">
               Sắp xếp lượng hàng hóa phù hợp cho mỗi chuyến xe
             </Typography>
@@ -476,8 +636,15 @@ const Customer = (props) => {
                           </Typography>
                           <ArrowDropDown />
                         </Button>
-                        <Button className="d-flex flex-row justify-content-center align-items-center mb-2 text-warning">
-                          <ArrowRight />
+                        <UncontrolledTooltip flip target="sort-btn">
+                          Sắp xếp nhanh
+                        </UncontrolledTooltip>
+                        <Button
+                          id="sort-btn"
+                          className="d-flex flex-row justify-content-center align-items-center mb-2 text-warning"
+                          onClick={handleQuickSort}
+                        >
+                          <Sort />
                         </Button>
                       </Box>
                       <Collapse isOpen={search}>
@@ -497,7 +664,7 @@ const Customer = (props) => {
                     {packageData.map((item, index) => (
                       <Draggable
                         key={item.id}
-                        draggableId={item.id}
+                        draggableId={item.id + index.toString()}
                         index={index}
                       >
                         {(provided, snapshot) => (
@@ -511,7 +678,7 @@ const Customer = (props) => {
                               provided.draggableProps.style,
                             )}
                           >
-                            <Box className="d-flex flex-row align-items-start p-1">
+                            <Box className="d-flex flex-row align-items-start w-100 p-1">
                               <Box className="p-2 bg-color-gray me-3">
                                 <Inventory2
                                   className="app-primary-color hover-sm"
@@ -526,32 +693,84 @@ const Customer = (props) => {
                                   Tên kiện hàng: {item.name || "Không có"}
                                 </Typography>
                                 <Typography>
-                                  Khối lượng: {item.weight} kg
+                                  Khối lượng mỗi kiện: {item.weight} kg
                                 </Typography>
                                 <Typography>
                                   Số lượng: {item.quantity} kiện
                                 </Typography>
                               </Box>
-                              <Button onClick={() => setSplit(index)}>
-                                Tách
-                              </Button>
+                              <Box className="d-flex flex-column justify-content-center h-100 align-items-center">
+                                <Button onClick={() => setSplit(index)}>
+                                  Tách
+                                </Button>
+                                {validate[item.id] && (
+                                  <>
+                                    <UncontrolledTooltip
+                                      flip
+                                      target={"error-mess-" + index}
+                                    >
+                                      Tối đa tách được: {item.quantity - validate[item.id]} kiện
+                                    </UncontrolledTooltip>
+                                    <Button
+                                      className="d-flex flex-row justify-content-center align-items-center p-3"
+                                      color="error"
+                                    >
+                                      <ErrorOutline
+                                        id={"error-mess-" + index}
+                                        color="error"
+                                        sx={{ fontSize: 20 }}
+                                      />
+                                    </Button>
+                                  </>
+                                )}
+                              </Box>
                             </Box>
-                            <Collapse
-                              isOpen={split === index ? true : false}
-                              className={clsx("flex-row justify-content-center mt-2 py-2", {
-                                "d-flex": split === index
-                              })}
-                            >
-                              <TextField
-                                label="Số lượng"
-                                className="flex-grow-1 w-100 me-2"
-                              ></TextField>
-                              <Button color="success" onClick={() => handleSplit(item, index)}>
-                                <Check />
-                              </Button>
-                              <Button color="error" onClick={() => setSplit(null)}>
-                                <Close />
-                              </Button>
+                            <Collapse isOpen={split === index ? true : false}>
+                              <Box
+                                className={clsx(
+                                  "justify-content-center mt-2 py-2 d-flex flex-row",
+                                )}
+                              >
+                                <TextField
+                                  type="number"
+                                  label="Số lượng"
+                                  className="flex-grow-1 w-100"
+                                  onChange={(e) => setQuantity(e.target.value)}
+                                  value={quantity}
+                                  error={
+                                    quantity < 0 ||
+                                    quantity > item.quantity ||
+                                    !quantity
+                                  }
+                                  helperText={
+                                    (quantity < 0 &&
+                                      "Số lượng phải lớn hơn 0") ||
+                                    (quantity > item.quantity &&
+                                      "Số lượng tách phải nhỏ hơn số lượng hiện tại") ||
+                                    (!quantity && "Số lượng không hợp lệ")
+                                  }
+                                ></TextField>
+                                <Button
+                                  color="success"
+                                  disabled={
+                                    quantity < 0 ||
+                                    quantity > item.quantity ||
+                                    !quantity
+                                  }
+                                  onClick={() => handleSplit(item, index)}
+                                >
+                                  <Check />
+                                </Button>
+                                <Button
+                                  color="error"
+                                  onClick={() => {
+                                    setSplit(null);
+                                    setQuantity(1);
+                                  }}
+                                >
+                                  <Close />
+                                </Button>
+                              </Box>
                             </Collapse>
                           </div>
                         )}
@@ -594,7 +813,7 @@ const Customer = (props) => {
                     {shipmentData.map((item, index) => (
                       <Draggable
                         key={item.id}
-                        draggableId={item.id}
+                        draggableId={item.id + index.toString()}
                         index={index}
                       >
                         {(provided, snapshot) => (

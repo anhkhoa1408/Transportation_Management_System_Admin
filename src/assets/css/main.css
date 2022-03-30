@@ -9,6 +9,7 @@ body {
 .header-sticky {
   top: 50px;
   z-index: 10;
+  position: sticky;
 }
 
 .banner-img {
