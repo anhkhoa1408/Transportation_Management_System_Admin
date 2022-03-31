@@ -5,6 +5,7 @@ import {
   Close,
   ErrorOutline,
   Inventory2,
+  Merge,
   Search,
   Sort,
 } from "@mui/icons-material";
@@ -44,6 +45,11 @@ import { useHistory } from "react-router-dom";
 
 const Customer = (props) => {
   const history = useHistory();
+
+  const [initial, setInitial] = useState({
+    pack: [],
+    ship: [],
+  });
 
   const [check, setCheck] = useState(false);
 
@@ -113,12 +119,8 @@ const Customer = (props) => {
     const { source, destination } = result;
     if (
       !destination ||
-      (source.droppableId === "packDrop" &&
-        destination.droppableId === "shipDrop" &&
-        !check) ||
       (source.droppableId === "shipDrop" &&
-        destination.droppableId === "packDrop" &&
-        !check)
+        destination.droppableId === "packDrop")
     ) {
       return;
     }
@@ -203,6 +205,10 @@ const Customer = (props) => {
       errorNotify("Chưa thêm nhân viên hỗ trợ");
       return;
     }
+
+    console.log(exceedPackage)
+
+    return
     if (type === "collect" && !check) {
       if (exceedPackage) {
         Promise.all(
@@ -353,8 +359,8 @@ const Customer = (props) => {
         .then((response) => {
           return orderApi.update(to.id, {
             ...to,
-            state: type === "collect" ? 1 : 3
-          })
+            state: type === "collect" ? 1 : 3,
+          });
         })
         .then((response) => {
           successNotify("Tạo chuyến xe thành công");
@@ -379,7 +385,7 @@ const Customer = (props) => {
       packageData.every(
         (item) => validate[item.id] && item.quantity === validate[item.id],
       );
-    if (Object.keys(validate).length && !isInvalidAll) {
+    if (Object.keys(validate).length && !isInvalidAll && !check) {
       let tempShip = [];
       let tempPack = [];
       for (let item of packageData) {
@@ -407,7 +413,6 @@ const Customer = (props) => {
       }
       setShipments([...shipmentData, ...tempShip]);
       setPackages(tempPack);
-      setValidate({});
       setExceed(tempPack);
     } else if (!Object.keys(validate).length || check) {
       setShipments([...shipmentData, ...packageData]);
@@ -417,6 +422,11 @@ const Customer = (props) => {
 
   const handleValidate = (packages, car) => {
     setValidate(validateFit(packages, car));
+  };
+
+  const handleCancel = () => {
+    setShipments(initial.ship);
+    setPackages(initial.pack);
   };
 
   useEffect(() => {
@@ -516,6 +526,7 @@ const Customer = (props) => {
           });
       } else {
         let store = storages.find((item) => item.id === storage);
+        // let 
         setListFrom([
           {
             value: store,
@@ -546,6 +557,10 @@ const Customer = (props) => {
           setPackages(packageData);
           setShipments(response);
           handleValidate([...response, ...packageData], car);
+          setInitial({
+            pack: packageData,
+            ship: response,
+          });
         })
         .catch((error) => {
           errorNotify("Có lỗi xảy ra 5");
@@ -741,7 +756,17 @@ const Customer = (props) => {
                           <Typography className="my-2">
                             Danh sách kiện hàng
                           </Typography>
-                          <ArrowDropDown />
+                          <ArrowDropDown className="me-2" />
+                        </Button>
+                        <UncontrolledTooltip flip target="merge-btn">
+                          Khôi phục
+                        </UncontrolledTooltip>
+                        <Button
+                          id="merge-btn"
+                          className="d-flex flex-row justify-content-center align-items-center mb-2"
+                          onClick={handleCancel}
+                        >
+                          <Merge />
                         </Button>
                         <UncontrolledTooltip flip target="sort-btn">
                           Sắp xếp nhanh
@@ -852,7 +877,8 @@ const Customer = (props) => {
                                   error={
                                     quantity < 0 ||
                                     quantity > item.quantity ||
-                                    !quantity
+                                    !quantity ||
+                                    item.quantity - validate[item.id] <= 0
                                   }
                                   helperText={
                                     (quantity < 0 &&
@@ -867,7 +893,8 @@ const Customer = (props) => {
                                   disabled={
                                     quantity < 0 ||
                                     quantity > item.quantity ||
-                                    !quantity
+                                    !quantity ||
+                                    item.quantity - validate[item.id] <= 0
                                   }
                                   onClick={() => handleSplit(item, index)}
                                 >
@@ -900,11 +927,7 @@ const Customer = (props) => {
                     ref={provided.innerRef}
                     style={getListStyle(snapshot.isDraggingOver)}
                   >
-                    <Box
-                      className={clsx("py-1 mb-1", {
-                        "bg-white shadow-sm": search,
-                      })}
-                    >
+                    <Box className={clsx("py-1 mb-1")}>
                       <Button
                         className="d-flex flex-row justify-content-between align-items-center w-100 app-primary-color"
                         onClick={() => setSearch(!search)}
@@ -912,19 +935,11 @@ const Customer = (props) => {
                         <Typography className="my-2">
                           Kiện hàng đã chọn
                         </Typography>
-                        <ArrowDropDown />
                       </Button>
-                      <Collapse isOpen={search}>
-                        <Divider />
-                        <Button className="d-flex flex-row justify-content-between align-items-center w-100 text-danger px-2">
-                          <Typography className="my-2">Hủy chọn</Typography>
-                          <Close />
-                        </Button>
-                      </Collapse>
                     </Box>
                     {shipmentData.map((item, index) => (
                       <Draggable
-                        key={item.id}
+                        key={item.id + index.toString()}
                         draggableId={item.id + index.toString()}
                         index={index}
                       >

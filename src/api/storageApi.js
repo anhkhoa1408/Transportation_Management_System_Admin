@@ -21,6 +21,10 @@ class StorageApi {
     const url = process.env.MAIN_URL.concat(`/storages`);
     return axiosClient.post(url, data);
   };
+  getListInStore = (params) => {
+    const url = process.env.MAIN_URL.concat("/packages/in-storage");
+    return axiosClient.get(url, { params });
+  };
 }
 
 const storageApi = new StorageApi();
