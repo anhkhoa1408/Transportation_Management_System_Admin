@@ -10,6 +10,7 @@ import {
 } from "@mui/icons-material";
 import {
   Button,
+  Checkbox,
   Divider,
   FormControl,
   Grid,
@@ -39,8 +40,13 @@ import * as Bonk from "yup";
 import { validate } from "schema-utils";
 import { validateFit } from "../../../services/packing";
 import packageApi from "../../../api/packageApi";
+import { useHistory } from "react-router-dom";
 
 const Customer = (props) => {
+  const history = useHistory();
+
+  const [check, setCheck] = useState(false);
+
   const [search, setSearch] = useState(false);
   const [split, setSplit] = useState(null);
 
@@ -105,17 +111,14 @@ const Customer = (props) => {
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
-    // dropped outside the list or invalid drop
     if (
       !destination ||
-      (source.droppableId === "orderDrop" &&
-        destination.droppableId === "packDrop") ||
-      (source.droppableId === "orderDrop" &&
-        destination.droppableId === "shipDrop") ||
-      (destination.droppableId === "orderDrop" &&
-        source.droppableId === "packDrop") ||
-      (destination.droppableId === "orderDrop" &&
-        source.droppableId === "shipDrop")
+      (source.droppableId === "packDrop" &&
+        destination.droppableId === "shipDrop" &&
+        !check) ||
+      (source.droppableId === "shipDrop" &&
+        destination.droppableId === "packDrop" &&
+        !check)
     ) {
       return;
     }
@@ -179,16 +182,15 @@ const Customer = (props) => {
       ...tempArray[index],
       quantity: quantity,
     };
-    delete tempPack.id;
-    delete tempPack._id;
+    console.log(tempArray[index].quantity, quantity);
     tempArray[index] = {
       ...tempArray[index],
       quantity: tempArray[index].quantity - quantity,
     };
-    tempArray.splice(index, 0, tempPack);
+    tempArray.splice(tempArray.length, 0, tempPack);
     setPackages(tempArray);
     setSplit(null);
-    setExceed([...exceedPackage, tempPack]);
+    setExceed([...exceedPackage, tempArray[index]]);
     setQuantity(1);
   };
 
@@ -197,7 +199,11 @@ const Customer = (props) => {
       errorNotify("Chưa thêm kiện hàng");
       return;
     }
-    if (type === "collect") {
+    if (!assistance) {
+      errorNotify("Chưa thêm nhân viên hỗ trợ");
+      return;
+    }
+    if (type === "collect" && !check) {
       if (exceedPackage) {
         Promise.all(
           exceedPackage.map((item) =>
@@ -209,9 +215,7 @@ const Customer = (props) => {
             }),
           ),
         )
-          .then((response) => {
-            setShipments([]);
-          })
+          .then((response) => {})
           .catch((error) => {
             errorNotify("Tạo chuyến xe thất bại");
             return;
@@ -247,63 +251,135 @@ const Customer = (props) => {
           name,
           from_address,
           to_address,
-          packages: shipmentData.map((item) => {
-            let temp = { ...item };
-            delete temp.current_address;
-            delete temp.id;
-            delete temp._id;
-            delete temp.__v;
-            delete temp.order;
-            delete temp.size.id;
-            delete temp.size._id;
-            delete temp.size.__v;
-            return temp;
-          }),
+          packages: shipmentData
+            .filter((item) => !item.shipments)
+            .map((item) => {
+              let temp = { ...item };
+              delete temp.current_address;
+              delete temp.id;
+              delete temp._id;
+              delete temp.__v;
+              delete temp.order;
+              delete temp.size.id;
+              delete temp.size._id;
+              delete temp.size.__v;
+              return temp;
+            }),
         };
 
         orderApi
           .create(data)
           .then((response) => {
-            setPackages(packageData);
-            setValidate(validateFit(packageData, car));
+            return shipmentApi.create({
+              from_address: {
+                street: from.address.street,
+                ward: from.address.ward,
+                province: from.address.province,
+                city: from.address.city,
+                longitude: from.address.longitude,
+              },
+              to_address: {
+                street: to.address.street,
+                ward: to.address.ward,
+                province: to.address.province,
+                city: to.address.city,
+                longitude: to.address.longitude,
+              },
+              driver: car.manager.id,
+              assistance: assistance,
+              packages: response.packages.map((item) => item.id),
+            });
+          })
+          .then((response) => {
+            return vehicleApi.update(car.id, {
+              ...car,
+              type: car.type,
+              manager: car.manager.id,
+              load: car.load,
+              size: car.size,
+              shipments: [response.id, ...car.shipments.map((item) => item.id)],
+            });
+          })
+          .then((response) => {
+            successNotify("Tạo chuyến xe thành công");
+            setCar("");
+            setType("");
+            setSelectedStorage("");
+            setFrom("");
+            setTo("");
+            setAssistance("");
+            setShipments([]);
+            setPackages([]);
           })
           .catch((error) => {
             errorNotify("Tạo chuyến xe thất bại");
             return;
           });
       }
+    } else if (type !== "collect" || (type === "collect" && check)) {
+      let packages = shipmentData
+        .filter((pack) => !pack.shipments)
+        .map((item) => item.id);
+      shipmentApi
+        .create({
+          from_address: {
+            street: from.address.street,
+            ward: from.address.ward,
+            province: from.address.province,
+            city: from.address.city,
+            longitude: from.address.longitude,
+          },
+          to_address: {
+            street: to.address.street,
+            ward: to.address.ward,
+            province: to.address.province,
+            city: to.address.city,
+            longitude: to.address.longitude,
+          },
+          driver: car.manager.id,
+          assistance: assistance,
+          packages: packages,
+        })
+        .then((response) => {
+          return vehicleApi.update(car.id, {
+            ...car,
+            type: car.type,
+            manager: car.manager.id,
+            load: car.load,
+            size: car.size,
+            shipments: [response.id, ...car.shipments.map((item) => item.id)],
+          });
+        })
+        .then((response) => {
+          return orderApi.update(to.id, {
+            ...to,
+            state: type === "collect" ? 1 : 3
+          })
+        })
+        .then((response) => {
+          successNotify("Tạo chuyến xe thành công");
+          setCar("");
+          setType("");
+          setSelectedStorage("");
+          setFrom("");
+          setTo("");
+          setAssistance("");
+          setShipments([]);
+          setPackages([]);
+        })
+        .catch((error) => {
+          errorNotify("Tạo chuyến xe thất bại");
+        });
     }
-    let packages = shipmentData.map((item) => item.id);
-    shipmentApi
-      .create({
-        from_address: {
-          street: from.address.street,
-          ward: from.address.ward,
-          province: from.address.province,
-          city: from.address.city,
-          longitude: from.address.longitude,
-        },
-        to_address: {
-          street: to.address.street,
-          ward: to.address.ward,
-          province: to.address.province,
-          city: to.address.city,
-          longitude: to.address.longitude,
-        },
-        driver: car.manager.id,
-        assistance: assistance,
-        packages: packages,
-      })
-      .then((response) => {
-        successNotify("Tạo chuyến xe thành công");
-      })
-      .catch((error) => {
-        errorNotify("Tạo chuyến xe thất bại");
-      });
   };
 
   const handleQuickSort = () => {
-    if (Object.keys(validate).length && !shipmentData.length) {
+    let isInvalidAll =
+      Object.keys(validate).length &&
+      packageData.every(
+        (item) => validate[item.id] && item.quantity === validate[item.id],
+      );
+    if (Object.keys(validate).length && !isInvalidAll) {
       let tempShip = [];
       let tempPack = [];
       for (let item of packageData) {
@@ -321,7 +397,6 @@ const Customer = (props) => {
           tempPack.push(unshipPack);
 
           if (unfitPack.quantity - validate[unfitPack.id]) {
-            console.log(validate[unfitPack.id]);
             let shipPack = {
               ...unfitPack,
               quantity: unfitPack.quantity - validate[unfitPack.id],
@@ -330,13 +405,18 @@ const Customer = (props) => {
           }
         }
       }
-      setShipments(tempShip);
+      setShipments([...shipmentData, ...tempShip]);
       setPackages(tempPack);
       setValidate({});
       setExceed(tempPack);
-    } else {
-      setShipments(packageData);
+    } else if (!Object.keys(validate).length || check) {
+      setShipments([...shipmentData, ...packageData]);
+      setPackages([]);
     }
+  };
+
+  const handleValidate = (packages, car) => {
+    setValidate(validateFit(packages, car));
   };
 
   useEffect(() => {
@@ -351,7 +431,7 @@ const Customer = (props) => {
         setAssistances(response[1].staffs);
       })
       .catch((error) => {
-        errorNotify("Có lỗi xảy ra");
+        errorNotify("Có lỗi xảy ra 1");
       });
   }, []);
 
@@ -369,7 +449,7 @@ const Customer = (props) => {
           }
         })
         .catch((error) => {
-          errorNotify("Có lỗi xảy ra");
+          errorNotify("Có lỗi xảy ra 2");
         });
     }
     if (type) {
@@ -403,7 +483,7 @@ const Customer = (props) => {
             setListTo(temp);
           })
           .catch((error) => {
-            errorNotify("Có lỗi xảy ra");
+            errorNotify("Có lỗi xảy ra 3");
           });
       } else if (type === "ship") {
         orderApi
@@ -423,8 +503,8 @@ const Customer = (props) => {
               label: joinAddress(item.to_address),
             }));
             let store = storages.find((item) => item.id === storage);
-            setListFrom(temp);
-            setListTo([
+            setListTo(temp);
+            setListFrom([
               {
                 value: store,
                 label: store.name,
@@ -432,7 +512,7 @@ const Customer = (props) => {
             ]);
           })
           .catch((error) => {
-            errorNotify("Có lỗi xảy ra");
+            errorNotify("Có lỗi xảy ra 4");
           });
       } else {
         let store = storages.find((item) => item.id === storage);
@@ -445,7 +525,7 @@ const Customer = (props) => {
         setListTo(
           storages
             .map((item) => ({
-              value: item.id,
+              value: item,
               label: item.name,
             }))
             .filter((item) => item.value !== storage),
@@ -453,6 +533,25 @@ const Customer = (props) => {
       }
     }
   }, [type, storage]);
+
+  useEffect(() => {
+    if (car && car.shipments) {
+      let temp = car.shipments
+        .map((item) => item.packages)
+        .reduce((total, item) => {
+          return [...total, ...item];
+        }, []);
+      Promise.all(temp.map((item) => packageApi.getDetail(item)))
+        .then((response) => {
+          setPackages(packageData);
+          setShipments(response);
+          handleValidate([...response, ...packageData], car);
+        })
+        .catch((error) => {
+          errorNotify("Có lỗi xảy ra 5");
+        });
+    }
+  }, [car]);
 
   useScroll("detail-header");
 
@@ -503,7 +602,7 @@ const Customer = (props) => {
                   fullWidth
                   label="Loại hình"
                   value={type}
-                  onChange={(e) => setType(e.target.value)}
+                  onChange={(e) => storage && setType(e.target.value)}
                 >
                   {types.map((item) => (
                     <MenuItem value={item.value}>{item.label}</MenuItem>
@@ -567,7 +666,6 @@ const Customer = (props) => {
                     value={car}
                     onChange={(e) => {
                       setCar(e.target.value);
-                      setValidate(validateFit(packageData, e.target.value));
                     }}
                   >
                     {cars.map((item) => (
@@ -608,7 +706,7 @@ const Customer = (props) => {
               Sắp xếp lượng hàng hóa phù hợp cho mỗi chuyến xe
             </Typography>
           </Box>
-          <Grid container>
+          <Grid container className="my-2">
             <Grid item md={6} sm={6} className="p-2">
               <Typography>Thể tích còn lại</Typography>
             </Grid>
@@ -616,6 +714,15 @@ const Customer = (props) => {
               <Typography>Khối lượng còn lại</Typography>
             </Grid>
           </Grid>
+          {(type === "collect" || type === "ship") && (
+            <Box className="d-flex flex-row align-items-center my-2">
+              <Checkbox
+                checked={check}
+                onChange={(e) => setCheck(e.target.checked)}
+              />
+              <Typography>Vận chuyển nhiều lần</Typography>
+            </Box>
+          )}
           <Box className="d-flex flex-row justify-content-between">
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable key="packageDrop" droppableId="packDrop">
@@ -663,7 +770,7 @@ const Customer = (props) => {
                     </Box>
                     {packageData.map((item, index) => (
                       <Draggable
-                        key={item.id}
+                        key={item.id + index.toString()}
                         draggableId={item.id + index.toString()}
                         index={index}
                       >
@@ -709,7 +816,12 @@ const Customer = (props) => {
                                       flip
                                       target={"error-mess-" + index}
                                     >
-                                      Tối đa tách được: {item.quantity - validate[item.id]} kiện
+                                      {item.quantity - validate[item.id] > 0
+                                        ? `Tối đa tách được: 
+                                        ${
+                                          item.quantity - validate[item.id]
+                                        } kiện`
+                                        : "Không thể tách"}
                                     </UncontrolledTooltip>
                                     <Button
                                       className="d-flex flex-row justify-content-center align-items-center p-3"
@@ -728,7 +840,7 @@ const Customer = (props) => {
                             <Collapse isOpen={split === index ? true : false}>
                               <Box
                                 className={clsx(
-                                  "justify-content-center mt-2 py-2 d-flex flex-row",
+                                  "justify-content-center mt-2 py-2 px-1 d-flex flex-row",
                                 )}
                               >
                                 <TextField
