@@ -71,20 +71,6 @@ const Customer = (props) => {
   const [assistance, setAssistance] = useState("");
   const [assistances, setAssistances] = useState([]);
 
-  const types = [
-    {
-      value: "collect",
-      label: "Thu gom hàng",
-    },
-    {
-      value: "ship",
-      label: "Giao hàng",
-    },
-    {
-      value: "interdepart",
-      label: "Vận chuyển liên tỉnh",
-    },
-  ];
   const [type, setType] = useState("");
 
   const [orderData, setOrder] = useState();
@@ -96,6 +82,9 @@ const Customer = (props) => {
   const [quantity, setQuantity] = useState(1);
 
   const [validate, setValidate] = useState({});
+
+  const [curWeight, setCurWeight] = useState(0);
+  const [curVolume, setCurVolume] = useState(0);
 
   const getItemStyle = (isDragging, draggableStyle) => ({
     userSelect: "none",
@@ -206,13 +195,15 @@ const Customer = (props) => {
       return;
     }
 
-    console.log(exceedPackage)
+    console.log(exceedPackage);
 
-    return
+    // console.log(packageData.forEach(item ))
+
+    return;
     if (type === "collect" && !check) {
       if (exceedPackage) {
-        Promise.all(
-          exceedPackage.map((item) =>
+        Promise.all([
+          ...exceedPackage.map((item) =>
             packageApi.update(item.id, {
               ...item,
               len: item.size.len,
@@ -220,7 +211,7 @@ const Customer = (props) => {
               height: item.size.height,
             }),
           ),
-        )
+        ])
           .then((response) => {})
           .catch((error) => {
             errorNotify("Tạo chuyến xe thất bại");
@@ -385,6 +376,8 @@ const Customer = (props) => {
       packageData.every(
         (item) => validate[item.id] && item.quantity === validate[item.id],
       );
+
+    console.log(isInvalidAll, validate);
     if (Object.keys(validate).length && !isInvalidAll && !check) {
       let tempShip = [];
       let tempPack = [];
@@ -421,7 +414,31 @@ const Customer = (props) => {
   };
 
   const handleValidate = (packages, car) => {
-    setValidate(validateFit(packages, car));
+    let unfitPack = validateFit(packages, car);
+    setValidate(unfitPack);
+    let temp = packages.filter((item) =>
+      Object.keys(unfitPack).includes(item.id),
+    );
+
+    let totalWeight = temp.reduce((total, item) => {
+      return total + (item.quantity - unfitPack[item.id]) * item.weight;
+    }, 0);
+
+    let totalVolume = temp.reduce((total, item) => {
+      return (
+        total +
+        (item.quantity - unfitPack[item.id]) *
+          item.size.len *
+          item.size.width *
+          item.size.height
+      );
+    }, 0);
+    setCurWeight(totalWeight);
+    setCurVolume(
+      parseFloat(
+        (totalVolume * 100) / (car.size.len * car.size.width * car.size.height),
+      ).toFixed(2),
+    );
   };
 
   const handleCancel = () => {
@@ -430,15 +447,10 @@ const Customer = (props) => {
   };
 
   useEffect(() => {
-    Promise.all([
-      storageApi.getList(),
-      userApi.getStaffs({
-        type: "Assistance",
-      }),
-    ])
+    storageApi
+      .getList()
       .then((response) => {
-        setStorages(response[0]);
-        setAssistances(response[1].staffs);
+        setStorages(response);
       })
       .catch((error) => {
         errorNotify("Có lỗi xảy ra 1");
@@ -446,23 +458,7 @@ const Customer = (props) => {
   }, []);
 
   useEffect(() => {
-    if (storage) {
-      vehicleApi
-        .getList({
-          "manager.storage": storage,
-          type: type === "interdepart" ? "Container" : "Truck",
-        })
-        .then((response) => {
-          setCars(response);
-          if (response?.shipments && response?.shipments[0]?.assistance?.id) {
-            setAssistance(response?.shipments[0]?.assistance?.id);
-          }
-        })
-        .catch((error) => {
-          errorNotify("Có lỗi xảy ra 2");
-        });
-    }
-    if (type) {
+    if (type && storage) {
       let storeAddress = storages.find((item) => item.id === storage)?.address
         ?.city;
       if (type === "collect") {
@@ -526,24 +522,65 @@ const Customer = (props) => {
           });
       } else {
         let store = storages.find((item) => item.id === storage);
-        // let 
-        setListFrom([
-          {
-            value: store,
-            label: store.name,
-          },
-        ]);
-        setListTo(
-          storages
-            .map((item) => ({
-              value: item,
-              label: item.name,
-            }))
-            .filter((item) => item.value !== storage),
-        );
+        packageApi
+          .getListInStore({
+            storeId: storage,
+            state: 2,
+            page: 0,
+            size: 0,
+          })
+          .then((response) => {
+            let temp = response.map((item) => ({
+              ...item.package,
+              quantity: item.quantity,
+            }));
+            setPackages(temp);
+            setListFrom([
+              {
+                value: store,
+                label: store.name,
+              },
+            ]);
+            setListTo(
+              storages
+                .map((item) => ({
+                  value: item,
+                  label: item.name,
+                }))
+                .filter((item) => item.value.id !== storage),
+            );
+          });
       }
     }
-  }, [type, storage]);
+  }, [type]);
+
+  useEffect(() => {
+    if (storage) {
+      Promise.all([
+        vehicleApi.getList({
+          "manager.storage": storage,
+          // type: type === "interdepart" ? "Container" : "Truck",
+        }),
+        userApi.getStaffs({
+          type: "Assistance",
+          storage: storage,
+        }),
+      ])
+        .then((response) => {
+          setCars(response[0]);
+          if (
+            response[0]?.shipments &&
+            response[0]?.shipments[0]?.assistance?.id
+          ) {
+            setAssistance(response[0]?.shipments[0]?.assistance?.id);
+          }
+          setAssistances(response[1].staffs);
+        })
+        .catch((error) => {
+          errorNotify("Có lỗi xảy ra 2");
+        });
+    }
+  }, [storage]);
 
   useEffect(() => {
     if (car && car.shipments) {
@@ -617,11 +654,13 @@ const Customer = (props) => {
                   fullWidth
                   label="Loại hình"
                   value={type}
-                  onChange={(e) => storage && setType(e.target.value)}
+                  onChange={(e) =>
+                    storage ? setType(e.target.value) : setType("")
+                  }
                 >
-                  {types.map((item) => (
-                    <MenuItem value={item.value}>{item.label}</MenuItem>
-                  ))}
+                  <MenuItem value="collect">Thu gom hàng</MenuItem>
+                  <MenuItem value="ship">Giao hàng</MenuItem>
+                  <MenuItem value="interdepart">Vận chuyển liên tỉnh</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -640,8 +679,8 @@ const Customer = (props) => {
                         setPackages(e.target.value.packages);
                     }}
                   >
-                    {listFrom.map((item) => (
-                      <MenuItem key={item.value} value={item.value}>
+                    {listFrom.map((item, index) => (
+                      <MenuItem key={index} value={item.value}>
                         {item.label}
                       </MenuItem>
                     ))}
@@ -661,8 +700,8 @@ const Customer = (props) => {
                         setPackages(e.target.value.packages);
                     }}
                   >
-                    {listTo.map((item) => (
-                      <MenuItem key={item.value} value={item.value}>
+                    {listTo.map((item, index) => (
+                      <MenuItem key={index} value={item.value}>
                         {item.label}
                       </MenuItem>
                     ))}
@@ -685,7 +724,7 @@ const Customer = (props) => {
                   >
                     {cars.map((item) => (
                       <MenuItem key={item.id} value={item}>
-                        {item.licence}
+                        {`${item.licence} - tải trọng: ${item.load} kg`}
                       </MenuItem>
                     ))}
                   </Select>
@@ -723,10 +762,14 @@ const Customer = (props) => {
           </Box>
           <Grid container className="my-2">
             <Grid item md={6} sm={6} className="p-2">
-              <Typography>Thể tích còn lại</Typography>
+              <Typography>{`Không gian chiếm dụng: ${
+                100 - curVolume
+              }/100 % `}</Typography>
             </Grid>
             <Grid item md={6} sm={6} className="p-2">
-              <Typography>Khối lượng còn lại</Typography>
+              <Typography>{`Khối lượng sau khi xếp: ${
+                car.load || 0 - curWeight
+              }/${car.load || 0} kg`}</Typography>
             </Grid>
           </Grid>
           {(type === "collect" || type === "ship") && (
@@ -849,7 +892,7 @@ const Customer = (props) => {
                                         : "Không thể tách"}
                                     </UncontrolledTooltip>
                                     <Button
-                                      className="d-flex flex-row justify-content-center align-items-center p-3"
+                                      className="d-flex flex-row justify-content-center align-items-center px-3"
                                       color="error"
                                     >
                                       <ErrorOutline

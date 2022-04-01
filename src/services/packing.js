@@ -45,4 +45,8 @@ function validateFit(packages, container) {
   return unfitQuantityResult
 }
 
+function calculateCapacity(packages, container) {
+  
+}
+
 export { validateFit };

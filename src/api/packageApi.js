@@ -18,6 +18,10 @@ class PackageApi {
     const url = process.env.MAIN_URL.concat(`/packages/${id}`);
     return axiosClient.put(url, data);
   };
+  getListInStore = (params) => {
+    const url = process.env.MAIN_URL.concat("/packages/in-storage");
+    return axiosClient.get(url, { params });
+  };
 }
 
 const packageApi = new PackageApi();
