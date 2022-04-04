@@ -45,6 +45,17 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 const routerList = [
+
+  {
+    link: "/dashboard",
+    title: "Bảng điều khiển",
+    icon: <Home />,
+  },
+  {
+    link: "/shipment/arrange",
+    title: "Chuyến xe",
+    icon: <TurnSharpRight />,
+  },
   {
     link: "/customer",
     title: "Khách hàng",
@@ -54,7 +65,7 @@ const routerList = [
   { link: "/order", title: "Đơn hàng", icon: <ListAlt /> },
   { link: "/vehicle", title: "Phương tiện", icon: <LocalShipping /> },
   { link: "/voucher", title: "Khuyến mãi", icon: <ConfirmationNumber /> },
-  { link: "/storage", title: "Kho", icon: <Storage /> },
+  { link: "/storage", title: "Kho hàng", icon: <Storage /> },
 ];
 
 const Sidebar = (props) => {
@@ -91,54 +102,6 @@ const Sidebar = (props) => {
         </IconButton>
       </DrawerHeader>
 
-      <NavLink className="nav-link" to="/dashboard">
-        <ListItem
-          button
-          className="app-primary-color d-flex align-items-center justify-content-center"
-        >
-          {!toggle ? (
-            <>
-              <ListItemIcon className="m-0 w-0">
-                <Home />
-              </ListItemIcon>
-              <ListItemText primary="Bảng điều khiển" />
-            </>
-          ) : (
-            <Home />
-          )}
-        </ListItem>
-      </NavLink>
-
-      <NavLink className="nav-link" to="/shipment/arrange">
-        <ListItem
-          button
-          className="app-primary-color d-flex align-items-center justify-content-center"
-        >
-          {!toggle ? (
-            <>
-              <ListItemIcon className="m-0 w-0">
-                <TurnSharpRight />
-              </ListItemIcon>
-              <ListItemText primary="Chuyến xe" />
-            </>
-          ) : (
-            <TurnSharpRight />
-          )}
-        </ListItem>
-      </NavLink>
-
-      <Box
-        sx={{
-          padding: theme.spacing(0, 4),
-
-          width: "100%",
-        }}
-      >
-        <Divider
-          sx={{ width: "100%", color: "white", borderWidth: 1, opacity: 1 }}
-        />
-      </Box>
-
       {routerList.map((item, index) => (
         <NavLink key={index} className="nav-link" to={item.link}>
           <ListItem
@@ -156,17 +119,6 @@ const Sidebar = (props) => {
           </ListItem>
         </NavLink>
       ))}
-      <Box
-        sx={{
-          padding: theme.spacing(0, 4),
-
-          width: "100%",
-        }}
-      >
-        <Divider
-          sx={{ width: "100%", color: "white", borderWidth: 1, opacity: 1 }}
-        />
-      </Box>
 
       <NavLink className="nav-link" to="/report">
         <ListItem

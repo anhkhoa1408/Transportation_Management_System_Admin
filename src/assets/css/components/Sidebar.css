@@ -42,9 +42,14 @@
 .nav-link .MuiButtonBase-root:hover {
   background-color: var(--app-primary);
   color: var(--white);
-  border-radius: 7px;
-  box-shadow: 0 0 3px 1px;
+  border-radius: 5px;
   transition: 0.3s linear;
+}
+
+.nav-link.active .MuiButtonBase-root:active,
+.nav-link.active .MuiButtonBase-root,
+.nav-link .MuiButtonBase-root {
+  border-radius: 5px;
 }
 
 .nav-link.active .MuiListItemIcon-root,
