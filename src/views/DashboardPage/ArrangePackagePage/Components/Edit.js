@@ -28,7 +28,6 @@ export const Edit = ({
   setFrom,
   listFrom,
   setListFrom,
-  packages,
   setPackages,
   to,
   setTo,
@@ -55,7 +54,9 @@ export const Edit = ({
   }, []);
 
   useEffect(() => {
-    if (type && storage) {
+    setTo("");
+    setCar("")
+    if (type) {
       let storeAddress = storages.find((item) => item.id === storage)?.address
         ?.city;
       if (type === "collect") {
@@ -85,7 +86,6 @@ export const Edit = ({
             ]);
             setListTo(temp);
             setFrom(store);
-            setTo("");
           })
           .catch((error) => {
             errorNotify("Có lỗi xảy ra khi lấy danh sách đơn hàng");
@@ -116,7 +116,6 @@ export const Edit = ({
             ]);
             setListTo(temp);
             setFrom(store);
-            setTo("");
           })
           .catch((error) => {
             errorNotify("Có lỗi xảy ra khi lấy danh sách đơn hàng");
@@ -151,16 +150,17 @@ export const Edit = ({
                 .filter((item) => item.value.id !== storage),
             );
             setFrom(store);
-            setTo("");
           })
-          .catch(error => {
-            errorNotify("Có lỗi xảy ra khi lấy danh sách kiện hàng trong kho")
-          })
+          .catch((error) => {
+            errorNotify("Có lỗi xảy ra khi lấy danh sách kiện hàng trong kho");
+          });
       }
     }
   }, [type]);
 
   useEffect(() => {
+    // setCar("")
+    // setAssistance("")
     if (storage) {
       if (type) {
         let store = storages.find((item) => item.id === storage);
@@ -173,25 +173,35 @@ export const Edit = ({
         setFrom(store);
         setTo("");
       }
-      Promise.all([
-        vehicleApi.getList({
-          "manager.storage": storage,
-          type: type === "interdepart" ? "Container" : "Truck",
-        }),
-        userApi.getStaffs({
+
+      userApi
+        .getStaffs({
           type: "Assistance",
           storage: storage,
-        }),
-      ])
+        })
         .then((response) => {
-          setCars(response[0]);
-          setAssistances(response[1].staffs);
+          setAssistances(response.staffs);
         })
         .catch((error) => {
           errorNotify("Có lỗi xảy ra");
         });
     }
   }, [storage]);
+
+  useEffect(() => {
+    setCar("")
+    setAssistance("")
+    if (storage && type) {
+      vehicleApi
+        .getList({
+          "manager.storage": storage,
+          type: type === "interdepart" ? "Container" : "Truck",
+        })
+        .then((response) => {
+          setCars(response);
+        });
+    }
+  }, [storage, type]);
 
   return (
     <Grid item sm={12} md={12}>

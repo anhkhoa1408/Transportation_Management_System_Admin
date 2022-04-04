@@ -1,52 +1,16 @@
 import {
-  ArrowDropDown,
-  ArrowRight,
-  Check,
-  Close,
-  ErrorOutline,
-  Inventory2,
-  Merge,
-  Search,
-  Sort,
-} from "@mui/icons-material";
-import {
-  Button,
-  Checkbox,
-  Divider,
-  FormControl,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  TextField,
-  Typography,
+  Button, Grid, Paper, Typography
 } from "@mui/material";
-import { Box, keys } from "@mui/system";
-import clsx from "clsx";
-import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import { Collapse, Tooltip, UncontrolledTooltip } from "reactstrap";
-import orderApi from "../../../api/orderApi";
+import packageApi from "../../../api/packageApi";
 import shipmentApi from "../../../api/shipmentApi";
-import storageApi from "../../../api/storageApi";
-import userApi from "../../../api/userApi";
-import vehicleApi from "../../../api/vehicleApi";
-import { joinAddress } from "../../../utils/address";
+import { validateFit } from "../../../services/packing";
 import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../utils/useScroll";
-import * as Bonk from "yup";
-import { validate } from "schema-utils";
-import { validateFit } from "../../../services/packing";
-import packageApi from "../../../api/packageApi";
-import { useHistory } from "react-router-dom";
-import { Edit } from "./Components/Edit";
 import { ArrangePack } from "./Components/ArrangePack";
+import { Edit } from "./Components/Edit";
 
 const Customer = (props) => {
-  const history = useHistory();
 
   const [initial, setInitial] = useState({
     pack: [],
@@ -75,7 +39,6 @@ const Customer = (props) => {
 
   const [type, setType] = useState("");
 
-  const [orderData, setOrder] = useState();
   const [packageData, setPackages] = useState([]);
   const [shipmentData, setShipments] = useState([]);
 
@@ -113,6 +76,10 @@ const Customer = (props) => {
     }
     if (!assistance) {
       errorNotify("Chưa thêm nhân viên hỗ trợ");
+      return;
+    }
+    if (!Object.keys(from).length || !Object.keys(to).length) {
+      errorNotify("Chưa thêm địa chỉ chuyến xe");
       return;
     }
 
@@ -438,11 +405,6 @@ const Customer = (props) => {
   useEffect(() => {
     setExceed([]);
     if (car && car.shipments) {
-      // if (validate) {
-      //   setValidate({})
-      //   setPackages(initial.pack)
-      //   setShipments(initial.ship)
-      // }
       if (car.shipments.length) {
         setAssistance(car.shipments[car.shipments.length - 1].assistance);
       }
