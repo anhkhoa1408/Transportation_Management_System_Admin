@@ -1,15 +1,18 @@
 import { Download } from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Grid, Paper, Typography
-} from "@mui/material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useLocation } from "react-router-dom";
+import {
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledDropdown,
+} from "reactstrap";
 import * as Bonk from "yup";
 import reportApi from "../../../api/reportApi";
+import { exportExcel } from "../../../services/export";
 import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../utils/useScroll";
 import Detail from "./Detail/Detail";
@@ -18,14 +21,14 @@ const ReportDetail = (props) => {
   const location = useLocation();
   const [data, setData] = useState({
     stocker: {
-      name: ""
+      name: "",
     },
     storage: {
       name: "",
-      address: ""
+      address: "",
     },
     total_import: 0,
-    total_export: 0
+    total_export: 0,
   });
 
   const formik = useFormik({
@@ -51,11 +54,25 @@ const ReportDetail = (props) => {
         successNotify("Cập nhật thành công");
         setData({
           ...data,
-          ...response
+          ...response,
         });
       })
       .catch((error) => {
         errorNotify("Cập nhật thất bại");
+      });
+  };
+
+  const handleExport = (type) => {
+    reportApi
+      .createReport(data.storage.id, {
+        type: type,
+      })
+      .then((response) => {
+        exportExcel(response);
+        successNotify("Xuất báo cáo thành công");
+      })
+      .catch((error) => {
+        errorNotify("Xuất báo cáo thất bại");
       });
   };
 
@@ -93,13 +110,30 @@ const ReportDetail = (props) => {
                 </Typography>
               </Grid>
               <Grid item md={4} className="d-flex flex-row justify-content-end">
-                <Button
+                {/* <Button
                   variant="contained"
                   className="app-primary-bg-color me-2"
                   endIcon={<Download />}
+                  onClick={handleExport}
                 >
                   Xuất báo cáo
-                </Button>
+                </Button> */}
+                <UncontrolledDropdown>
+                  <DropdownToggle className="app-primary-bg-color shadow-sm me-2 border-0">
+                    XUẤT BÁO CÁO
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    <DropdownItem onClick={() => handleExport("today")}>
+                      Báo cáo hôm nay
+                    </DropdownItem>
+                    <DropdownItem onClick={() => handleExport("week")}>
+                      Báo cáo tuần
+                    </DropdownItem>
+                    <DropdownItem onClick={() => handleExport("month")}>
+                      Báo cáo tháng
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
                 <Button
                   variant="outlined"
                   color="success"
@@ -113,11 +147,7 @@ const ReportDetail = (props) => {
         </Paper>
       </Grid>
 
-      <Grid
-        item
-        md={12}
-        className="px-4 d-flex flex-column"
-      >
+      <Grid item md={12} className="px-4 d-flex flex-column">
         <Paper className="d-flex flex-column px-4 pt-1 rounded-top col-md-11 align-self-center shadow-none">
           <Box className="px-4">
             <Detail formik={formik} />

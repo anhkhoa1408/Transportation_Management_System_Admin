@@ -15,7 +15,6 @@ import moment from "moment";
 import { joinAddress } from "../../../../utils/address";
 
 function Detail({ formik }) {
-  console.log(formik);
   return (
     <>
       <Grid container md={12} className="mb-4">

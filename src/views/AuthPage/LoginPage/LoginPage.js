@@ -123,10 +123,10 @@ export default function LoginPage() {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Địa chỉ email"
-                name="email"
-                autoComplete="email"
+                // id="email"
+                label="Tên đăng nhập"
+                // name="email"
+                // autoComplete="email"
                 autoFocus
                 value={formik.values.identifier}
                 error={
