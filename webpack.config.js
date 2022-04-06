@@ -12,6 +12,9 @@ module.exports = ({ env }) => ({
     publicPath: "/",
   },
   devtool: "inline-source-map",
+  performance: {
+    hints: false,
+  },
   module: {
     rules: [
       {
