@@ -1,230 +1,212 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Grid,
-  IconButton,
-  Paper,
-  TextField,
-  Typography,
-  Select,
-  MenuItem,
-  Badge,
-} from "@mui/material";
-import ReactTable from "react-table-v6";
-import { Add, Edit, FilterList } from "@mui/icons-material";
-import { CustomPagination } from "../../../components/CustomPagination";
-import { useHistory } from "react-router-dom";
-import img from "./../../../assets/img/delivery.jpg";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
+import clsx from "clsx";
+import { useFormik } from "formik";
+import React, { useEffect, useState } from "react";
+import { connect, useDispatch, useSelector } from "react-redux";
+import { Nav, NavItem, NavLink, TabContent, TabPane } from "reactstrap";
+import * as Bonk from "yup";
+import { saveInfoSuccess } from "../../../actions/actions";
+import userApi from "../../../api/userApi";
+import AvatarUpload from "../../../components/Upload/AvatarUpload";
+import { errorNotify, successNotify } from "../../../utils/notification";
+import { ChangeInfo } from "./Components/ChangeInfo";
+import { ChangePass } from "./Components/ChangePass";
 
 export const AccountPage = (props) => {
-  const [data, setData] = useState([
-    {
-      id: 1,
-      name: "aaa",
-      phone: "aaa",
-      rank: "aaa",
-      dateOfBirth: "14/08/2000",
+  const dispatch = useDispatch();
+
+  const [avatar, setAvatar] = useState(null);
+  const [data, setData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    street: "",
+    ward: "",
+    province: "",
+    city: "",
+  });
+  const [activeTab, setActive] = useState("1");
+  const userInfo = useSelector((state) => state.userInfo);
+
+  const formik = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      ...data,
+      street: data.address.street,
+      ward: data.address.ward,
+      province: data.address.province,
+      city: data.address.city,
     },
-  ]);
+    validationSchema: Bonk.object({
+      name: Bonk.string().required("Thông tin bắt buộc"),
+      phone: Bonk.string().required("Thông tin bắt buộc"),
+      email: Bonk.string().required("Thông tin bắt buộc"),
+    }),
+    onSubmit: (values) => {
+      handleUpdateInfo(values);
+    },
+  });
+
+  const formikPass = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      password: "",
+      currPass: "",
+      confirmPassword: "",
+    },
+    validationSchema: Bonk.object({
+      currPass: Bonk.string().required("Thông tin bắt buộc"),
+      password: Bonk.string()
+        .required("Thông tin bắt buộc")
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])/,
+          "Mật khẩu mới phải tối thiểu 8 ký tự, bao gồm chữ in hoa",
+        )
+        .min(8, "Mật khẩu phải tối thiểu 8 ký tự"),
+      confirmPassword: Bonk.string()
+        .required("Thông tin bắt buộc")
+        .oneOf(
+          [Bonk.ref("password"), null],
+          "Mật khẩu và xác nhận mật khẩu không khớp",
+        )
+        .min(8, "Mật khẩu phải tối thiểu 8 ký tự"),
+    }),
+    onSubmit: (values) => {
+      handleUpdatePassword(values);
+    },
+  });
+
+  const handleUpdateInfo = (values) => {
+    let { street, ward, province, city } = values;
+    userApi
+      .update(data.id, {
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+        address: {
+          ...data.address,
+          street,
+          ward,
+          province,
+          city,
+        },
+      })
+      .then((response) => {
+        setData(response);
+        console.log(response);
+        dispatch(
+          saveInfoSuccess({
+            ...userInfo,
+            user: response,
+          }),
+        );
+        successNotify("Cập nhật thành công");
+      })
+      .catch((error) => {
+        errorNotify("Cập nhật thất bại");
+      });
+    if (avatar && avatar.path) {
+      userApi
+        .updateAvatar(avatar, data.id, data?.avatar?.id)
+        .then((response) => {
+          setAvatar(process.env.MAIN_URL + response.avatar.url);
+          successNotify("Cập nhật ảnh đại diện thành công");
+        })
+        .catch((error) => {
+          errorNotify("Cập nhật ảnh đại diện thất bại");
+        });
+    }
+  };
+
+  const handleUpdatePassword = (values) => {
+    userApi
+      .changePassword(data.id, {
+        password: values.currPass,
+        newPassword: values.password,
+      })
+      .then((response) => {
+        setData(response);
+        successNotify("Cập nhật thành công");
+      })
+      .catch((error) => {
+        errorNotify("Cập nhật thất bại");
+      });
+  };
+
+  useEffect(() => {
+    if (userInfo) {
+      setData(userInfo.user);
+      if (userInfo.user.avatar.url) {
+        setAvatar(process.env.MAIN_URL + userInfo.user.avatar.url);
+      }
+    }
+  }, [userInfo]);
 
   return (
-    <Box className="p-4">
-      <Grid container className="p-4" direction="column">
-        <Grid item md={12} className="d-flex flex-column">
-          <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center">
-            <Box className="d-flex flex-row align-items-center px-5 py-2">
-              <Badge
-                className="me-4"
-                overlap="circular"
-                anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                badgeContent={
-                  <Box
-                    className="btn app-primary-bg-color p-1"
-                    sx={{ borderRadius: "50px" }}
-                  >
-                    <Edit className="text-white" size="small" />
-                  </Box>
-                }
+    <Box className="px-5 py-4">
+      <Grid
+        item
+        md={12}
+        sm={12}
+        className="d-flex flex-column p-4 d-flex flex-column"
+      >
+        <Paper className="d-flex flex-column pt-2 px-4 rounded-top w-100 align-self-center shadow-sm">
+          <Box className="d-flex flex-row align-items-center px-4 py-2">
+            <AvatarUpload avatar={avatar} setAvatar={setAvatar} />
+            <Box className="flex-grow-1">
+              <Typography variant="h5">{data.name || "[Họ và tên]"}</Typography>
+              <Typography
+                variant="h5"
+                className="fs-6 mt-2 text-success fw-bold"
               >
-                <Avatar
-                  sx={{
-                    width: 80,
-                    height: 80,
-                  }}
-                />
-              </Badge>
-              <Box className="flex-grow-1">
-                <Typography className="fs-2">Xin chào</Typography>
-                <Typography variant="h5" className="fs-6 mt-1 fw-bold">
-                  Nguyễn Anh Khoa
-                </Typography>
-              </Box>
+                {/* {handleUserRole(data.type)} */}
+              </Typography>
             </Box>
-            <Box className="px-5 py-2">
-              <Grid container direction="column">
-                <Box className="d-flex flex-row mt-3 mb-4 align-items-center justify-content-between">
-                  <Typography className="fs-5 fw-bold">
-                    Thông tin cá nhân
-                  </Typography>
-                  <Button variant="outlined">Lưu lại</Button>
-                </Box>
-                <Grid container md={12} className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Họ và tên</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Họ và tên"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Địa chỉ email</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Email"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Số điện thoại</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Số điện thoại"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Địa chỉ</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Địa chỉ"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-              <Grid container spacing={1} direction="column">
-                <Box className="d-flex flex-row mt-3 mb-4 align-items-center justify-content-between">
-                  <Typography className="fs-5 fw-bold">Đổi mật khẩu</Typography>
-                  <Button variant="outlined">Xác nhận</Button>
-                </Box>
-                <Grid container md={12} className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Mật khẩu hiện tại</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      type="password"
-                      label="Mật khẩu hiện tại"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Mật khẩu mới</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      type="password"
-                      label="Mật khẩu mới"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Xác nhận mật khẩu</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      type="password"
-                      label="Xác nhận mật khẩu"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Box>
-          </Paper>
-        </Grid>
+          </Box>
+          <Box className="px-4 py-2">
+            <Nav tabs className="my-2 border-none">
+              <NavItem>
+                <NavLink
+                  className={clsx("cursor-pointer", {
+                    active: activeTab === "1",
+                  })}
+                  onClick={() => setActive("1")}
+                >
+                  Thông tin chi tiết
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink
+                  className={clsx("cursor-pointer", {
+                    active: activeTab === "2",
+                  })}
+                  onClick={() => setActive("2")}
+                >
+                  Mật khẩu
+                </NavLink>
+              </NavItem>
+            </Nav>
+          </Box>
+
+          <Box className="px-5 py-2"></Box>
+        </Paper>
+      </Grid>
+
+      <Grid item md={12} sm={12} className="px-4 py-2">
+        <Paper className="p-2 w-100 shadow-sm">
+          <Box className="px-5 py-2">
+            <TabContent activeTab={activeTab}>
+              <TabPane tabId="1">
+                <ChangeInfo formik={formik} />
+              </TabPane>
+
+              <TabPane tabId="2">
+                <ChangePass formik={formikPass} />
+              </TabPane>
+            </TabContent>
+          </Box>
+        </Paper>
       </Grid>
     </Box>
   );
