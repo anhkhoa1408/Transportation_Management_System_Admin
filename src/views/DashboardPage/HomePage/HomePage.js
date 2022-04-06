@@ -15,10 +15,12 @@ import {
   SpeedDialIcon,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
+import homeApi from "../../../api/homeApi";
+import { errorNotify } from "../../../utils/notification";
 
 export const HomePage = (props) => {
   const history = useHistory();
@@ -31,6 +33,14 @@ export const HomePage = (props) => {
     { icon: <Archive color="primary" />, name: "Đơn hàng", link: "/order" },
     { icon: <Chat color="primary" />, name: "Phản hồi", link: "/feedback" },
   ];
+
+  const [data, setData] = useState({
+    quarterlyIncome: 0,
+    yearlyIncome: 0,
+    currentOrder: 0,
+    unshipOrder: 0,
+  });
+
   const [option, setOption] = useState({
     chart: {
       id: "basic-bar",
@@ -39,12 +49,20 @@ export const HomePage = (props) => {
       categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
     },
   });
+
+  useEffect(() => {
+    homeApi
+      .getStatus()
+      .then((response) => setData(response))
+      .catch((error) => errorNotify("Có lỗi xảy ra"));
+  }, []);
+
   return (
     <Box className="d-flex flex-column w-100 p-4">
       <Container maxWidth="xl" className="mb-5">
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} sm={12} lg={3}>
-            <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-success border-5">
+            <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-success border-5 shadow-sm rounded-0">
               <Box component="div" className="flex-grow-1">
                 <Typography
                   variant="h5"
@@ -53,14 +71,14 @@ export const HomePage = (props) => {
                   Thu nhập hằng quý
                 </Typography>
                 <Typography variant="h5" className="fs-4 fw-bold opacity-75">
-                  $40,000
+                  ${data.quarterlyIncome}
                 </Typography>
               </Box>
               <Paid sx={{ fontSize: 33, opacity: 0.3 }} />
             </Paper>
           </Grid>
           <Grid item xs={12} md={6} sm={12} lg={3}>
-            <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-warning border-5">
+            <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-warning border-5 shadow-sm rounded-0">
               <Box component="div" className="flex-grow-1">
                 <Typography
                   variant="h5"
@@ -69,14 +87,14 @@ export const HomePage = (props) => {
                   Thu nhập hằng năm
                 </Typography>
                 <Typography variant="h5" className="fs-4 fw-bold opacity-75">
-                  $1,000,000
+                  ${data.yearlyIncome}
                 </Typography>
               </Box>
               <CalendarToday sx={{ fontSize: 33, opacity: 0.3 }} />
             </Paper>
           </Grid>
           <Grid item xs={12} md={6} sm={12} lg={3}>
-            <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-primary border-5">
+            <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-primary border-5 shadow-sm rounded-0">
               <Box component="div" className="flex-grow-1">
                 <Typography
                   variant="h5"
@@ -85,14 +103,14 @@ export const HomePage = (props) => {
                   Đơn hàng hiện tại
                 </Typography>
                 <Typography variant="h5" className="fs-4 fw-bold opacity-75">
-                  30
+                  {data.currentOrder}
                 </Typography>
               </Box>
               <Archive sx={{ fontSize: 33, opacity: 0.3 }} />
             </Paper>
           </Grid>
           <Grid item xs={12} md={6} sm={12} lg={3}>
-            <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-danger border-5">
+            <Paper className="px-3 py-4 d-flex flex-row align-items-center border-start border-danger border-5 shadow-sm rounded-0">
               <Box component="div" className="flex-grow-1">
                 <Typography
                   variant="h5"
@@ -101,7 +119,7 @@ export const HomePage = (props) => {
                   Đơn hàng còn lại
                 </Typography>
                 <Typography variant="h5" className="fs-4 fw-bold opacity-75">
-                  12
+                  {data.unshipOrder}
                 </Typography>
               </Box>
               <Archive sx={{ fontSize: 33, opacity: 0.3 }} />
@@ -114,7 +132,7 @@ export const HomePage = (props) => {
         <Grid container>
           <Grid item sm={12} md={12} lg={12}>
             <Paper
-              className="p-4"
+              className="p-4 shadow-sm"
               sx={{
                 background: "#F8F9FA",
                 borderBottomLeftRadius: 0,
@@ -126,7 +144,7 @@ export const HomePage = (props) => {
               </Typography>
             </Paper>
             <Paper
-              className="p-4"
+              className="p-4 shadow-sm"
               sx={{
                 borderTopLeftRadius: 0,
                 borderTopRightRadius: 0,
