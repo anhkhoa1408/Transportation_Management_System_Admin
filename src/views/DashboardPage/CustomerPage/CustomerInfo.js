@@ -212,8 +212,8 @@ const Customer = (props) => {
                   <Typography className="fs-5 fw-bold">
                     Thông tin người dùng
                   </Typography>
-                  <Button variant="outlined" onClick={formik.submitForm}>
-                    Lưu lại
+                  <Button variant="outlined" color="success" onClick={formik.submitForm}>
+                    Lưu
                   </Button>
                 </Box>
                 <Detail formik={formik} />

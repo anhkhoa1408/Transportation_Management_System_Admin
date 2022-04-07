@@ -132,7 +132,7 @@ const OrderDetail = (props) => {
                   Lưu
                 </Button>
                 <UncontrolledDropdown direction="left">
-                  <DropdownToggle className="app-primary-bg-color py-1">
+                  <DropdownToggle className="app-primary-bg-color py-1 shadow-sm border-0">
                     TUỲ CHỌN
                     <ArrowDropDown />
                   </DropdownToggle>

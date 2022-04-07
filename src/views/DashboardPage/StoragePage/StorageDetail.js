@@ -138,11 +138,11 @@ const StorageDetail = (props) => {
                     className="d-flex flex-row justify-content-end"
                   >
                     <Button
-                      variant="contained"
-                      className="app-primary-bg-color"
+                      variant="outlined"
+                      color="success"
                       onClick={formik.submitForm}
                     >
-                      Lưu lại
+                      Lưu
                     </Button>
                   </Grid>
                 </Grid>

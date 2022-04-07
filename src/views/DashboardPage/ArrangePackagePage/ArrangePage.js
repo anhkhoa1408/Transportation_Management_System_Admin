@@ -436,10 +436,10 @@ const Customer = (props) => {
       <Grid item sm={12} md={12} className="pt-4 header-sticky">
         <Paper
           id="detail-header"
-          className="d-flex flex-row justify-content-between align-items-center px-4 py-3 shadow-sm mb-4"
+          className="d-flex flex-row justify-content-between align-items-center px-4 py-3 shadow mb-4"
         >
           <Typography variant="h5">Sắp xếp</Typography>
-          <Button onClick={handleCreate}>Tạo</Button>
+          <Button onClick={handleCreate} variant="outlined">Tạo</Button>
         </Paper>
       </Grid>
 

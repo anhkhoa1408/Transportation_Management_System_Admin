@@ -248,8 +248,8 @@ const VehicleDetail = (props) => {
                 }
                 <Button
                   onClick={formik.submitForm}
-                  variant="contained"
-                  className="app-primary-bg-color"
+                  variant="outlined"
+                  color="success"
                 >
                   Lưu
                 </Button>
