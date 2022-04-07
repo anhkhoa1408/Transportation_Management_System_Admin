@@ -130,17 +130,22 @@ const StaffInfo = (props) => {
       });
   };
 
-  const handleDelete = () => {
+  const handleBlock = (value) => {
     if (location?.state?.id) {
       setAlert(null);
       userApi
-        .delete(location.state.id)
+        .update(location.state.id, {
+          ...data,
+          blocked: value,
+        })
         .then((response) => {
-          history.push("/staff");
-          successNotify("Xóa người dùng thành công");
+          setData(response);
+          successNotify(
+            `${value ? "Khóa" : "Kích hoạt"} tài khoản thành công`,
+          );
         })
         .catch((error) => {
-          errorNotify("Xóa người dùng thất bại");
+          errorNotify(`${value ? "Khóa" : "Kích hoạt"} tài khoản thất bại`);
         });
     }
   };
@@ -149,10 +154,12 @@ const StaffInfo = (props) => {
     setAlert(
       <ConfirmAlert
         onClose={() => setAlert(null)}
-        onConfirm={handleDelete}
+        onConfirm={() => handleBlock(data.blocked ? false : true)}
         confirmBtnText={"Chấp nhận"}
         cancelBtnText={"Hủy bỏ"}
-        title="Bạn có thật sự muốn xóa người dùng này không ?"
+        title={`Bạn có thật sự muốn ${
+          data.blocked ? "kích hoạt" : "khóa"
+        } tài khoản này không ?`}
       />,
     );
   };
@@ -190,20 +197,8 @@ const StaffInfo = (props) => {
                 {handleUserRole(data.type)}
               </Typography>
             </Box>
-            <Button
-              variant="outlined"
-              color="error"
-              className="me-3"
-              onClick={handleConfirm}
-            >
-              Xoá người dùng
-            </Button>
-            <Button
-              variant="contained"
-              className="app-primary-bg-color"
-              onClick={formik.submitForm}
-            >
-              Lưu
+            <Button variant="outlined" color={data.blocked ? "success" : "error"} onClick={handleConfirm}>
+              {data.blocked ? "kích hoạt" : "khóa"}
             </Button>
           </Box>
           <Box className="px-5 py-2">
@@ -240,9 +235,14 @@ const StaffInfo = (props) => {
           <Box className="px-5">
             <TabContent activeTab={activeTab}>
               <TabPane tabId="1">
-                <Typography className="fs-5 fw-bold py-3 mb-4 w-100 border-bottom">
-                  Thông tin người dùng
-                </Typography>
+                <Box className="d-flex flex-row py-3 mb-4 align-items-center justify-content-between border-bottom">
+                  <Typography className="fs-5 fw-bold">
+                    Thông tin người dùng
+                  </Typography>
+                  <Button variant="outlined" onClick={formik.submitForm}>
+                    Lưu lại
+                  </Button>
+                </Box>
                 <Detail formik={formik} storage={storage} />
               </TabPane>
 

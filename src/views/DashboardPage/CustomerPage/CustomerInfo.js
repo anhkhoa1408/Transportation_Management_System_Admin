@@ -1,8 +1,4 @@
-import {
-  Box,
-  Button,
-  Grid, Paper, Typography
-} from "@mui/material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import clsx from "clsx";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -60,7 +56,7 @@ const Customer = (props) => {
         email: values.email,
         phone: values.phone,
         type: values.type,
-        birthday: values.birthday
+        birthday: values.birthday,
       })
       .then((response) => {
         setData(response);
@@ -111,17 +107,22 @@ const Customer = (props) => {
   //     });
   // };
 
-  const handleDelete = () => {
+  const handleBlock = (value) => {
     if (location?.state?.id) {
       setAlert(null);
       userApi
-        .delete(location.state.id)
+        .update(location.state.id, {
+          ...data,
+          blocked: value,
+        })
         .then((response) => {
-          history.push("/customer");
-          successNotify("Xóa người dùng thành công");
+          setData(response);
+          successNotify(
+            `${value ? "Khóa" : "Kích hoạt"} tài khoản thành công`,
+          );
         })
         .catch((error) => {
-          errorNotify("Xóa người dùng thất bại");
+          errorNotify(`${value ? "Khóa" : "Kích hoạt"} tài khoản thất bại`);
         });
     }
   };
@@ -130,10 +131,12 @@ const Customer = (props) => {
     setAlert(
       <ConfirmAlert
         onClose={() => setAlert(null)}
-        onConfirm={handleDelete}
+        onConfirm={() => handleBlock(data.blocked ? false : true)}
         confirmBtnText={"Chấp nhận"}
         cancelBtnText={"Hủy bỏ"}
-        title="Bạn có thật sự muốn xóa người dùng này không ?"
+        title={`Bạn có thật sự muốn ${
+          data.blocked ? "kích hoạt" : "khóa"
+        } tài khoản này không ?`}
       />,
     );
   };
@@ -153,8 +156,8 @@ const Customer = (props) => {
     <Grid container className="px-5 py-4">
       {alert}
       <Grid item md={12} sm={12} className="p-4 d-flex flex-column">
-        <Paper className="d-flex flex-column pt-2 px-4 rounded-top w-100 align-self-center shadow-sm">
-          <Box className="d-flex flex-row align-items-center px-4 py-2">
+        <Paper className="d-flex flex-column p-2 rounded-top w-100 align-self-center shadow-sm">
+          <Box className="d-flex flex-row align-items-center px-5 py-2">
             <AvatarUpload avatar={avatar} setAvatar={setAvatar} />
             <Box className="flex-grow-1">
               <Typography variant="h5">
@@ -167,23 +170,11 @@ const Customer = (props) => {
                 {handleUserRole(data.type)}
               </Typography>
             </Box>
-            <Button
-              variant="outlined"
-              color="error"
-              className="me-3"
-              onClick={handleConfirm}
-            >
-              Xoá người dùng
-            </Button>
-            <Button
-              variant="contained"
-              className="app-primary-bg-color"
-              onClick={formik.submitForm}
-            >
-              Lưu
+            <Button variant="outlined" color={data.blocked ? "success" : "error"} onClick={handleConfirm}>
+              {data.blocked ? "kích hoạt" : "khóa"}
             </Button>
           </Box>
-          <Box className="px-4 py-2">
+          <Box className="px-5 py-2">
             <Nav tabs className="my-2 border-none">
               <NavItem>
                 <NavLink
@@ -217,9 +208,14 @@ const Customer = (props) => {
           <Box className="px-5">
             <TabContent activeTab={activeTab}>
               <TabPane tabId="1">
-                <Typography className="fs-5 fw-bold py-3 mb-4 w-100 border-bottom">
-                  Thông tin người dùng
-                </Typography>
+                <Box className="d-flex flex-row py-3 mb-4 align-items-center justify-content-between border-bottom">
+                  <Typography className="fs-5 fw-bold">
+                    Thông tin người dùng
+                  </Typography>
+                  <Button variant="outlined" onClick={formik.submitForm}>
+                    Lưu lại
+                  </Button>
+                </Box>
                 <Detail formik={formik} />
               </TabPane>
 
@@ -227,8 +223,6 @@ const Customer = (props) => {
                 <Typography className="fs-5 fw-bold py-3 mb-4 w-100 border-bottom">
                   Đơn hàng
                 </Typography>
-                {/* <Detail formik={formik} storage={storage} /> */}
-                {/* <FurloughList id={location?.state?.id} /> */}
                 <CustomerOrderList />
               </TabPane>
             </TabContent>
