@@ -17,11 +17,11 @@ import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import * as Bonk from "yup";
 import { saveInfoSuccess } from "../../../actions/actions";
+import Loading from "../../../components/Loading";
 import img from "./../../../../src/assets/img/delivery.jpg";
 import LOGO from "./../../../../src/assets/img/logo.png";
 import authApi from "./../../../api/authApi";
 import { errorNotify } from "./../../../utils/notification.js";
-import Loading from "../../../components/Loading";
 
 function Copyright(props) {
   return (
@@ -46,7 +46,7 @@ const theme = createTheme();
 export default function LoginPage() {
   const dispatch = useDispatch();
   const history = useHistory();
-  const [loading, setLoading] = useState(null)
+  const [loading, setLoading] = useState(null);
 
   const [data, setData] = useState({
     identifier: "",
@@ -66,17 +66,17 @@ export default function LoginPage() {
   });
 
   const handleSubmit = (values) => {
-    setLoading(<Loading />)
+    setLoading(<Loading />);
     authApi
       .login(values)
       .then((response) => {
-        setLoading(null)
+        setLoading(null);
         dispatch(saveInfoSuccess(response));
         history.push("/dashboard");
       })
       .catch((error) => {
-        setLoading(null)
-        errorNotify("Đăng nhập thất bại")
+        setLoading(null);
+        errorNotify("Đăng nhập thất bại");
       });
   };
 
@@ -177,7 +177,7 @@ export default function LoginPage() {
               >
                 Đăng nhập
               </Button>
-              
+
               <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>

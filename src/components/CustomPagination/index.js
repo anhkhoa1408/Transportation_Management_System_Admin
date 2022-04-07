@@ -23,7 +23,7 @@ export const CustomPagination = (props) => {
   return (
     <Grid container className="mt-4">
       <Grid item md={3} className="d-flex flex-row align-items-center">
-        <UncontrolledDropdown direction="up">
+        <UncontrolledDropdown direction="right">
           <Paper className="d-flex flex-row align-items-center p-2 shadow-sm">
             <DropdownToggle className="bg-white d-flex flex-row align-items-center d-25 border-white p-0 shadow-none">
               <Typography className="me-1 text-dark">
@@ -37,7 +37,10 @@ export const CustomPagination = (props) => {
           <DropdownMenu>
             {[5, 10, 15, 20].map((item) => (
               <DropdownItem
-                className="w-100 pe-5"
+                className="w-100"
+                style={{
+                  minWidth: 120
+                }}
                 key={item}
                 onClick={() => handleChangePageSize(item)}
               >

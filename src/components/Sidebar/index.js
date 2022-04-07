@@ -1,30 +1,22 @@
-import React from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import MuiDrawer from "@mui/material/Drawer";
-import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { NavLink } from "react-router-dom";
-import { Box } from "@mui/system";
-import {
-  Home,
-  ChevronLeft,
-  ChevronRight,
-  AccountCircle,
-  ListAlt,
-  LocalShipping,
-  ConfirmationNumber,
-  Storage,
-  ModeComment,
-  Description,
-  People,
-  TurnSharpRight,
-} from "@mui/icons-material";
+import { styled } from "@mui/material/styles";
+import React from "react";
 import { connect } from "react-redux";
+import { NavLink } from "react-router-dom";
 import { toggleSidebar } from "../../actions/actions";
+import { store } from "../../config/configureStore";
 import "./../../assets/css/components/Sidebar.css";
+import {
+  adminSidebar,
+  customerSidebar,
+  driverSidebar,
+  storekeeperSidebar,
+} from "./../../routes/routesList/sidebarRouter";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -44,32 +36,31 @@ const Drawer = styled(MuiDrawer, {
   height: "100vh",
 }));
 
-const routerList = [
-
-  {
-    link: "/dashboard",
-    title: "Bảng điều khiển",
-    icon: <Home />,
-  },
-  {
-    link: "/shipment/arrange",
-    title: "Chuyến xe",
-    icon: <TurnSharpRight />,
-  },
-  {
-    link: "/customer",
-    title: "Khách hàng",
-    icon: <AccountCircle />,
-  },
-  { link: "/staff", title: "Nhân viên", icon: <People /> },
-  { link: "/order", title: "Đơn hàng", icon: <ListAlt /> },
-  { link: "/vehicle", title: "Phương tiện", icon: <LocalShipping /> },
-  { link: "/voucher", title: "Khuyến mãi", icon: <ConfirmationNumber /> },
-  { link: "/storage", title: "Kho hàng", icon: <Storage /> },
-];
+const routerList = () => {
+  let data = store.getState().userInfo;
+  let sidebarData = [];
+  if (data && data.user && data.user.role) {
+    switch (data.user.role.name) {
+      case "Admin":
+        sidebarData = adminSidebar;
+        break;
+      case "Stocker":
+        sidebarData = storekeeperSidebar;
+        break;
+      case "Driver":
+        sidebarData = driverSidebar;
+        break;
+      case "Customer":
+        sidebarData = customerSidebar;
+        break;
+      default:
+        sidebarData = [];
+    }
+  }
+  return sidebarData;
+};
 
 const Sidebar = (props) => {
-  const theme = useTheme();
   const { toggle, handleToggleSideBar } = props;
 
   const handleToggle = () => {
@@ -102,7 +93,7 @@ const Sidebar = (props) => {
         </IconButton>
       </DrawerHeader>
 
-      {routerList.map((item, index) => (
+      {routerList().map((item, index) => (
         <NavLink key={index} className="nav-link" to={item.link}>
           <ListItem
             button
@@ -119,42 +110,6 @@ const Sidebar = (props) => {
           </ListItem>
         </NavLink>
       ))}
-
-      <NavLink className="nav-link" to="/report">
-        <ListItem
-          button
-          className="app-primary-color d-flex align-items-center justify-content-center"
-        >
-          {!toggle ? (
-            <>
-              <ListItemIcon className="m-0 w-0">
-                <Description />
-              </ListItemIcon>
-              <ListItemText primary="Báo cáo định kỳ" />
-            </>
-          ) : (
-            <Description />
-          )}
-        </ListItem>
-      </NavLink>
-
-      <NavLink className="nav-link" to="/feedback">
-        <ListItem
-          button
-          className="app-primary-color d-flex align-items-center justify-content-center"
-        >
-          {!toggle ? (
-            <>
-              <ListItemIcon className="m-0 w-0">
-                <ModeComment />
-              </ListItemIcon>
-              <ListItemText primary="Phản hồi" />
-            </>
-          ) : (
-            <ModeComment />
-          )}
-        </ListItem>
-      </NavLink>
     </Drawer>
   );
 };

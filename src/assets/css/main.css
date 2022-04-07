@@ -43,7 +43,6 @@ body {
   max-height: inherit;
   box-shadow: 0 0px 10px 0 rgba(0,0,0,0.1);
   border: none;
-  /* right: 12px !important; */
   z-index: 10;
 }
 

@@ -70,6 +70,7 @@ const VoucherDetail = lazy(() => import("./../../views/DashboardPage/VoucherPage
 const AccountPage = lazy(() =>
   import("./../../views/AuthPage/AccountPage/AccountPage"),
 );
+
 const ArrangePage = lazy(() =>
   import("./../../views/DashboardPage/ArrangePackagePage/ArrangePage"),
 );

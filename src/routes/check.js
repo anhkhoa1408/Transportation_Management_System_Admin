@@ -1,6 +1,8 @@
 import { store } from "../config/configureStore";
 import { adminRouter } from "./routesList/adminRouter";
-// import { storekeeperRouter } from "./routesList/storekeeperRouter";
+import { customerRouter } from "./routesList/customerRouter";
+import { driverRouter } from "./routesList/driverRouter";
+import { storekeeperRouter } from "./routesList/storekeeperRouter";
 
 function isLoggedIn() {
   let data = store.getState().userInfo;
@@ -12,16 +14,20 @@ function isLoggedIn() {
 
 function acceptedRoute() {
   let data = store.getState().userInfo;
-  if (data && data.user) {
-    switch (data.user.type) {
+  if (data && data.user && data.user.role) {
+    switch (data.user.role.name) {
       case "Admin":
         return adminRouter;
       case "Stocker":
-        return [];
+        return storekeeperRouter;
+      case "Driver":
+        return driverRouter;
+      case "Customer":
+        return customerRouter;
       default:
         return [];
     }
   }
 }
-
 export { isLoggedIn, acceptedRoute };
+
