@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import storageApi from "../../../api/storageApi";
 import { errorNotify, successNotify } from "../../../utils/notification";
@@ -20,9 +20,13 @@ import { joinAddress } from "../../../utils/address";
 import moment from "moment";
 import userApi from "../../../api/userApi";
 import TimePicker from "../../../components/DatePicker";
+import AdminDetail from "./Detail/AdminDetail";
+import StockerDetail from "./Detail/StockerDetail";
 
 const StorageDetail = (props) => {
   const location = useLocation();
+  const userInfo = useSelector((state) => state.userInfo.user);
+  const { role } = userInfo;
   const [data, setData] = useState({
     name: "",
     address: "",
@@ -49,7 +53,7 @@ const StorageDetail = (props) => {
     }),
     onSubmit: (values) => {
       if (location?.state?.create) {
-        handleCreate(values)
+        handleCreate(values);
       } else {
         handleSubmit(values);
       }
@@ -61,10 +65,8 @@ const StorageDetail = (props) => {
       .update(location.state.id, {
         ...values,
         store_managers: selectStockers,
-        
       })
       .then((response) => {
-        console.log(response);
         successNotify("Cập nhật thành công");
         setData(response);
         setSelectStockers(response.store_managers.map((item) => item.id));
@@ -79,7 +81,7 @@ const StorageDetail = (props) => {
       .create({
         store_managers: selectStockers,
         name: values.name,
-        size: values.size
+        size: values.size,
       })
       .then((response) => {
         console.log(response);
@@ -101,9 +103,11 @@ const StorageDetail = (props) => {
     if (location?.state?.id) {
       Promise.all([
         storageApi.getDetail(location.state.id),
-        userApi.getStaffs({
-          type: "Stocker",
-        }),
+        role.name === "Admin"
+          ? userApi.getStaffs({
+              type: "Stocker",
+            })
+          : [],
       ]).then((response) => {
         setData(response[0]);
         setDate(response[0].createdAt);
@@ -111,11 +115,13 @@ const StorageDetail = (props) => {
         setStockers(response[1].staffs);
       });
     } else {
-      userApi.getStaffs({
-        type: "Stocker",
-      }).then((response) => {
-        setStockers(response.staffs);
-      });
+      userApi
+        .getStaffs({
+          type: "Stocker",
+        })
+        .then((response) => {
+          setStockers(response.staffs);
+        });
     }
   }, []);
 
@@ -125,159 +131,42 @@ const StorageDetail = (props) => {
         <Grid item md={12} className="d-flex flex-column">
           <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center shadow-sm">
             <Box className="px-5 py-2">
-              <Grid container spacing={1} direction="column">
-                <Grid container className="mt-3 mb-4">
-                  <Grid item md={8}>
-                    <Typography className="fs-5 fw-bold">
-                      Thông tin kho
-                    </Typography>
-                  </Grid>
-                  <Grid
-                    item
-                    md={4}
-                    className="d-flex flex-row justify-content-end"
-                  >
-                    <Button
-                      variant="outlined"
-                      color="success"
-                      onClick={formik.submitForm}
-                    >
-                      Lưu
-                    </Button>
-                  </Grid>
+              <Grid container className="mt-3 mb-4">
+                <Grid item md={8}>
+                  <Typography className="fs-5 fw-bold">
+                    Thông tin kho
+                  </Typography>
                 </Grid>
-
-                <Grid container md={12} className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
+                <Grid
+                  item
+                  md={4}
+                  className="d-flex flex-row justify-content-end"
+                >
+                  <Button
+                    variant="outlined"
+                    color="success"
+                    onClick={formik.submitForm}
                   >
-                    <Typography>Tên kho</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Tên kho"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                      {...formik.getFieldProps("name")}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Địa chỉ</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      {...formik.getFieldProps("address")}
-                      fullWidth
-                      label="Địa chỉ"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                      value={
-                        formik.values.address &&
-                        joinAddress(formik.values.address)
-                      }
-                      disabled
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Diện tích</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      type="number"
-                      fullWidth
-                      label="Diện tích"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="start">m²</InputAdornment>
-                        ),
-                      }}
-                      {...formik.getFieldProps("size")}
-                    />
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Thủ kho</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <Select
-                      multiple
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      fullWidth
-                      label="Loại"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                      value={selectStockers}
-                      onChange={handleChangeStocker}
-                    >
-                      {stockers.length &&
-                        stockers.map((item, index) => (
-                          <MenuItem key={index} value={item.id}>
-                            {item.name}
-                          </MenuItem>
-                        ))}
-                    </Select>
-                  </Grid>
-                </Grid>
-                <Grid container className="mb-4">
-                  <Grid
-                    item
-                    md={3}
-                    className="align-items-center d-flex flex-row"
-                  >
-                    <Typography>Ngày thành lập</Typography>
-                  </Grid>
-                  <Grid item md={9}>
-                    <TextField
-                      fullWidth
-                      label="Ngày thành lập"
-                      inputProps={{
-                        style: {
-                          backgroundColor: "#F8F9FA",
-                        },
-                      }}
-                      {...formik.getFieldProps("createdAt")}
-                      value={moment(formik.values.createdAt).format(
-                        "DD/MM/YYYY",
-                      )}
-                    />
-                  </Grid>
+                    Lưu
+                  </Button>
                 </Grid>
               </Grid>
+
+              {role.name === "Admin" ? (
+                <AdminDetail
+                  formik={formik}
+                  stockers={stockers}
+                  selectStockers={selectStockers}
+                  handleChangeStocker={handleChangeStocker}
+                />
+              ) : (
+                <StockerDetail
+                  formik={formik}
+                  stockers={stockers}
+                  selectStockers={selectStockers}
+                  handleChangeStocker={handleChangeStocker}
+                />
+              )}
             </Box>
           </Paper>
         </Grid>

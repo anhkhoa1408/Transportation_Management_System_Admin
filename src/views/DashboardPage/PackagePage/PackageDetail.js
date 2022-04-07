@@ -6,7 +6,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import * as Bonk from "yup";
 import packageApi from "../../../api/packageApi";
 import { errorNotify, successNotify } from "../../../utils/notification";
-import useScroll from "../../../utils/useScroll";
+import useScroll from "../../../hooks/useScroll";
 import Detail from "./Detail/Detail";
 
 const PackageDetail = (props) => {

@@ -1,8 +1,4 @@
-import {
-  Box,
-  Button,
-  Grid, Paper, Typography
-} from "@mui/material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import moment from "moment";
 import React, { useEffect, useMemo, useState } from "react";
@@ -15,14 +11,17 @@ import vehicleApi from "../../../api/vehicleApi";
 import { CustomPagination } from "../../../components/CustomPagination";
 import LoadingTable from "../../../components/LoadingTable";
 import { errorNotify, successNotify } from "../../../utils/notification";
-import useScroll from "../../../utils/useScroll";
+import useScroll from "../../../hooks/useScroll";
 import Detail from "./Detail/Detail";
 import ConfirmAlert from "../../../components/Alert/ConfirmAlert";
-
+import { useSelector } from "react-redux";
+import DriverDetail from "./Detail/DriverDetail";
 
 const VehicleDetail = (props) => {
   const location = useLocation();
   const history = useHistory();
+  const userInfo = useSelector((state) => state.userInfo.user);
+  const { role } = userInfo;
   const [drivers, setDrivers] = useState([]);
   const [brokens, setBrokens] = useState([]);
   const [alert, setAlert] = useState(null);
@@ -187,7 +186,7 @@ const VehicleDetail = (props) => {
     if (location?.state?.id) {
       Promise.all([
         vehicleApi.getDetail(location.state.id),
-        userApi.getStaffs({ type: "Driver" }),
+        role.name === "Admin" ? userApi.getStaffs({ type: "Driver" }) : [],
         vehicleApi.getBroken({ car: location.state.id }),
       ])
         .then((response) => {
@@ -235,30 +234,40 @@ const VehicleDetail = (props) => {
                   Thông tin phương tiện
                 </Typography>
               </Grid>
-              <Grid item md={4} className="d-flex flex-row justify-content-end">
-                {
-                  location?.state?.id && <Button
-                  onClick={handleConfirm}
-                  variant="outlined"
-                  color="error"
-                  className="me-2"
+              {role.name === "Admin" && (
+                <Grid
+                  item
+                  md={4}
+                  className="d-flex flex-row justify-content-end"
                 >
-                  Xóa
-                </Button>
-                }
-                <Button
-                  onClick={formik.submitForm}
-                  variant="outlined"
-                  color="success"
-                >
-                  Lưu
-                </Button>
-              </Grid>
+                  {location?.state?.id && (
+                    <Button
+                      onClick={handleConfirm}
+                      variant="outlined"
+                      color="error"
+                      className="me-2"
+                    >
+                      Xóa
+                    </Button>
+                  )}
+                  <Button
+                    onClick={formik.submitForm}
+                    variant="outlined"
+                    color="success"
+                  >
+                    Lưu
+                  </Button>
+                </Grid>
+              )}
             </Grid>
           </Box>
         </Paper>
       </Grid>
-      <Detail formik={formik} drivers={drivers} />
+      {role.name === "Admin" ? (
+        <Detail formik={formik} drivers={drivers} />
+      ) : (
+        <DriverDetail formik={formik} drivers={drivers} />
+      )}
 
       {!location?.state?.create && (
         <Grid item className="px-4">

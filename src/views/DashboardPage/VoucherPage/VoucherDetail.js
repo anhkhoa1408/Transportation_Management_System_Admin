@@ -7,7 +7,7 @@ import voucherApi from "../../../api/voucherApi";
 import ConfirmAlert from "../../../components/Alert/ConfirmAlert";
 import ImageUpload from "../../../components/Upload/ImageUpload";
 import { errorNotify, successNotify } from "../../../utils/notification";
-import useScroll from "../../../utils/useScroll";
+import useScroll from "../../../hooks/useScroll";
 import Detail from "./Detail/Detail";
 
 const VoucherDetail = (props) => {

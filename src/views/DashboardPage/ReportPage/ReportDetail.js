@@ -14,7 +14,7 @@ import * as Bonk from "yup";
 import reportApi from "../../../api/reportApi";
 import { exportExcel } from "../../../services/export";
 import { errorNotify, successNotify } from "../../../utils/notification";
-import useScroll from "../../../utils/useScroll";
+import useScroll from "../../../hooks/useScroll";
 import Detail from "./Detail/Detail";
 
 const ReportDetail = (props) => {

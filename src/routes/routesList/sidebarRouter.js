@@ -36,6 +36,7 @@ const customerSidebar = [
     icon: <Home />,
   },
   { link: "/order", title: "Đơn hàng", icon: <ListAlt /> },
+  { link: "/feedback", title: "Phản hồi", icon: <ModeComment /> },
 ];
 
 const driverSidebar = [

@@ -6,7 +6,7 @@ import packageApi from "../../../api/packageApi";
 import shipmentApi from "../../../api/shipmentApi";
 import { validateFit } from "../../../services/packing";
 import { errorNotify, successNotify } from "../../../utils/notification";
-import useScroll from "../../../utils/useScroll";
+import useScroll from "../../../hooks/useScroll";
 import { ArrangePack } from "./Components/ArrangePack";
 import { Edit } from "./Components/Edit";
 

@@ -33,10 +33,10 @@ export const AccountPage = (props) => {
     enableReinitialize: true,
     initialValues: {
       ...data,
-      street: data.address.street,
-      ward: data.address.ward,
-      province: data.address.province,
-      city: data.address.city,
+      street: data.address?.street || "",
+      ward: data.address?.ward || "",
+      province: data.address?.province || "",
+      city: data.address?.city || "",
     },
     validationSchema: Bonk.object({
       name: Bonk.string().required("Thông tin bắt buộc"),

@@ -12,7 +12,7 @@ import {
 import * as Bonk from "yup";
 import orderApi from "../../../api/orderApi";
 import { errorNotify, successNotify } from "../../../utils/notification";
-import useScroll from "../../../utils/useScroll";
+import useScroll from "../../../hooks/useScroll";
 import Detail from "./Detail/Detail";
 
 const OrderDetail = (props) => {
