@@ -1,7 +1,9 @@
-import { FilterList, RestartAlt, Search } from "@mui/icons-material";
+import { Close, FilterList, RestartAlt, Search } from "@mui/icons-material";
 import {
   Box,
-  Button, FormControl, InputLabel,
+  Button,
+  FormControl,
+  InputLabel,
   MenuItem,
   Select,
   TextField
@@ -108,14 +110,26 @@ function Filter({ name, value, onChangeName, onChangeValue, listParam = [] }) {
             </Button>
           </Box>
 
-          <Box className="w-100">
-            <Button
-              onClick={handleReset}
-              className="w-100 app-primary-color"
-              endIcon={<RestartAlt />}
-            >
-              Đặt lại
-            </Button>
+          <Box className="d-flex flex-row">
+            <Box className="w-50">
+              <Button
+                onClick={handleReset}
+                className="w-100 app-primary-color"
+                endIcon={<RestartAlt />}
+              >
+                Đặt lại
+              </Button>
+            </Box>
+            <Box className="w-50">
+              <Button
+                onClick={() => setToggle(false)}
+                className="w-100"
+                color="error"
+                endIcon={<Close />}
+              >
+                Hủy
+              </Button>
+            </Box>
           </Box>
         </Box>
       </DropdownMenu>
