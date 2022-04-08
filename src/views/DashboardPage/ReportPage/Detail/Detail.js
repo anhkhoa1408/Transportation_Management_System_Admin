@@ -92,20 +92,13 @@ function Detail({ formik }) {
         </Grid>
         <Grid item md={9}>
           <TextField
+            disabled
             type="number"
             fullWidth
             label="Tổng nhập"
             InputProps={{
               endAdornment: <InputAdornment position="end">lần</InputAdornment>,
             }}
-            error={
-              formik.touched.total_import && formik.errors.total_import
-                ? true
-                : false
-            }
-            helperText={
-              formik.touched.total_import && formik.errors.total_import
-            }
             {...formik.getFieldProps("total_import")}
           />
         </Grid>
@@ -116,21 +109,28 @@ function Detail({ formik }) {
         </Grid>
         <Grid item md={9}>
           <TextField
+            disabled
             type="number"
             fullWidth
             label="Tổng xuất"
             InputProps={{
               endAdornment: <InputAdornment position="end">lần</InputAdornment>,
             }}
-            error={
-              formik.touched.total_export && formik.errors.total_export
-                ? true
-                : false
-            }
-            helperText={
-              formik.touched.total_export && formik.errors.total_export
-            }
             {...formik.getFieldProps("total_export")}
+          />
+        </Grid>
+      </Grid>
+      <Grid container className="mb-4">
+        <Grid item md={3} className="align-items-center d-flex flex-row">
+          <Typography>Ghi chú</Typography>
+        </Grid>
+        <Grid item md={9}>
+          <TextField
+            label="Ghi chú"
+            multiline
+            rows={3}
+            fullWidth
+            {...formik.getFieldProps("note")}
           />
         </Grid>
       </Grid>

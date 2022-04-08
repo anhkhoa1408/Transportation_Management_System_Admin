@@ -29,19 +29,12 @@ const ReportDetail = (props) => {
     },
     total_import: 0,
     total_export: 0,
+    note: ""
   });
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: data,
-    validationSchema: Bonk.object({
-      total_import: Bonk.number()
-        .min(1, "Lớn hơn 0")
-        .required("Thông số bắt buộc"),
-      total_export: Bonk.number()
-        .min(1, "Lớn hơn 0")
-        .required("Thông số bắt buộc"),
-    }),
     onSubmit: (values) => {
       handleSubmit(values);
     },
