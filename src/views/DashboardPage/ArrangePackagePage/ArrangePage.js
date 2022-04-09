@@ -101,6 +101,7 @@ const Customer = (props) => {
         driver: car.manager.id,
         assistance: assistance,
         packages: pack,
+        car: car.id,
         from_storage: from.id
       };
 
@@ -115,10 +116,6 @@ const Customer = (props) => {
         received: 0,
       }));
 
-      // console.log(pack, shipmentData, shipmentItems);
-      // return
-
-
       shipmentApi
         .create({
           shipmentData,
@@ -126,14 +123,14 @@ const Customer = (props) => {
         })
         .then((response) => {
           successNotify("Tạo chuyến xe thành công");
-          // setCar("");
-          // setType("");
-          // setSelectedStorage("");
-          // setFrom("");
-          // setTo("");
-          // setAssistance("");
-          // setShipments([]);
-          // setPackages([]);
+          setCar("");
+          setType("");
+          setSelectedStorage("");
+          setFrom("");
+          setTo("");
+          setAssistance("");
+          setShipments([]);
+          setPackages([]);
         })
         .catch((err) => console.log(err));
     }

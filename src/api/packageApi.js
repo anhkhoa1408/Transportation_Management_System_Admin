@@ -26,6 +26,10 @@ class PackageApi {
     const url = process.env.MAIN_URL.concat(`/packages/unarrange/${id}`);
     return axiosClient.get(url, { params });
   }
+  getUnCollect = (id, params) => {
+    const url = process.env.MAIN_URL.concat(`/packages/uncollect/${id}`);
+    return axiosClient.get(url, { params });
+  }
 }
 
 const packageApi = new PackageApi();

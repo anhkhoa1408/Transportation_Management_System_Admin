@@ -55,7 +55,8 @@ export const Edit = ({
 
   useEffect(() => {
     setTo("");
-    setCar("")
+    setCar("");
+    setPackages([])
     if (type) {
       let storeAddress = storages.find((item) => item.id === storage)?.address
         ?.city;
@@ -68,24 +69,34 @@ export const Edit = ({
             state: 0,
           })
           .then((response) => {
-            let temp = response.map((item) => ({
-              value: {
-                ...item,
-                address: item.to_address,
-                packages: item.packages,
-              },
-              label: joinAddress(item.from_address),
-            }));
+            Promise.all(
+              response.map((item) =>
+                packageApi.getUnCollect(item.id, { storage: storage }),
+              ),
+            )
+              .then((uncollect) => {
+                let temp = response.map((item, index) => ({
+                  value: {
+                    ...item,
+                    address: item.to_address,
+                    packages: uncollect[index],
+                  },
+                  label: joinAddress(item.from_address),
+                }));
 
-            let store = storages.find((item) => item.id === storage);
-            setListFrom([
-              {
-                value: store,
-                label: store.name,
-              },
-            ]);
-            setListTo(temp);
-            setFrom(store);
+                let store = storages.find((item) => item.id === storage);
+                setListFrom([
+                  {
+                    value: store,
+                    label: store.name,
+                  },
+                ]);
+                setListTo(temp);
+                setFrom(store);
+              })
+              .catch((error) =>
+                errorNotify("Không thể lấy thông tin kiện hàng còn lại!"),
+              );
           })
           .catch((error) => {
             errorNotify("Có lỗi xảy ra khi lấy danh sách đơn hàng");
@@ -126,7 +137,7 @@ export const Edit = ({
           .getUnArrange(storage, {
             state: 2,
           })
-          .then((response) => { 
+          .then((response) => {
             setPackages(response);
             setListFrom([
               {
@@ -182,8 +193,8 @@ export const Edit = ({
   }, [storage]);
 
   useEffect(() => {
-    setCar("")
-    setAssistance("")
+    setCar("");
+    setAssistance("");
     if (storage && type) {
       vehicleApi
         .getList({
