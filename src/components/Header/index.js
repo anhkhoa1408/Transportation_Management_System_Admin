@@ -16,7 +16,7 @@ import {
 import AppNotification from "../AppNotification";
 import { useHistory } from "react-router-dom";
 import { CLEAN_STORE } from "../../constants/types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -58,6 +58,8 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const Header = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const userInfo = useSelector(state => state.userInfo.user)
+
   return (
     <>
       <AppBar>
@@ -94,13 +96,13 @@ const Header = (props) => {
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                   variant="dot"
                 >
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                  <Avatar alt="Remy Sharp" src={process.env.MAIN_URL + userInfo.avatar.url} />
                 </StyledBadge>
               </DropdownToggle>
               <DropdownMenu className="shadow">
                 <DropdownItem header className="d-flex flex-column px-4 py-2">
-                  <Typography className="fw-bold">Nguyễn Anh Khoa</Typography>
-                  <Typography className="app-primary-color">Admin</Typography>
+                  <Typography className="fw-bold">{userInfo.name}</Typography>
+                  <Typography className="app-primary-color">{userInfo.role.name}</Typography>
                 </DropdownItem>
                 <Divider className="app-primary-color m-1" />
                 <DropdownItem

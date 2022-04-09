@@ -22,6 +22,10 @@ class PackageApi {
     const url = process.env.MAIN_URL.concat("/packages/in-storage");
     return axiosClient.get(url, { params });
   };
+  getUnArrange = (id, params) => {
+    const url = process.env.MAIN_URL.concat(`/packages/unarrange/${id}`);
+    return axiosClient.get(url, { params });
+  }
 }
 
 const packageApi = new PackageApi();

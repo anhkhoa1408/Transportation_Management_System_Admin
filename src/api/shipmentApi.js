@@ -21,6 +21,10 @@ class ShipmentApi {
     const url = process.env.MAIN_URL.concat(`/shipments`);
     return axiosClient.post(url, data);
   };
+  getItemList = (params) => {
+    const url = process.env.MAIN_URL.concat("/shipment-items");
+    return axiosClient.get(url, { params });
+  }
 }
 
 const shipmentApi = new ShipmentApi();

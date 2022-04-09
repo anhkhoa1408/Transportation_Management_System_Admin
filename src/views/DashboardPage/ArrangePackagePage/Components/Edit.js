@@ -123,18 +123,11 @@ export const Edit = ({
       } else {
         let store = storages.find((item) => item.id === storage);
         packageApi
-          .getListInStore({
-            storeId: storage,
+          .getUnArrange(storage, {
             state: 2,
-            page: 0,
-            size: 0,
           })
-          .then((response) => {
-            let temp = response.map((item) => ({
-              ...item.package,
-              quantity: item.quantity,
-            }));
-            setPackages(temp);
+          .then((response) => { 
+            setPackages(response);
             setListFrom([
               {
                 value: store,

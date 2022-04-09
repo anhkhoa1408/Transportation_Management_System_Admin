@@ -1,6 +1,4 @@
-import {
-  Button, Grid, Paper, Typography
-} from "@mui/material";
+import { Button, Grid, Paper, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import packageApi from "../../../api/packageApi";
 import shipmentApi from "../../../api/shipmentApi";
@@ -11,7 +9,6 @@ import { ArrangePack } from "./Components/ArrangePack";
 import { Edit } from "./Components/Edit";
 
 const Customer = (props) => {
-
   const [initial, setInitial] = useState({
     pack: [],
     ship: [],
@@ -42,7 +39,7 @@ const Customer = (props) => {
   const [packageData, setPackages] = useState([]);
   const [shipmentData, setShipments] = useState([]);
 
-  const [exceedPackage, setExceed] = useState([]);
+  const [arrangePack, setArrange] = useState([]);
 
   const [quantity, setQuantity] = useState(1);
 
@@ -57,7 +54,6 @@ const Customer = (props) => {
       ...tempArray[index],
       quantity: quantity,
     };
-    console.log(tempArray[index].quantity, quantity);
     tempArray[index] = {
       ...tempArray[index],
       quantity: tempArray[index].quantity - quantity,
@@ -65,12 +61,12 @@ const Customer = (props) => {
     tempArray.splice(tempArray.length, 0, tempPack);
     setPackages(tempArray);
     setSplit(null);
-    setExceed([...exceedPackage, tempArray[index]]);
+    setArrange([...arrangePack, tempArray[index]]);
     setQuantity(1);
   };
 
   const handleCreate = () => {
-    if (!shipmentData.length) {
+    if (!arrangePack.length) {
       errorNotify("Chưa thêm kiện hàng");
       return;
     }
@@ -83,187 +79,16 @@ const Customer = (props) => {
       return;
     }
 
-    if (exceedPackage.length) {
-      if (type === "collect") {
-        if (!check) {
-          let fitAllQuantityPack = shipmentData.filter((item) =>
-            initial.pack.find(
-              (i) => i.id === item.id && i.quantity === item.quantity,
-            ),
-          );
+    if (arrangePack.length) {
+      let pack = arrangePack.map(item => item.id)
 
-          let unFitAllQuantityPack = shipmentData.filter((item) =>
-            initial.pack.find(
-              (i) => i.id === item.id && i.quantity !== item.quantity,
-            ),
-          );
-
-          let updateRelationOldOrder = to.packages
-            .map((item) => item.id)
-            .filter(
-              (id1) =>
-                !fitAllQuantityPack.map((item2) => item2.id).includes(id1),
-            );
-
-          // Update quantity for package that unfit container
-          let updateQuantityList = exceedPackage.map((item) => ({
-            id: item.id,
-            quantity: item.quantity,
-          }));
-
-          let updatePackageList = updateRelationOldOrder;
-
-          let removePackageList = fitAllQuantityPack.map((item) => item.id);
-
-          // Add new order from arrange package
-          delete to.from_address.id;
-          delete to.from_address._id;
-          delete to.from_address.__v;
-          delete to.to_address.id;
-          delete to.to_address._id;
-          delete to.to_address.__v;
-
-          let {
-            customer,
-            note,
-            sender_name,
-            sender_phone,
-            receiver_name,
-            receiver_phone,
-            name,
-            from_address,
-            to_address,
-          } = to;
-
-          let newOrderInfo = {
-            customer: customer.id,
-            state: 1,
-            note,
-            sender_name,
-            sender_phone,
-            receiver_name,
-            receiver_phone,
-            name,
-            from_address,
-            to_address,
-          };
-
-          let shipmentInfo = {
-            from_address: {
-              street: from.address.street,
-              ward: from.address.ward,
-              province: from.address.province,
-              city: from.address.city,
-              longitude: from.address.longitude,
-            },
-            to_address: {
-              street: to.address.street,
-              ward: to.address.ward,
-              province: to.address.province,
-              city: to.address.city,
-              longitude: to.address.longitude,
-            },
-            driver: car.manager.id,
-            assistance: assistance,
-          };
-
-          let newPackageList = unFitAllQuantityPack
-            .filter((item) => !item.shipments)
-            .map((item) => {
-              let temp = { ...item };
-              delete temp.current_address;
-              delete temp.id;
-              delete temp._id;
-              delete temp.__v;
-              delete temp.order;
-              delete temp.size.id;
-              delete temp.size._id;
-              delete temp.size.__v;
-              return temp;
-            });
-
-          shipmentApi
-            .create({
-              shipmentInfo,
-              newOrderInfo,
-              updateQuantityList,
-              updatePackageList,
-              removePackageList,
-              orderId: to.id,
-              vehicleId: car.id,
-              newPackageList,
-            })
-            .then((response) => {
-              successNotify("Tạo chuyến xe thành công");
-              setCar("");
-              setType("");
-              setSelectedStorage("");
-              setFrom("");
-              setTo("");
-              setAssistance("");
-              setShipments([]);
-              setPackages([]);
-            })
-            .catch((err) => console.log(err));
-        } else {
-          let packages = shipmentData
-            .filter((pack) => !pack.shipments)
-            .map((item) => item.id);
-
-          let shipmentInfo = {
-            from_address: {
-              street: from.address.street,
-              ward: from.address.ward,
-              province: from.address.province,
-              city: from.address.city,
-              longitude: from.address.longitude,
-            },
-            to_address: {
-              street: to.address.street,
-              ward: to.address.ward,
-              province: to.address.province,
-              city: to.address.city,
-              longitude: to.address.longitude,
-            },
-            driver: car.manager.id,
-            assistance: assistance,
-            packages: packages,
-          };
-          shipmentApi
-            .create({
-              shipmentInfo,
-              vehicleId: car.id,
-              orderState: type === "collect" ? 1 : null,
-              orderId: to.id,
-            })
-            .then((response) => {
-              successNotify("Tạo chuyến xe thành công");
-              setCar("");
-              setType("");
-              setSelectedStorage("");
-              setFrom("");
-              setTo("");
-              setAssistance("");
-              setShipments([]);
-              setPackages([]);
-            })
-            .catch((error) => {
-              errorNotify("Tạo chuyến xe thất bại");
-            });
-        }
-      }
-    } else {
-      let packages = shipmentData
-        .filter((pack) => !pack.shipments)
-        .map((item) => item.id);
-
-      let shipmentInfo = {
+      let shipmentData = {
         from_address: {
           street: from.address.street,
           ward: from.address.ward,
           province: from.address.province,
           city: from.address.city,
-          longitude: from.address.longitude,
+          latitude: from.address.latitude,
         },
         to_address: {
           street: to.address.street,
@@ -271,42 +96,46 @@ const Customer = (props) => {
           province: to.address.province,
           city: to.address.city,
           longitude: to.address.longitude,
+          latitude: to.address.latitude,
         },
         driver: car.manager.id,
         assistance: assistance,
-        packages: packages,
+        packages: pack,
+        from_storage: from.id
       };
 
-      shipmentInfo =
-        type === "interdepart"
-          ? {
-              ...shipmentInfo,
-              from_storage: from.id,
-              to_storage: to.id,
-            }
-          : shipmentInfo;
+      shipmentData = type === "collect" || type === "ship" ? shipmentData : {
+        ...shipmentData,
+        to_storage: to.id
+      }
+
+      let shipmentItems = arrangePack.map((item) => ({
+        package: item.id,
+        quantity: item.quantity,
+        received: 0,
+      }));
+
+      // console.log(pack, shipmentData, shipmentItems);
+      // return
+
 
       shipmentApi
         .create({
-          shipmentInfo,
-          vehicleId: car.id,
-          orderState: type === "collect" ? 1 : null,
-          orderId: to.id,
+          shipmentData,
+          shipmentItems,
         })
         .then((response) => {
           successNotify("Tạo chuyến xe thành công");
-          setCar("");
-          setType("");
-          setSelectedStorage("");
-          setFrom("");
-          setTo("");
-          setAssistance("");
-          setShipments([]);
-          setPackages([]);
+          // setCar("");
+          // setType("");
+          // setSelectedStorage("");
+          // setFrom("");
+          // setTo("");
+          // setAssistance("");
+          // setShipments([]);
+          // setPackages([]);
         })
-        .catch((error) => {
-          errorNotify("Tạo chuyến xe thất bại");
-        });
+        .catch((err) => console.log(err));
     }
   };
 
@@ -315,6 +144,7 @@ const Customer = (props) => {
       errorNotify("Chưa chọn xe vận chuyển");
       return;
     }
+
     let isInvalidAll =
       Object.keys(validate).length &&
       packageData.every(
@@ -349,10 +179,11 @@ const Customer = (props) => {
       }
       setShipments([...shipmentData, ...tempShip]);
       setPackages(tempPack);
-      setExceed(tempPack);
+      setArrange(tempShip);
     } else if (!Object.keys(validate).length || check) {
       setShipments([...shipmentData, ...packageData]);
       setPackages([]);
+      setArrange(packageData);
     }
   };
 
@@ -403,7 +234,7 @@ const Customer = (props) => {
   };
 
   useEffect(() => {
-    setExceed([]);
+    setArrange([]);
     if (car && car.shipments) {
       if (car.shipments.length) {
         setAssistance(car.shipments[car.shipments.length - 1].assistance);
@@ -413,19 +244,39 @@ const Customer = (props) => {
         .reduce((total, item) => {
           return [...total, ...item];
         }, []);
-      Promise.all(temp.map((item) => packageApi.getDetail(item)))
+
+      shipmentApi
+        .getItemList({
+          "shipment.car": car.id,
+          "shipment.arrived_time_null": true,
+        })
         .then((response) => {
+          let presentPack = response.map((item) => ({
+            ...item.package,
+            quantity: item.quantity,
+          }));
+          setShipments(presentPack);
           setPackages(packageData);
-          setShipments(response);
-          handleValidate([...response, ...packageData], car);
+          handleValidate([...presentPack, ...packageData], car);
           setInitial({
             pack: packageData,
-            ship: response,
+            ship: presentPack,
           });
-        })
-        .catch((error) => {
-          errorNotify("Có lỗi xảy ra 5");
         });
+      // console.log(car.shipments.shipment_items)
+      // Promise.all(temp.map((item) => packageApi.getDetail(item)))
+      //   .then((response) => {
+      //     setPackages(packageData);
+      //     setShipments(response);
+      //     handleValidate([...response, ...packageData], car);
+      //     setInitial({
+      //       pack: packageData,
+      //       ship: response,
+      //     });
+      //   })
+      //   .catch((error) => {
+      //     errorNotify("Có lỗi xảy ra 5");
+      //   });
     }
   }, [car]);
 
@@ -439,7 +290,9 @@ const Customer = (props) => {
           className="d-flex flex-row justify-content-between align-items-center px-4 py-3 shadow mb-4"
         >
           <Typography variant="h5">Sắp xếp</Typography>
-          <Button onClick={handleCreate} variant="outlined">Tạo</Button>
+          <Button onClick={handleCreate} variant="outlined">
+            Tạo
+          </Button>
         </Paper>
       </Grid>
 
