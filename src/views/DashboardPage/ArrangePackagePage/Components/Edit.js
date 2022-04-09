@@ -102,8 +102,8 @@ export const Edit = ({
             errorNotify("Có lỗi xảy ra khi lấy danh sách đơn hàng");
           });
       } else if (type === "ship") {
-        orderApi
-          .getList({
+        packageApi
+          .getUnShip(storage, {
             to_address: JSON.stringify({
               city: storeAddress,
             }),

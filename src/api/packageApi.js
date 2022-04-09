@@ -30,6 +30,10 @@ class PackageApi {
     const url = process.env.MAIN_URL.concat(`/packages/uncollect/${id}`);
     return axiosClient.get(url, { params });
   }
+  getUnShip = (id, params) => {
+    const url = process.env.MAIN_URL.concat(`/packages/unship/${id}`);
+    return axiosClient.get(url, { params });
+  }
 }
 
 const packageApi = new PackageApi();
