@@ -260,20 +260,6 @@ const Customer = (props) => {
             ship: presentPack,
           });
         });
-      // console.log(car.shipments.shipment_items)
-      // Promise.all(temp.map((item) => packageApi.getDetail(item)))
-      //   .then((response) => {
-      //     setPackages(packageData);
-      //     setShipments(response);
-      //     handleValidate([...response, ...packageData], car);
-      //     setInitial({
-      //       pack: packageData,
-      //       ship: response,
-      //     });
-      //   })
-      //   .catch((error) => {
-      //     errorNotify("Có lỗi xảy ra 5");
-      //   });
     }
   }, [car]);
 

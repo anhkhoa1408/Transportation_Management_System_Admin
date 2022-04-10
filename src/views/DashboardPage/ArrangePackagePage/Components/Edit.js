@@ -1,4 +1,6 @@
+import { Grid3x3, Search } from "@mui/icons-material";
 import {
+  Button,
   FormControl,
   Grid,
   InputLabel,
@@ -9,7 +11,7 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect } from "react";
-import orderApi from "../../../../api/orderApi";
+import { PopoverBody, PopoverHeader, UncontrolledPopover } from "reactstrap";
 import packageApi from "../../../../api/packageApi";
 import storageApi from "../../../../api/storageApi";
 import userApi from "../../../../api/userApi";
@@ -54,19 +56,21 @@ export const Edit = ({
   }, []);
 
   useEffect(() => {
+    setFrom("");
     setTo("");
     setCar("");
     setPackages([]);
     if (type) {
-      let storeAddress = storages.find((item) => item.id === storage)?.address
-        ?.city;
+      let provinces = storages
+        .find((item) => item.id === storage)
+        .provinces.map((item) => item.name);
       if (type === "collect") {
         packageApi
           .getUnCollect(storage, {
             from_address: JSON.stringify({
-              city: storeAddress,
+              province: provinces,
             }),
-            state: 0,
+            state_in: [0, 1],
           })
           .then((response) => {
             let temp = response.map((item, index) => ({
@@ -79,14 +83,14 @@ export const Edit = ({
             }));
 
             let store = storages.find((item) => item.id === storage);
-            setListFrom([
+            setListTo([
               {
                 value: store,
                 label: store.name,
               },
             ]);
-            setListTo(temp);
-            setFrom(store);
+            setListFrom(temp);
+            setTo(store);
           })
           .catch((error) => {
             errorNotify("Có lỗi xảy ra khi lấy danh sách đơn hàng");
@@ -95,7 +99,7 @@ export const Edit = ({
         packageApi
           .getUnShip(storage, {
             to_address: JSON.stringify({
-              city: storeAddress,
+              province: provinces,
             }),
             state: 3,
           })
@@ -243,6 +247,138 @@ export const Edit = ({
               </Select>
             </FormControl>
           </Grid>
+
+          {type !== "interdepart" && (
+            <Grid item sm={12} md={12} className="p-2">
+              <Grid container direction="row">
+                <Grid item sm={11} md={11}>
+                  <FormControl fullWidth>
+                    <InputLabel>Đơn hàng</InputLabel>
+                    <Select
+                      fullWidth
+                      label="Loại hình"
+                      value={type === "collect" ? from : to}
+                      onChange={(e) => {
+                        if (type === "ship") {
+                          setTo(e.target.value);
+                          if (e.target.value.packages)
+                            setPackages(e.target.value.packages);
+                        } else {
+                          setFrom(e.target.value);
+                          if (e.target.value.packages)
+                            setPackages(e.target.value.packages);
+                        }
+                      }}
+                    >
+                      {type === "collect"
+                        ? listFrom.map((item, index) => (
+                            <MenuItem key={index} value={item.value}>
+                              {item.value.id}
+                            </MenuItem>
+                          ))
+                        : listTo.map((item, index) => (
+                            <MenuItem key={index} value={item.value}>
+                              {item.label}
+                            </MenuItem>
+                          ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item sm={1} md={1}>
+                  <UncontrolledPopover
+                    placement="left"
+                    trigger="hover"
+                    target={"detail-btn"}
+                  >
+                    <PopoverHeader className="border-0 py-3">
+                      Thông tin đơn hàng
+                    </PopoverHeader>
+                    <PopoverBody
+                      className="shadow border-0"
+                      style={{ minWidth: 450 }}
+                    >
+                      {(type === "collect" && from) ||
+                      (type === "ship" && to) ? (
+                        <>
+                          <Grid container className="">
+                            <Grid item sm={6} md={6} className="p-1">
+                              <Typography className="opacity-50">
+                                Từ địa chỉ
+                              </Typography>
+                              <Typography>
+                                {type === "collect"
+                                  ? joinAddress(from.from_address)
+                                  : joinAddress(to.from_address)}
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={6} md={6} className="p-1">
+                              <Typography className="opacity-50">
+                                Đến địa chỉ
+                              </Typography>
+                              <Typography>
+                                {type === "collect"
+                                  ? joinAddress(from.to_address)
+                                  : joinAddress(to.to_address)}
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                          <Grid container className="">
+                            <Grid item sm={6} md={6} className="p-1">
+                              <Typography className="opacity-50">
+                                Người gửi
+                              </Typography>
+                              <Typography>
+                                {type === "collect"
+                                  ? from.sender_name
+                                  : to.sender_name}
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={6} md={6} className="p-1">
+                              <Typography className="opacity-50">
+                                SDT người gửi
+                              </Typography>
+                              <Typography>
+                                {type === "collect"
+                                  ? from.sender_phone
+                                  : to.sender_phone}
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                          <Grid container className="">
+                            <Grid item sm={6} md={6} className="p-1">
+                              <Typography className="opacity-50">
+                                Người nhận
+                              </Typography>
+                              <Typography>
+                                {type === "collect"
+                                  ? from.receiver_name
+                                  : to.receiver_name}
+                              </Typography>
+                            </Grid>
+                            <Grid item sm={6} md={6} className="p-1">
+                              <Typography className="opacity-50">
+                                SDT người nhận
+                              </Typography>
+                              <Typography>
+                                {type === "collect"
+                                  ? from.receiver_phone
+                                  : to.receiver_phone}
+                              </Typography>
+                            </Grid>
+                          </Grid>
+                        </>
+                      ) : (
+                        <Typography>Chưa có thông tin</Typography>
+                      )}
+                    </PopoverBody>
+                  </UncontrolledPopover>
+                  <Button id="detail-btn" className="w-100 h-100">
+                    <Search />
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+          )}
 
           <Grid container>
             <Grid item md={6} sm={6} className="p-2">
