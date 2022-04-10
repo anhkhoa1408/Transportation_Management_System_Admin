@@ -1,4 +1,4 @@
-import { Info } from "@mui/icons-material";
+import { Add, Info } from "@mui/icons-material";
 import {
   Box,
   Button, Grid, Paper,
@@ -12,6 +12,7 @@ import ReactTable from "react-table-v6";
 import { CustomPagination } from "../../../components/CustomPagination";
 import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
+import { convertReportType } from "../../../utils/report";
 import reportApi from "./../../../api/reportApi";
 import { useQueryTable } from "./../../../utils/queryUtils.js";
 
@@ -67,6 +68,11 @@ export const ReportList = (props) => {
         filterable: false,
       },
       {
+        Header: "Loại báo cáo",
+        accessor: "type",
+        filterable: false,
+      },
+      {
         Header: "Tuỳ chọn",
         accessor: "options",
         filterable: false,
@@ -84,6 +90,7 @@ export const ReportList = (props) => {
         storage: prop.storage.name,
         createdAt: moment(prop.createdAt).format("DD/MM/YYYY HH:mm"),
         updatedAt: moment(prop.updatedAt).format("DD/MM/YYYY HH:mm"),
+        type: convertReportType(prop.type),
         options: (
           <Button
             variant="contained"
@@ -147,7 +154,7 @@ export const ReportList = (props) => {
             >
               Danh sách báo cáo
             </Typography>
-            <Box>
+            <Box className="d-flex flex-row">
               <Filter
                 name={filterName}
                 value={filterValue}
@@ -155,6 +162,19 @@ export const ReportList = (props) => {
                 onChangeName={setFilterName}
                 onChangeValue={setFilterValue}
               />
+
+              <Button
+                variant="outlined"
+                className="ms-2"
+                endIcon={<Add />}
+                onClick={() =>
+                  history.push("/report/create", {
+                    create: true,
+                  })
+                }
+              >
+                Thêm
+              </Button>
             </Box>
           </Paper>
         </Grid>

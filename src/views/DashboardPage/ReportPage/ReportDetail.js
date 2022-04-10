@@ -16,9 +16,13 @@ import { exportExcel } from "../../../services/export";
 import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../hooks/useScroll";
 import Detail from "./Detail/Detail";
+import storageApi from "../../../api/storageApi";
+import { useHistory } from "react-router-dom";
 
 const ReportDetail = (props) => {
   const location = useLocation();
+  const history = useHistory();
+
   const [data, setData] = useState({
     stocker: {
       name: "",
@@ -29,14 +33,23 @@ const ReportDetail = (props) => {
     },
     total_import: 0,
     total_export: 0,
-    note: ""
+    note: "",
+    type: "day",
   });
+  const [storages, setStorages] = useState([]);
 
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: data,
+    validationSchema: Bonk.object({
+      storage: Bonk.object().required("Chưa chọn kho"),
+    }),
     onSubmit: (values) => {
-      handleSubmit(values);
+      if (location?.state?.id) {
+        handleSubmit(values);
+      } else {
+        handleCreate(values);
+      }
     },
   });
 
@@ -55,17 +68,35 @@ const ReportDetail = (props) => {
       });
   };
 
-  const handleExport = (type) => {
+  const handleCreate = (values) => {
+    if (!values.storage.id) {
+      errorNotify("Chưa chọn kho");
+      return;
+    }
     reportApi
-      .createReport(data.storage.id, {
-        type: type,
+      .createReport(values.storage.id, {
+        type: values.type,
+        note: values.note,
       })
       .then((response) => {
-        exportExcel(response);
-        successNotify("Xuất báo cáo thành công");
+        successNotify("Tạo báo cáo thành công");
+        history.push("/report/detail", {
+          id: response.id,
+        });
       })
       .catch((error) => {
-        errorNotify("Xuất báo cáo thất bại");
+        errorNotify("Tạo báo cáo thất bại");
+      });
+  };
+
+  const handleExport = () => {
+    reportApi
+      .getDetail(location?.state?.id)
+      .then((response) => {
+        exportExcel(JSON.parse(response.report));
+      })
+      .catch((error) => {
+        errorNotify("Không thể xuất báo cáo");
       });
   };
 
@@ -75,6 +106,15 @@ const ReportDetail = (props) => {
         .getDetail(location.state.id)
         .then((response) => {
           setData(response);
+        })
+        .catch((error) => {
+          errorNotify("Có lỗi xảy ra");
+        });
+    } else {
+      storageApi
+        .getList()
+        .then((response) => {
+          setStorages(response);
         })
         .catch((error) => {
           errorNotify("Có lỗi xảy ra");
@@ -99,41 +139,37 @@ const ReportDetail = (props) => {
             <Grid container className="my-3">
               <Grid item md={8}>
                 <Typography className="fs-5 fw-bold">
-                  Chi tiết báo cáo
+                  {location?.state?.id ? "Chi tiết báo cáo" : "Tạo báo cáo"}
                 </Typography>
               </Grid>
               <Grid item md={4} className="d-flex flex-row justify-content-end">
-                {/* <Button
-                  variant="contained"
-                  className="app-primary-bg-color me-2"
-                  endIcon={<Download />}
-                  onClick={handleExport}
-                >
-                  Xuất báo cáo
-                </Button> */}
-                <UncontrolledDropdown>
-                  <DropdownToggle className="app-primary-bg-color shadow-sm me-2 border-0">
-                    XUẤT BÁO CÁO
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    <DropdownItem onClick={() => handleExport("today")}>
-                      Báo cáo hôm nay
-                    </DropdownItem>
-                    <DropdownItem onClick={() => handleExport("week")}>
-                      Báo cáo tuần
-                    </DropdownItem>
-                    <DropdownItem onClick={() => handleExport("month")}>
-                      Báo cáo tháng
-                    </DropdownItem>
-                  </DropdownMenu>
-                </UncontrolledDropdown>
-                <Button
-                  variant="outlined"
-                  color="success"
-                  onClick={formik.submitForm}
-                >
-                  Lưu
-                </Button>
+                {location?.state?.id ? (
+                  <>
+                    <Button
+                      variant="contained"
+                      className="app-primary-bg-color me-2"
+                      // endIcon={<Download />}
+                      onClick={handleExport}
+                    >
+                      Xuất báo cáo
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="success"
+                      onClick={formik.submitForm}
+                    >
+                      Lưu
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    color="success"
+                    onClick={formik.submitForm}
+                  >
+                    Tạo
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </Box>
@@ -143,7 +179,7 @@ const ReportDetail = (props) => {
       <Grid item md={12} className="px-4 d-flex flex-column">
         <Paper className="d-flex flex-column px-4 pt-1 rounded-top col-md-11 align-self-center shadow-none">
           <Box className="px-4">
-            <Detail formik={formik} />
+            <Detail formik={formik} storages={storages} />
           </Box>
         </Paper>
       </Grid>

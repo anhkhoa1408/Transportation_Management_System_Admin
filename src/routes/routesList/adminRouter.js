@@ -149,6 +149,10 @@ const adminRouter = [
     component: ReportDetail,
   },
   {
+    link: "/report/create",
+    component: ReportDetail,
+  },
+  {
     link: "/feedback",
     component: FeedbackList,
   },
