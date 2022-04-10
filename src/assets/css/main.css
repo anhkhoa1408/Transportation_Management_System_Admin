@@ -46,6 +46,13 @@ body {
   z-index: 10;
 }
 
+.popover {
+  min-width: inherit;
+  max-width: inherit;
+  max-height: inherit;
+  border: none !important;
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
