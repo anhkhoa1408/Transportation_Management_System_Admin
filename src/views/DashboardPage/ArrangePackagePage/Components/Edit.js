@@ -56,47 +56,37 @@ export const Edit = ({
   useEffect(() => {
     setTo("");
     setCar("");
-    setPackages([])
+    setPackages([]);
     if (type) {
       let storeAddress = storages.find((item) => item.id === storage)?.address
         ?.city;
       if (type === "collect") {
-        orderApi
-          .getList({
+        packageApi
+          .getUnCollect(storage, {
             from_address: JSON.stringify({
               city: storeAddress,
             }),
             state: 0,
           })
           .then((response) => {
-            Promise.all(
-              response.map((item) =>
-                packageApi.getUnCollect(item.id, { storage: storage }),
-              ),
-            )
-              .then((uncollect) => {
-                let temp = response.map((item, index) => ({
-                  value: {
-                    ...item,
-                    address: item.to_address,
-                    packages: uncollect[index],
-                  },
-                  label: joinAddress(item.from_address),
-                }));
+            let temp = response.map((item, index) => ({
+              value: {
+                ...item,
+                address: item.to_address,
+                packages: item.packages,
+              },
+              label: joinAddress(item.from_address),
+            }));
 
-                let store = storages.find((item) => item.id === storage);
-                setListFrom([
-                  {
-                    value: store,
-                    label: store.name,
-                  },
-                ]);
-                setListTo(temp);
-                setFrom(store);
-              })
-              .catch((error) =>
-                errorNotify("Không thể lấy thông tin kiện hàng còn lại!"),
-              );
+            let store = storages.find((item) => item.id === storage);
+            setListFrom([
+              {
+                value: store,
+                label: store.name,
+              },
+            ]);
+            setListTo(temp);
+            setFrom(store);
           })
           .catch((error) => {
             errorNotify("Có lỗi xảy ra khi lấy danh sách đơn hàng");
