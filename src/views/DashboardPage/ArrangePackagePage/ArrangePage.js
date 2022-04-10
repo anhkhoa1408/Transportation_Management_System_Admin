@@ -80,7 +80,7 @@ const Customer = (props) => {
     }
 
     if (arrangePack.length) {
-      let pack = arrangePack.map(item => item.id)
+      let pack = arrangePack.map((item) => item.id);
 
       let shipmentData = {
         from_address: {
@@ -102,13 +102,21 @@ const Customer = (props) => {
         assistance: assistance,
         packages: pack,
         car: car.id,
-        from_storage: from.id
+        from_storage: from.id,
       };
 
-      shipmentData = type === "collect" || type === "ship" ? shipmentData : {
-        ...shipmentData,
-        to_storage: to.id
-      }
+      shipmentData =
+        type === "collect"
+          ? {
+              ...shipmentData,
+              to_storage: to.id,
+            }
+          : type === "ship"
+          ? {
+              ...shipmentData,
+              from_storage: from.id,
+            }
+          : shipmentData;
 
       let shipmentItems = arrangePack.map((item) => ({
         package: item.id,

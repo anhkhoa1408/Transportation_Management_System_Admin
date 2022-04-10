@@ -68,7 +68,7 @@ export const Edit = ({
         packageApi
           .getUnCollect(storage, {
             from_address: JSON.stringify({
-              province: provinces,
+              city: provinces,
             }),
             state_in: [0, 1],
           })
@@ -99,7 +99,7 @@ export const Edit = ({
         packageApi
           .getUnShip(storage, {
             to_address: JSON.stringify({
-              province: provinces,
+              city: provinces,
             }),
             state: 3,
           })

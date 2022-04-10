@@ -112,6 +112,12 @@ export const AccountPage = (props) => {
         .then((response) => {
           setAvatar(process.env.MAIN_URL + response.avatar.url);
           successNotify("Cập nhật ảnh đại diện thành công");
+          dispatch(
+            saveInfoSuccess({
+              ...userInfo,
+              user: response,
+            }),
+          );
         })
         .catch((error) => {
           errorNotify("Cập nhật ảnh đại diện thất bại");

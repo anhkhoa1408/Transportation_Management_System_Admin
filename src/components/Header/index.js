@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
@@ -16,7 +16,7 @@ import {
 import AppNotification from "../AppNotification";
 import { useHistory } from "react-router-dom";
 import { CLEAN_STORE } from "../../constants/types";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -58,7 +58,20 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 const Header = (props) => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const userInfo = useSelector(state => state.userInfo.user)
+  const [data, setData] = useState({
+    name: "",
+    avatar: "",
+    role: {
+      name: "",
+    },
+  });
+
+  useEffect(() => {
+    if (props.userInfo) {
+      setData(props.userInfo.user);
+    }
+  }, [props.userInfo]);
+
 
   return (
     <>
@@ -96,13 +109,18 @@ const Header = (props) => {
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                   variant="dot"
                 >
-                  <Avatar alt="Remy Sharp" src={process.env.MAIN_URL + userInfo.avatar.url} />
+                  <Avatar
+                    alt="Remy Sharp"
+                    src={process.env.MAIN_URL + data.avatar.url}
+                  />
                 </StyledBadge>
               </DropdownToggle>
               <DropdownMenu className="shadow">
                 <DropdownItem header className="d-flex flex-column px-4 py-2">
-                  <Typography className="fw-bold">{userInfo.name}</Typography>
-                  <Typography className="app-primary-color">{userInfo.role.name}</Typography>
+                  <Typography className="fw-bold">{data.name}</Typography>
+                  <Typography className="app-primary-color">
+                    {data.role.name}
+                  </Typography>
                 </DropdownItem>
                 <Divider className="app-primary-color m-1" />
                 <DropdownItem
@@ -143,4 +161,11 @@ const Header = (props) => {
   );
 };
 
-export default Header;
+const mapStateToProps = (state) => ({
+  userInfo: state.userInfo
+})
+
+const mapDispatchToProps = {}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)
+
