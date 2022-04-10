@@ -12,6 +12,7 @@ import ReactTable from "react-table-v6";
 import { CustomPagination } from "../../../components/CustomPagination";
 import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
+import { reportType } from "../../../utils/filterParams";
 import { convertReportType } from "../../../utils/report";
 import reportApi from "./../../../api/reportApi";
 import { useQueryTable } from "./../../../utils/queryUtils.js";
@@ -34,6 +35,12 @@ export const ReportList = (props) => {
       value: "stocker.name",
       name: "Người thực hiện",
       type: "input",
+    },
+    {
+      value: "type",
+      name: "Loại báo cáo",
+      type: "select",
+      params: reportType
     },
   ];
   const [filterName, setFilterName] = useState(filterParam[0].value);

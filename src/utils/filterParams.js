@@ -100,4 +100,19 @@ const saleType = [
   },
 ]
 
-export { customerType, staffType, orderState, vehicle, ratingPoint, saleType };
+const reportType = [
+  {
+    value: "day",
+    label: "Báo cáo ngày",
+  },
+  {
+    value: "week",
+    label: "Báo cáo tuần",
+  },
+  {
+    value: "month",
+    label: "Báo cáo tháng",
+  },
+]
+
+export { customerType, staffType, orderState, vehicle, ratingPoint, saleType, reportType };
