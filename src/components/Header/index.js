@@ -65,10 +65,14 @@ const Header = (props) => {
       name: "",
     },
   });
+  const [avatar, setAvatar] = useState("")
 
   useEffect(() => {
     if (props.userInfo) {
       setData(props.userInfo.user);
+      if (props.userInfo.user.avatar && props.userInfo.user?.avatar?.url) {
+        setAvatar(process.env.MAIN_URL + props.userInfo.user.avatar.url)
+      }
     }
   }, [props.userInfo]);
 
@@ -111,16 +115,16 @@ const Header = (props) => {
                 >
                   <Avatar
                     alt="Remy Sharp"
-                    src={process.env.MAIN_URL + data.avatar.url}
+                    src={avatar}
                   />
                 </StyledBadge>
               </DropdownToggle>
-              <DropdownMenu className="shadow">
-                <DropdownItem header className="d-flex flex-column px-4 py-2">
-                  <Typography className="fw-bold">{data.name}</Typography>
-                  <Typography className="app-primary-color">
-                    {data.role.name}
+              <DropdownMenu className="shadow" style={{minWidth: 180}}>
+                <DropdownItem header className="d-flex flex-column py-2">
+                  <Typography className="opacity-50" sx={{fontSize: 13}}>
+                    Chào mừng
                   </Typography>
+                  <Typography className="fs-5 app-primary-color">{data.name}</Typography>
                 </DropdownItem>
                 <Divider className="app-primary-color m-1" />
                 <DropdownItem

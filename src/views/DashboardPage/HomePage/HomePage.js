@@ -15,7 +15,7 @@ import {
   SpeedDialIcon,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Chart from "react-apexcharts";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -39,22 +39,89 @@ export const HomePage = (props) => {
     yearlyIncome: 0,
     currentOrder: 0,
     unshipOrder: 0,
+    shipments: [],
   });
+
+  const [xAxis, setX] = useState([]);
+  const [yAxis, setY] = useState([]);
 
   const [option, setOption] = useState({
     chart: {
       id: "basic-bar",
     },
+    grid: {
+      strokeDashArray: 10,
+      padding: {
+        top: 30,
+        left: 20,
+      },
+    },
+    stroke: {
+      curve: "smooth",
+    },
+    toolbar: {
+      show: false,
+    },
+    dataLabels: {
+      enabled: true,
+      offsetX: 0,
+      offsetY: -10,
+    },
+    legend: {
+      show: false,
+    },
     xaxis: {
-      categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999],
+      categories: xAxis,
+      type: "category",
+    },
+    yaxis: {
+      labels: {
+        formatter: function (val) {
+          return val.toFixed(0);
+        },
+      },
+    },
+    tooltip: {
+      enabled: true,
+      marker: {
+        show: true,
+      },
+      y: {
+        formatter: undefined,
+        title: {
+          formatter: () => {
+            return "Lượt vận chuyển ngày: ";
+          },
+        },
+      },
     },
   });
 
   useEffect(() => {
     homeApi
       .getStatus()
-      .then((response) => setData(response))
-      .catch((error) => errorNotify("Có lỗi xảy ra"));
+      .then((response) => {
+        setData(response);
+        setX(response.shipments.map((item) => item._id));
+        setY(response.shipments.map((item) => item.quantity));
+        setOption({
+          ...option,
+          xaxis: {
+            ...option.xaxis,
+            categories: response.shipments.map(
+              (item) =>
+                item._id.toString() +
+                "/" +
+                (new Date().getMonth() + 1).toString() +
+                "/" +
+                new Date().getFullYear(),
+            ),
+          },
+        });
+      })
+      .catch((error) => {
+        errorNotify("Có lỗi xảy ra");
+      });
   }, []);
 
   return (
@@ -151,11 +218,12 @@ export const HomePage = (props) => {
               }}
             >
               <Chart
+                id="chart"
                 options={option}
                 series={[
                   {
                     name: "series-1",
-                    data: [30, 40, 45, 50, 49, 60, 70, 91],
+                    data: yAxis,
                   },
                 ]}
                 type="bar"
