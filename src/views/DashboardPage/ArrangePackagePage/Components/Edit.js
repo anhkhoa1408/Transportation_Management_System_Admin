@@ -43,6 +43,8 @@ export const Edit = ({
   setAssistance,
   assistances,
   setAssistances,
+  shipmentData,
+  setShipments,
 }) => {
   useEffect(() => {
     storageApi
@@ -60,6 +62,7 @@ export const Edit = ({
     setTo("");
     setCar("");
     setPackages([]);
+    setShipments([])
     if (type) {
       let provinces = storages
         .find((item) => item.id === storage)
@@ -159,18 +162,24 @@ export const Edit = ({
   useEffect(() => {
     // setCar("")
     // setAssistance("")
+    setFrom("");
+    setTo("");
+    setCar("");
+    setPackages([]);
+    setAssistance("")
+    setType("")
     if (storage) {
-      if (type) {
-        let store = storages.find((item) => item.id === storage);
-        setListFrom([
-          {
-            value: store,
-            label: store.name,
-          },
-        ]);
-        setFrom(store);
-        setTo("");
-      }
+      // if (type) {
+      //   let store = storages.find((item) => item.id === storage);
+      //   setListFrom([
+      //     {
+      //       value: store,
+      //       label: store.name,
+      //     },
+      //   ]);
+      //   setFrom(store);
+      //   setTo("");
+      // }
 
       userApi
         .getStaffs({

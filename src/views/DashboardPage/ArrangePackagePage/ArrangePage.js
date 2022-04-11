@@ -7,6 +7,7 @@ import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../hooks/useScroll";
 import { ArrangePack } from "./Components/ArrangePack";
 import { Edit } from "./Components/Edit";
+import Loading from "../../../components/Loading";
 
 const Customer = (props) => {
   const [initial, setInitial] = useState({
@@ -47,6 +48,8 @@ const Customer = (props) => {
 
   const [curWeight, setCurWeight] = useState(0);
   const [curVolume, setCurVolume] = useState(0);
+
+  const [loading, setLoading] = useState(null);
 
   const handleSplit = (item, index) => {
     let tempArray = [...packageData];
@@ -116,7 +119,11 @@ const Customer = (props) => {
               ...shipmentData,
               from_storage: from.id,
             }
-          : shipmentData;
+          : {
+              ...shipmentData,
+              from_storage: from.id,
+              to_storage: to.id,
+            };
 
       let shipmentItems = arrangePack.map((item) => ({
         package: item.id,
@@ -198,10 +205,13 @@ const Customer = (props) => {
 
     let temp = packages.reduce((total, item) => {
       if (unfitPack[item.id]) {
-        total.push({
-          ...item,
-          quantity: item.quantity - unfitPack[item.id],
-        });
+        let quantity = item.quantity - unfitPack[item.id];
+        if (quantity < 0) {
+          total.push({
+            ...item,
+            quantity: item.quantity,
+          });
+        }
       } else {
         total.push(item);
       }
@@ -231,24 +241,22 @@ const Customer = (props) => {
         }, 0);
 
     setCurWeight(totalWeight);
+    console.log(totalVolume)
     setCurVolume(
       parseFloat(
         (totalVolume * 100) / (car.size.len * car.size.width * car.size.height),
       ).toFixed(2),
     );
+    setLoading(null);
   };
 
   useEffect(() => {
     setArrange([]);
     if (car && car.shipments) {
+      setLoading(<Loading message="Đang tính toán kiện hàng xếp được, xin vui lòng đợi trong giây lát" />);
       if (car.shipments.length) {
         setAssistance(car.shipments[car.shipments.length - 1].assistance);
       }
-      let temp = car.shipments
-        .map((item) => item.packages)
-        .reduce((total, item) => {
-          return [...total, ...item];
-        }, []);
 
       shipmentApi
         .getItemList({
@@ -261,12 +269,19 @@ const Customer = (props) => {
             quantity: item.quantity,
           }));
           setShipments(presentPack);
-          setPackages(packageData);
-          handleValidate([...presentPack, ...packageData], car);
+          if (packageData.length) {
+            handleValidate([...presentPack, ...packageData], car);
+          } else {
+            setLoading(null);
+          }
+
           setInitial({
             pack: packageData,
             ship: presentPack,
           });
+        })
+        .catch((error) => {
+          setLoading(null);
         });
     }
   }, [car]);
@@ -274,69 +289,74 @@ const Customer = (props) => {
   useScroll("detail-header");
 
   return (
-    <Grid container className="p-5">
-      <Grid item sm={12} md={12} className="pt-4 header-sticky">
-        <Paper
-          id="detail-header"
-          className="d-flex flex-row justify-content-between align-items-center px-4 py-3 shadow mb-4"
-        >
-          <Typography variant="h5">Sắp xếp</Typography>
-          <Button onClick={handleCreate} variant="outlined">
-            Tạo
-          </Button>
-        </Paper>
+    <>
+      {loading}
+      <Grid container className="p-5">
+        <Grid item sm={12} md={12} className="pt-4 header-sticky">
+          <Paper
+            id="detail-header"
+            className="d-flex flex-row justify-content-between align-items-center px-4 py-3 shadow mb-4"
+          >
+            <Typography variant="h5">Sắp xếp</Typography>
+            <Button onClick={handleCreate} variant="outlined">
+              Tạo
+            </Button>
+          </Paper>
+        </Grid>
+
+        <Edit
+          storage={storage}
+          setSelectedStorage={setSelectedStorage}
+          storages={storages}
+          setStorages={setStorages}
+          type={type}
+          setType={setType}
+          from={from}
+          setFrom={setFrom}
+          listFrom={listFrom}
+          setListFrom={setListFrom}
+          to={to}
+          setTo={setTo}
+          listTo={listTo}
+          setListTo={setListTo}
+          setPackages={setPackages}
+          car={car}
+          setCar={setCar}
+          cars={cars}
+          setCars={setCars}
+          assistance={assistance}
+          setAssistance={setAssistance}
+          assistances={assistances}
+          setAssistances={setAssistances}
+          shipmentData={shipmentData}
+          setShipments={setShipments}
+        />
+
+        <ArrangePack
+          curVolume={curVolume}
+          curWeight={curWeight}
+          car={car}
+          type={type}
+          check={check}
+          setCheck={setCheck}
+          search={search}
+          setSearch={setSearch}
+          split={split}
+          setSplit={setSplit}
+          quantity={quantity}
+          setQuantity={setQuantity}
+          shipmentData={shipmentData}
+          setShipments={setShipments}
+          packageData={packageData}
+          setPackages={setPackages}
+          validate={validate}
+          setValidate={setValidate}
+          handleQuickSort={handleQuickSort}
+          handleSplit={handleSplit}
+          initial={initial}
+        />
       </Grid>
-
-      <Edit
-        storage={storage}
-        setSelectedStorage={setSelectedStorage}
-        storages={storages}
-        setStorages={setStorages}
-        type={type}
-        setType={setType}
-        from={from}
-        setFrom={setFrom}
-        listFrom={listFrom}
-        setListFrom={setListFrom}
-        to={to}
-        setTo={setTo}
-        listTo={listTo}
-        setListTo={setListTo}
-        setPackages={setPackages}
-        car={car}
-        setCar={setCar}
-        cars={cars}
-        setCars={setCars}
-        assistance={assistance}
-        setAssistance={setAssistance}
-        assistances={assistances}
-        setAssistances={setAssistances}
-      />
-
-      <ArrangePack
-        curVolume={curVolume}
-        curWeight={curWeight}
-        car={car}
-        type={type}
-        check={check}
-        setCheck={setCheck}
-        search={search}
-        setSearch={setSearch}
-        split={split}
-        setSplit={setSplit}
-        quantity={quantity}
-        setQuantity={setQuantity}
-        shipmentData={shipmentData}
-        setShipments={setShipments}
-        packageData={packageData}
-        setPackages={setPackages}
-        validate={validate}
-        setValidate={setValidate}
-        handleQuickSort={handleQuickSort}
-        handleSplit={handleSplit}
-        initial={initial}
-      />
-    </Grid>
+    </>
   );
 };
 
