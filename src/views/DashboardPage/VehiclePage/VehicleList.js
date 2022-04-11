@@ -1,7 +1,7 @@
 import { Add, FilterList, Info } from "@mui/icons-material";
 import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ReactTable from "react-table-v6";
 import vehicleApi from "../../../api/vehicleApi";
@@ -17,6 +17,7 @@ export const VehicleList = (props) => {
   const [totalPage, setTotalPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
+  const userInfo = useSelector(state => state.userInfo.user)
 
   const history = useHistory();
 
@@ -168,6 +169,7 @@ export const VehicleList = (props) => {
                 onChangeValue={setFilterValue}
               />
               <Button
+               hidden={userInfo.type !== "admin"}
                 variant="outlined"
                 className="ms-2"
                 endIcon={<Add />}

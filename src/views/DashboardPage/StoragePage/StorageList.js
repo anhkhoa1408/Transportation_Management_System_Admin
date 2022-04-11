@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import {
   Box,
   Button,
@@ -26,6 +26,7 @@ export const StorageList = (props) => {
   const [totalPage, setTotalPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
+  const userInfo = useSelector(state => state.userInfo.user)
 
   const history = useHistory();
 
@@ -67,7 +68,7 @@ export const StorageList = (props) => {
         Header: "Địa chỉ",
         accessor: "address",
         filterable: false,
-        width: 500,
+        width: 400,
       },
       {
         Header: "Diện tích kho",
@@ -169,6 +170,7 @@ export const StorageList = (props) => {
                 onChangeValue={setFilterValue}
               />
               <Button
+                hidden={userInfo.type !== "admin"}
                 variant="outlined"
                 className="ms-2"
                 endIcon={<Add />}

@@ -65,6 +65,10 @@ const storekeeperRouter = [
     link: "/report/detail",
     component: ReportDetail,
   },
+  {
+    link: "/report/create",
+    component: ReportDetail,
+  },
 ];
 
 export { storekeeperRouter };
