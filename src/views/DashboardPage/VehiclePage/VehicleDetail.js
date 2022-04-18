@@ -218,6 +218,7 @@ const VehicleDetail = (props) => {
   return (
     <Grid className="p-4">
       {alert}
+
       <Grid
         item
         md={12}
@@ -225,7 +226,7 @@ const VehicleDetail = (props) => {
       >
         <Paper
           id="detail-header"
-          className="d-flex flex-column px-4 pt-2 rounded-top col-md-11 align-self-center shadow-none"
+          className="d-flex flex-column px-4 pt-2 col-md-11 align-self-center shadow-none"
         >
           <Box className="px-4 py-2">
             <Grid container className="my-3">
@@ -270,16 +271,10 @@ const VehicleDetail = (props) => {
       )}
 
       {!location?.state?.create && (
-        <Grid item className="px-4">
-          <Grid className="p-5" item md={12} xs={12}>
-            <Paper
-              className="p-4 shadow-none"
-              sx={{
-                borderTopRightRadius: 0,
-                borderTopLeftRadius: 0,
-              }}
-            >
-              <Typography className="fs-5 fw-bold mb-4">
+        <Grid item md={12} className="p-4 d-flex flex-column">
+          <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center shadow-none">
+            <Box className="p-2">
+              <Typography variant="h6" className="mb-4">
                 Trạng thái xe
               </Typography>
               <ReactTable
@@ -298,8 +293,8 @@ const VehicleDetail = (props) => {
                 PaginationComponent={CustomPagination}
                 className="-striped -highlight"
               />
-            </Paper>
-          </Grid>
+            </Box>
+          </Paper>
         </Grid>
       )}
     </Grid>

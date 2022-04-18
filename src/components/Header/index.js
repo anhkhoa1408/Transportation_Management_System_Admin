@@ -6,7 +6,12 @@ import { Avatar, Divider, Typography, Badge } from "@mui/material";
 import { Box } from "@mui/system";
 import LOGO from "./../../assets/img/logo.png";
 import SidebarMobile from "../SidebarMobile";
-import { AccountCircle, FormatAlignJustify, Logout } from "@mui/icons-material";
+import {
+  AccountCircle,
+  FormatAlignJustify,
+  Logout,
+  Settings,
+} from "@mui/icons-material";
 import {
   DropdownItem,
   DropdownMenu,
@@ -65,17 +70,16 @@ const Header = (props) => {
       name: "",
     },
   });
-  const [avatar, setAvatar] = useState("")
+  const [avatar, setAvatar] = useState("");
 
   useEffect(() => {
     if (props.userInfo) {
       setData(props.userInfo.user);
       if (props.userInfo.user.avatar && props.userInfo.user?.avatar?.url) {
-        setAvatar(process.env.MAIN_URL + props.userInfo.user.avatar.url)
+        setAvatar(process.env.MAIN_URL + props.userInfo.user.avatar.url);
       }
     }
   }, [props.userInfo]);
-
 
   return (
     <>
@@ -113,18 +117,17 @@ const Header = (props) => {
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                   variant="dot"
                 >
-                  <Avatar
-                    alt="Remy Sharp"
-                    src={avatar}
-                  />
+                  <Avatar alt="Remy Sharp" src={avatar} />
                 </StyledBadge>
               </DropdownToggle>
-              <DropdownMenu className="shadow" style={{minWidth: 180}}>
+              <DropdownMenu className="shadow" style={{ minWidth: 180 }}>
                 <DropdownItem header className="d-flex flex-column py-2">
-                  <Typography className="opacity-50" sx={{fontSize: 13}}>
+                  <Typography className="opacity-50" sx={{ fontSize: 13 }}>
                     Chào mừng
                   </Typography>
-                  <Typography className="fs-5 app-primary-color">{data.name}</Typography>
+                  <Typography className="fs-5 app-primary-color">
+                    {data.name}
+                  </Typography>
                 </DropdownItem>
                 <Divider className="app-primary-color m-1" />
                 <DropdownItem
@@ -139,6 +142,19 @@ const Header = (props) => {
                     }}
                   />
                   <Typography>Cá nhân</Typography>
+                </DropdownItem>
+                <DropdownItem
+                  onClick={() => history.push("/setting")}
+                  className="d-flex flex-row align-items-center justify-content-start px-4 py-3"
+                >
+                  <Settings
+                    sx={{
+                      width: 20,
+                      height: 20,
+                      marginRight: "10px",
+                    }}
+                  />
+                  <Typography>Cài đặt</Typography>
                 </DropdownItem>
                 <DropdownItem
                   onClick={() => {
@@ -166,10 +182,9 @@ const Header = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  userInfo: state.userInfo
-})
+  userInfo: state.userInfo,
+});
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header)
-
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

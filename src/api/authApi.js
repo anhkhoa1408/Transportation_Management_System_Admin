@@ -17,6 +17,14 @@ class AuthorApi {
     const url = process.env.MAIN_URL.concat(`/auth/password/update`);
     return axiosClient.post(url, data);
   };
+  updateConfig = (data) => {
+    const url = process.env.MAIN_URL.concat(`/config`);
+    return axiosClient.put(url, data);
+  }
+  getConfig = (data) => {
+    const url = process.env.MAIN_URL.concat(`/config`);
+    return axiosClient.get(url, data);
+  }
 }
 const authApi = new AuthorApi();
 export default authApi;

@@ -19,7 +19,7 @@ function Detail({ formik, drivers }) {
   return (
     <>
       <Grid item md={12} className="px-4 d-flex flex-column">
-        <Paper className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none">
+        <Paper className="d-flex flex-column px-4 col-md-11 align-self-center shadow-none">
           <Box className="px-4 py-2">
             <Grid container md={12} className="mb-4">
               <Grid item md={3} className="align-items-center d-flex flex-row">
@@ -112,7 +112,7 @@ function Detail({ formik, drivers }) {
         </Paper>
       </Grid>
 
-      <Grid item md={12} className="pt-4 px-4 mt-4 d-flex flex-column">
+      <Grid item md={12} className="pt-4 px-4 d-flex flex-column">
         <Paper className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none">
           <Box className="px-4 py-2">
             <Box className="my-4">

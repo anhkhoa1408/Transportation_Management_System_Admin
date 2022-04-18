@@ -75,6 +75,8 @@ const ArrangePage = lazy(() =>
   import("./../../views/DashboardPage/ArrangePackagePage/ArrangePage"),
 );
 
+const SettingPage = lazy(() => import('./../../views/DashboardPage/SettingPage/SettingPage'))
+
 const adminRouter = [
   {
     link: "/dashboard",
@@ -175,6 +177,10 @@ const adminRouter = [
   {
     link: "/shipment/arrange",
     component: ArrangePage,
+  },
+  {
+    link: "/setting",
+    component: SettingPage,
   },
 ];
 
