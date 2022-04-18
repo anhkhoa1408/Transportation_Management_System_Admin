@@ -143,7 +143,7 @@ export const AccountPage = (props) => {
   useEffect(() => {
     if (userInfo) {
       setData(userInfo.user);
-      if (userInfo.user.avatar.url) {
+      if (userInfo?.user?.avatar?.url) {
         setAvatar(process.env.MAIN_URL + userInfo.user.avatar.url);
       }
     }

@@ -45,7 +45,7 @@
   },
   "scripts": {
     "dev": "webpack serve --mode development --config webpack.config.js --env env=dev --open --hot",
-    "prod": "webpack serve --mode production --config webpack.config.js --env env=prod --open --hot",
+    "prod": "webpack serve --mode development --config webpack.config.js --env env=prod --open --hot",
     "build": "webpack build --mode production --config webpack.config.js --env env=prod"
   },
   "eslintConfig": {

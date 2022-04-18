@@ -1,7 +1,9 @@
 @import url("./_variable.css");
 
+.MuiInputAdornment-root,
 .MuiOutlinedInput-input,
 .MuiInputAdornment-root,
-.MuiOutlinedInput-input {
-  background-color: #FFF !important;
+.MuiOutlinedInput-input,
+.MuiOutlinedInput-root {
+  background-color: #F8F9FC !important;
 }
