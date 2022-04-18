@@ -1,16 +1,20 @@
 import { useEffect } from "react";
 
-const useScroll = (id) => {
+const useScroll = (
+  id,
+  invisibleShadow = "shadow-none",
+  visibleShadow = "shadow",
+) => {
   useEffect(() => {
     function scrollFunction() {
       let navbar = document.getElementById(id);
       if (navbar) {
         if (window.pageYOffset > 0) {
-          navbar.classList.add("shadow");
-          navbar.classList.remove("shadow-none");
+          navbar.classList.add(visibleShadow);
+          navbar.classList.remove(invisibleShadow);
         } else {
-          navbar.classList.remove("shadow");
-          navbar.classList.add("shadow-none");
+          navbar.classList.remove(visibleShadow);
+          navbar.classList.add(invisibleShadow);
         }
       }
     }

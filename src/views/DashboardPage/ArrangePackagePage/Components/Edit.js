@@ -79,7 +79,7 @@ export const Edit = ({
             let temp = response.map((item, index) => ({
               value: {
                 ...item,
-                address: item.to_address,
+                address: item.from_address,
                 packages: item.packages,
               },
               label: joinAddress(item.from_address),

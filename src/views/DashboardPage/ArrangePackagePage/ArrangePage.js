@@ -8,6 +8,7 @@ import useScroll from "../../../hooks/useScroll";
 import { ArrangePack } from "./Components/ArrangePack";
 import { Edit } from "./Components/Edit";
 import Loading from "../../../components/Loading";
+import { Box } from "@mui/system";
 
 const Customer = (props) => {
   const [initial, setInitial] = useState({
@@ -73,10 +74,10 @@ const Customer = (props) => {
       errorNotify("Chưa thêm kiện hàng");
       return;
     }
-    if (!assistance) {
-      errorNotify("Chưa thêm nhân viên hỗ trợ");
-      return;
-    }
+    // if (!assistance) {
+    //   errorNotify("Chưa thêm nhân viên hỗ trợ");
+    //   return;
+    // }
     if (!Object.keys(from).length || !Object.keys(to).length) {
       errorNotify("Chưa thêm địa chỉ chuyến xe");
       return;
@@ -84,7 +85,6 @@ const Customer = (props) => {
 
     if (arrangePack.length) {
       let pack = arrangePack.map((item) => item.id);
-
       let shipmentData = {
         from_address: {
           street: from.address.street,
@@ -92,6 +92,7 @@ const Customer = (props) => {
           province: from.address.province,
           city: from.address.city,
           latitude: from.address.latitude,
+          longitude: from.address.longitude,
         },
         to_address: {
           street: to.address.street,
@@ -101,10 +102,10 @@ const Customer = (props) => {
           longitude: to.address.longitude,
           latitude: to.address.latitude,
         },
-        driver: car.manager.id,
-        assistance: assistance,
+        driver: car.manager?.id,
+        assistance: assistance || undefined,
         packages: pack,
-        car: car.id,
+        car: car?.id,
         from_storage: from.id,
       };
 
@@ -152,10 +153,10 @@ const Customer = (props) => {
   };
 
   const handleQuickSort = () => {
-    if (!car) {
-      errorNotify("Chưa chọn xe vận chuyển");
-      return;
-    }
+    // if (!car) {
+    //   errorNotify("Chưa chọn xe vận chuyển");
+    //   return;
+    // }
 
     let isInvalidAll =
       Object.keys(validate).length &&
@@ -211,6 +212,11 @@ const Customer = (props) => {
             ...item,
             quantity: item.quantity,
           });
+        } else {
+          total.push({
+            ...item,
+            quantity: quantity,
+          });
         }
       } else {
         total.push(item);
@@ -241,7 +247,6 @@ const Customer = (props) => {
         }, 0);
 
     setCurWeight(totalWeight);
-    console.log(totalVolume)
     setCurVolume(
       parseFloat(
         (totalVolume * 100) / (car.size.len * car.size.width * car.size.height),
@@ -253,7 +258,9 @@ const Customer = (props) => {
   useEffect(() => {
     setArrange([]);
     if (car && car.shipments) {
-      setLoading(<Loading message="Đang tính toán kiện hàng xếp được, xin vui lòng đợi trong giây lát" />);
+      setLoading(
+        <Loading message="Đang tính toán kiện hàng xếp được, xin vui lòng đợi trong giây lát" />,
+      );
       if (car.shipments.length) {
         setAssistance(car.shipments[car.shipments.length - 1].assistance);
       }
@@ -286,21 +293,20 @@ const Customer = (props) => {
     }
   }, [car]);
 
-  useScroll("detail-header");
+  useScroll("detail-header", "shadow-sm");
 
   return (
     <>
       {loading}
       <Grid container className="p-5">
         <Grid item sm={12} md={12} className="pt-4 header-sticky">
-          <Paper
-            id="detail-header"
-            className="d-flex flex-row justify-content-between align-items-center px-4 py-3 shadow mb-4"
-          >
-            <Typography variant="h5">Sắp xếp</Typography>
-            <Button onClick={handleCreate} variant="outlined">
-              Tạo
-            </Button>
+          <Paper id="detail-header" className="px-4 py-3 shadow-sm mb-4">
+            <Box className="p-2 d-flex flex-row justify-content-between align-items-center">
+              <Typography variant="h6">Chuyến xe</Typography>
+              <Button onClick={handleCreate} variant="outlined">
+                Tạo
+              </Button>
+            </Box>
           </Paper>
         </Grid>
 
