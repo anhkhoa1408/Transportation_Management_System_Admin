@@ -1,5 +1,6 @@
 import {
   ArrowDropDown,
+  Calculate,
   Check,
   Close,
   ErrorOutline,
@@ -46,6 +47,11 @@ export const ArrangePack = ({
   validate,
   setValidate,
   initial,
+  handleCalculate,
+  setInitial,
+  setCurWeight,
+  setCurVolume,
+  isFullLoad,
   ...props
 }) => {
   const getItemStyle = (isDragging, draggableStyle) => ({
@@ -68,12 +74,17 @@ export const ArrangePack = ({
 
   const onDragEnd = (result) => {
     const { source, destination } = result;
-    if (
-      !destination ||
-      (source.droppableId === "shipDrop" &&
-        destination.droppableId === "packDrop")
-    ) {
+    if (!destination) {
       return;
+    }
+
+    if (
+      source.droppableId === "packDrop" &&
+      destination.droppableId === "shipDrop"
+    ) {
+      if (Object.keys(validate).length) {
+        setCheck(true);
+      }
     }
 
     const sInd = +source.index;
@@ -104,7 +115,7 @@ export const ArrangePack = ({
       setShipments(result.shipDrop);
     }
   };
-  
+
   const move = (source, destination, droppableSource, droppableDestination) => {
     const sourceClone = Array.from(source);
     const destClone = Array.from(destination);
@@ -126,8 +137,10 @@ export const ArrangePack = ({
   const handleCancel = () => {
     setShipments(initial.ship);
     setPackages(initial.pack);
+    setValidate({});
+    // setCurWeight(0)
+    // setCurVolume(0)
   };
-
   return (
     <Grid item sm={12} md={12}>
       <Paper className="d-flex flex-column w-100 align-self-center p-4 shadow-sm">
@@ -137,7 +150,7 @@ export const ArrangePack = ({
             Sắp xếp lượng hàng hóa phù hợp cho mỗi chuyến xe
           </Typography>
         </Box>
-        <Grid container className="my-2">
+        <Grid container className="mb-4">
           <Grid item md={6} sm={6} className="p-2">
             <Typography>{`Không gian chiếm dụng: ${curVolume}/100 % `}</Typography>
           </Grid>
@@ -146,7 +159,17 @@ export const ArrangePack = ({
               car.load || 0
             } kg`}</Typography>
           </Grid>
+          {isFullLoad && (
+            <Grid item md={12} sm={12} className="px-2 py-1 d-flex flex-row">
+              <ErrorOutline color="error" className="me-2" />{" "}
+              <Typography>
+                Kiện hàng trên xe hiện tại đã đầy, không gian chiếm dụng và khối lượng kiện hàng đang hiển thị được
+                tính cho chuyến xe sau, khi xe rỗng
+              </Typography>
+            </Grid>
+          )}
         </Grid>
+
         {(type === "collect" || type === "ship") && (
           <Box className="d-flex flex-row align-items-center my-2">
             <Checkbox
@@ -156,6 +179,7 @@ export const ArrangePack = ({
             <Typography>Vận chuyển nhiều lần</Typography>
           </Box>
         )}
+
         <Box className="d-flex flex-row justify-content-between">
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable key="packageDrop" droppableId="packDrop">
@@ -185,6 +209,16 @@ export const ArrangePack = ({
                         onClick={handleCancel}
                       >
                         <Merge />
+                      </Button>
+                      <UncontrolledTooltip flip target="calculate-btn">
+                        Tính toán
+                      </UncontrolledTooltip>
+                      <Button
+                        id="calculate-btn"
+                        className="d-flex flex-row justify-content-center align-items-center mb-2 text-success"
+                        onClick={handleCalculate}
+                      >
+                        <Calculate />
                       </Button>
                       <UncontrolledTooltip flip target="sort-btn">
                         Sắp xếp nhanh
@@ -293,16 +327,21 @@ export const ArrangePack = ({
                                 onChange={(e) => setQuantity(e.target.value)}
                                 value={quantity}
                                 error={
-                                  quantity < 0 ||
-                                  quantity > item.quantity ||
+                                  quantity <= 0 ||
+                                  quantity >
+                                    item.quantity - validate[item.id] ||
                                   !quantity ||
-                                  item.quantity - validate[item.id] <= 0
+                                  quantity > item.quantity
                                 }
                                 helperText={
-                                  (quantity < 0 && "Số lượng phải lớn hơn 0") ||
+                                  (quantity <= 0 &&
+                                    "Số lượng phải lớn hơn 0") ||
+                                  (quantity >
+                                    item.quantity - validate[item.id] &&
+                                    "Vượt quá số lượng tách được") ||
+                                  (!quantity && "Số lượng không hợp lệ") ||
                                   (quantity > item.quantity &&
-                                    "Số lượng tách phải nhỏ hơn số lượng hiện tại") ||
-                                  (!quantity && "Số lượng không hợp lệ")
+                                    "Số lượng tách phải nhỏ hơn số lượng hiện tại")
                                 }
                               ></TextField>
                               <Button

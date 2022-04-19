@@ -3,10 +3,12 @@ import {
   Button,
   FormControl,
   Grid,
+  Input,
   InputLabel,
   MenuItem,
   Paper,
   Select,
+  TextField,
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
@@ -45,6 +47,8 @@ export const Edit = ({
   setAssistances,
   shipmentData,
   setShipments,
+  initial,
+  setInitial,
 }) => {
   useEffect(() => {
     storageApi
@@ -62,7 +66,7 @@ export const Edit = ({
     setTo("");
     setCar("");
     setPackages([]);
-    setShipments([])
+    setShipments([]);
     if (type) {
       let provinces = storages
         .find((item) => item.id === storage)
@@ -160,27 +164,13 @@ export const Edit = ({
   }, [type]);
 
   useEffect(() => {
-    // setCar("")
-    // setAssistance("")
     setFrom("");
     setTo("");
     setCar("");
     setPackages([]);
-    setAssistance("")
-    setType("")
+    setAssistance("");
+    setType("");
     if (storage) {
-      // if (type) {
-      //   let store = storages.find((item) => item.id === storage);
-      //   setListFrom([
-      //     {
-      //       value: store,
-      //       label: store.name,
-      //     },
-      //   ]);
-      //   setFrom(store);
-      //   setTo("");
-      // }
-
       userApi
         .getStaffs({
           type: "Assistance",
@@ -270,12 +260,22 @@ export const Edit = ({
                       onChange={(e) => {
                         if (type === "ship") {
                           setTo(e.target.value);
-                          if (e.target.value.packages)
+                          if (e.target.value.packages) {
                             setPackages(e.target.value.packages);
+                            setInitial({
+                              ...initial,
+                              pack: e.target.value.packages,
+                            });
+                          }
                         } else {
                           setFrom(e.target.value);
-                          if (e.target.value.packages)
+                          if (e.target.value.packages) {
                             setPackages(e.target.value.packages);
+                            setInitial({
+                              ...initial,
+                              pack: e.target.value.packages,
+                            });
+                          }
                         }
                       }}
                     >
@@ -391,46 +391,56 @@ export const Edit = ({
 
           <Grid container>
             <Grid item md={6} sm={6} className="p-2">
-              <FormControl fullWidth>
-                <InputLabel>Nơi đi</InputLabel>
-                <Select
-                  fullWidth
-                  label="Nơi đi"
-                  value={from}
-                  onChange={(e) => {
-                    setFrom(e.target.value);
-                    if (e.target.value.packages)
-                      setPackages(e.target.value.packages);
-                  }}
-                >
-                  {listFrom.map((item, index) => (
-                    <MenuItem key={index} value={item.value}>
-                      {item.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <TextField
+                label="Nơi đi"
+                disabled
+                fullWidth
+                variant="outlined"
+                value={
+                  !from.address
+                    ? ""
+                    : type === "collect"
+                    ? joinAddress(from.address)
+                    : from.name
+                }
+              />
             </Grid>
             <Grid item md={6} sm={6} className="p-2">
-              <FormControl fullWidth>
-                <InputLabel>Nơi đến</InputLabel>
-                <Select
-                  fullWidth
+              {type === "interdepart" ? (
+                <FormControl fullWidth>
+                  <InputLabel>Nơi đến</InputLabel>
+                  <Select
+                    fullWidth
+                    label="Nơi đến"
+                    value={to}
+                    onChange={(e) => {
+                      setTo(e.target.value);
+                      if (e.target.value.packages)
+                        setPackages(e.target.value.packages);
+                    }}
+                  >
+                    {listTo.map((item, index) => (
+                      <MenuItem key={index} value={item.value}>
+                        {item.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              ) : (
+                <TextField
                   label="Nơi đến"
-                  value={to}
-                  onChange={(e) => {
-                    setTo(e.target.value);
-                    if (e.target.value.packages)
-                      setPackages(e.target.value.packages);
-                  }}
-                >
-                  {listTo.map((item, index) => (
-                    <MenuItem key={index} value={item.value}>
-                      {item.label}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                  disabled
+                  fullWidth
+                  variant="outlined"
+                  value={
+                    !to.address
+                      ? ""
+                      : type === "ship"
+                      ? joinAddress(to.address)
+                      : to.name
+                  }
+                />
+              )}
             </Grid>
           </Grid>
 

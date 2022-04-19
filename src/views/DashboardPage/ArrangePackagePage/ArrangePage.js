@@ -51,6 +51,7 @@ const Customer = (props) => {
   const [curVolume, setCurVolume] = useState(0);
 
   const [loading, setLoading] = useState(null);
+  const [isFullLoad, setIsFull] = useState(false);
 
   const handleSplit = (item, index) => {
     let tempArray = [...packageData];
@@ -153,10 +154,12 @@ const Customer = (props) => {
   };
 
   const handleQuickSort = () => {
-    // if (!car) {
-    //   errorNotify("Chưa chọn xe vận chuyển");
-    //   return;
-    // }
+    if (!car && !check) {
+      errorNotify("Chưa chọn xe vận chuyển");
+      return;
+    }
+
+    let validate = handleValidate([...shipmentData, ...packageData], car);
 
     let isInvalidAll =
       Object.keys(validate).length &&
@@ -204,25 +207,35 @@ const Customer = (props) => {
     let unfitPack = validateFit(packages, car);
     setValidate(unfitPack);
 
-    let temp = packages.reduce((total, item) => {
-      if (unfitPack[item.id]) {
-        let quantity = item.quantity - unfitPack[item.id];
-        if (quantity < 0) {
-          total.push({
-            ...item,
-            quantity: item.quantity,
-          });
+    let isFullLoad = packageData.every(
+      (item) => unfitPack[item.id] === item.quantity,
+    );
+    setIsFull(isFullLoad);
+    let temp;
+
+    if (isFullLoad) {
+      temp = packageData;
+    } else {
+      temp = packages.reduce((total, item) => {
+        if (unfitPack[item.id]) {
+          let quantity = item.quantity - unfitPack[item.id];
+          if (quantity < 0) {
+            total.push({
+              ...item,
+              quantity: item.quantity,
+            });
+          } else {
+            total.push({
+              ...item,
+              quantity: quantity,
+            });
+          }
         } else {
-          total.push({
-            ...item,
-            quantity: quantity,
-          });
+          total.push(item);
         }
-      } else {
-        total.push(item);
-      }
-      return total;
-    }, []);
+        return total;
+      }, []);
+    }
 
     let totalWeight = temp.length
       ? temp.reduce((total, item) => {
@@ -246,25 +259,34 @@ const Customer = (props) => {
           );
         }, 0);
 
+    totalVolume = parseFloat(
+      (totalVolume * 100) / (car.size.len * car.size.width * car.size.height),
+    ).toFixed(2);
+
     setCurWeight(totalWeight);
-    setCurVolume(
-      parseFloat(
-        (totalVolume * 100) / (car.size.len * car.size.width * car.size.height),
-      ).toFixed(2),
-    );
+    setCurVolume(totalVolume);
     setLoading(null);
+
+    return unfitPack;
+  };
+
+  const handleCalculate = () => {
+    if (!car) {
+      errorNotify("Chưa chọn xe cần tính toán");
+      return;
+    }
+    setLoading(
+      <Loading message="Đang tính toán kiện hàng xếp được, xin vui lòng đợi trong giây lát" />,
+    );
+    handleValidate([...shipmentData, ...packageData], car);
   };
 
   useEffect(() => {
     setArrange([]);
     if (car && car.shipments) {
-      setLoading(
-        <Loading message="Đang tính toán kiện hàng xếp được, xin vui lòng đợi trong giây lát" />,
-      );
       if (car.shipments.length) {
         setAssistance(car.shipments[car.shipments.length - 1].assistance);
       }
-
       shipmentApi
         .getItemList({
           "shipment.car": car.id,
@@ -276,12 +298,6 @@ const Customer = (props) => {
             quantity: item.quantity,
           }));
           setShipments(presentPack);
-          if (packageData.length) {
-            handleValidate([...presentPack, ...packageData], car);
-          } else {
-            setLoading(null);
-          }
-
           setInitial({
             pack: packageData,
             ship: presentPack,
@@ -292,6 +308,10 @@ const Customer = (props) => {
         });
     }
   }, [car]);
+
+  useEffect(() => {
+    setShipments(initial.ship);
+  }, [from, to]);
 
   useScroll("detail-header", "shadow-sm");
 
@@ -336,6 +356,10 @@ const Customer = (props) => {
           setAssistances={setAssistances}
           shipmentData={shipmentData}
           setShipments={setShipments}
+          initial={initial}
+          setInitial={setInitial}
+          setCurWeight={setCurWeight}
+          setCurVolume={setCurVolume}
         />
 
         <ArrangePack
@@ -360,6 +384,9 @@ const Customer = (props) => {
           handleQuickSort={handleQuickSort}
           handleSplit={handleSplit}
           initial={initial}
+          handleCalculate={handleCalculate}
+          setInitial={setInitial}
+          isFullLoad={isFullLoad}
         />
       </Grid>
     </>
