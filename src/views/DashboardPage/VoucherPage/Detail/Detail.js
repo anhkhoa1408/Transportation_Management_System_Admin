@@ -166,7 +166,8 @@ function Detail({ formik }) {
               <MenuItem value="All">Tất cả khách hàng</MenuItem>
               <MenuItem value="Iron">Thành viên bạc</MenuItem>
               <MenuItem value="Gold">Thành viên vàng</MenuItem>
-              <MenuItem value="Diamond">Thành viên VIP</MenuItem>
+              <MenuItem value="Diamond">Thành viên kim cương</MenuItem>
+              <MenuItem value="Platinum">Thành viên bạch kim</MenuItem>
             </Select>
             <FormHelperText>{formik.errors.customer_type}</FormHelperText>
           </FormControl>

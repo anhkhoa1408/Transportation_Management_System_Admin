@@ -7,18 +7,18 @@ function handleUserRole(role) {
     case "Driver":
       return "Người vận chuyển";
     case "Assistance":
-      return "Người hỗ trợ"
+      return "Người hỗ trợ";
     case "Iron":
-      return "Thành viên bạc"
+      return "Thành viên bạc";
     case "Gold":
-      return "Thành viên vàng"
+      return "Thành viên vàng";
     case "Diamond":
-      return "Thành viên VIP"
+      return "Thành viên kim cương";
+    case "Platinum":
+      return "Thành viên bạch kim";
     default:
-      return "Tất cả"
+      return "Tất cả";
   }
 }
 
-export {
-  handleUserRole
-}
+export { handleUserRole };
