@@ -24,6 +24,10 @@
 .ReactTable .rt-tbody .rt-td {
   padding: 20px 10px;
   border-right: none;
+  cursor: pointer;
+}
+
+.ReactTable .rt-tbody .rt-td:last-child {
   overflow: unset;
 }
 

@@ -116,7 +116,7 @@ function Detail({ formik, drivers }) {
         <Paper className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none">
           <Box className="px-4 py-2">
             <Box className="my-4">
-              <Typography className="fs-5 fw-bold">
+              <Typography variant="h6">
                 Kích thước thùng hàng
               </Typography>
               <Typography variant="subtitle2 opacity-50">

@@ -160,7 +160,7 @@ const Customer = (props) => {
           <Box className="d-flex flex-row align-items-center px-5 py-2">
             <AvatarUpload avatar={avatar} setAvatar={setAvatar} />
             <Box className="flex-grow-1">
-              <Typography variant="h5">
+              <Typography variant="h6">
                 {data.name || "Tên nhân viên"}
               </Typography>
               <Typography
@@ -209,7 +209,7 @@ const Customer = (props) => {
             <TabContent activeTab={activeTab}>
               <TabPane tabId="1">
                 <Box className="d-flex flex-row py-3 mb-4 align-items-center justify-content-between border-bottom">
-                  <Typography className="fs-5 fw-bold">
+                  <Typography variant="h6">
                     Thông tin người dùng
                   </Typography>
                   <Button variant="outlined" color="success" onClick={formik.submitForm}>
@@ -220,7 +220,7 @@ const Customer = (props) => {
               </TabPane>
 
               <TabPane tabId="2">
-                <Typography className="fs-5 fw-bold py-3 mb-4 w-100 border-bottom">
+                <Typography className="py-3 mb-4 w-100 border-bottom" variant="h6">
                   Đơn hàng
                 </Typography>
                 <CustomerOrderList />

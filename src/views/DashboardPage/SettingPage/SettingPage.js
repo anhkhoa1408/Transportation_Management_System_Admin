@@ -297,7 +297,7 @@ function SettingPage() {
                   label="Giá xăng cũ"
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">VND</InputAdornment>
+                      <InputAdornment position="end">VND/lít</InputAdornment>
                     ),
                   }}
                   error={
@@ -321,7 +321,7 @@ function SettingPage() {
                   label="Giá xăng hiện tại"
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">VND</InputAdornment>
+                      <InputAdornment position="end">VND/lít</InputAdornment>
                     ),
                   }}
                   error={

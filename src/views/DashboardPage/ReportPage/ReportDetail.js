@@ -138,7 +138,7 @@ const ReportDetail = (props) => {
           <Box className="px-4 py-2">
             <Grid container className="my-3">
               <Grid item md={8}>
-                <Typography className="fs-5 fw-bold">
+                <Typography variant="h6">
                   {location?.state?.id ? "Chi tiết báo cáo" : "Tạo báo cáo"}
                 </Typography>
               </Grid>

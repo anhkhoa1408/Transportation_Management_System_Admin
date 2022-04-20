@@ -112,8 +112,8 @@ const OrderDetail = (props) => {
           <Box className="px-4 py-2">
             <Grid container direction="row" className="mb-1 bg-white">
               <Grid item sm={3} md={4} className="">
-                <Typography className="my-3 fs-5 fw-bold">
-                  Thông tin chi tiết
+                <Typography className="my-3" variant="h6">
+                  Chi tiết đơn hàng
                 </Typography>
               </Grid>
 
