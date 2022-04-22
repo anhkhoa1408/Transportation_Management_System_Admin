@@ -386,7 +386,6 @@ export const ArrangePack = ({
                   <Box className={clsx("py-1 mb-1")}>
                     <Button
                       className="d-flex flex-row justify-content-between align-items-center w-100 app-primary-color"
-                      onClick={() => setSearch(!search)}
                     >
                       <Typography className="my-2">
                         Kiện hàng đã chọn
