@@ -22,6 +22,7 @@ import AppNotification from "../AppNotification";
 import { useHistory } from "react-router-dom";
 import { CLEAN_STORE } from "../../constants/types";
 import { connect, useDispatch, useSelector } from "react-redux";
+import { simplifyString } from "../../utils/address";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -120,13 +121,13 @@ const Header = (props) => {
                   <Avatar alt="Remy Sharp" src={avatar} />
                 </StyledBadge>
               </DropdownToggle>
-              <DropdownMenu className="shadow" style={{ minWidth: 180 }}>
+              <DropdownMenu className="shadow" style={{ minWidth: 180, maxWidth: 200 }}>
                 <DropdownItem header className="d-flex flex-column py-2">
                   <Typography className="opacity-50" sx={{ fontSize: 13 }}>
                     Chào mừng
                   </Typography>
-                  <Typography className="fs-5 app-primary-color">
-                    {data.name}
+                  <Typography className="fs-6 app-primary-color">
+                    {simplifyString(data.name, 18)}
                   </Typography>
                 </DropdownItem>
                 <Divider className="app-primary-color m-1" />
@@ -143,19 +144,21 @@ const Header = (props) => {
                   />
                   <Typography>Cá nhân</Typography>
                 </DropdownItem>
-                <DropdownItem
-                  onClick={() => history.push("/setting")}
-                  className="d-flex flex-row align-items-center justify-content-start px-4 py-3"
-                >
-                  <Settings
-                    sx={{
-                      width: 20,
-                      height: 20,
-                      marginRight: "10px",
-                    }}
-                  />
-                  <Typography>Cài đặt</Typography>
-                </DropdownItem>
+                {props?.userInfo?.user?.role?.name === "Admin" && (
+                  <DropdownItem
+                    onClick={() => history.push("/setting")}
+                    className="d-flex flex-row align-items-center justify-content-start px-4 py-3"
+                  >
+                    <Settings
+                      sx={{
+                        width: 20,
+                        height: 20,
+                        marginRight: "10px",
+                      }}
+                    />
+                    <Typography>Cài đặt</Typography>
+                  </DropdownItem>
+                )}
                 <DropdownItem
                   onClick={() => {
                     dispatch({ type: CLEAN_STORE });

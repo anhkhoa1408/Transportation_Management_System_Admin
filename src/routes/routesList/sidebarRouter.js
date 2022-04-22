@@ -11,7 +11,7 @@ const adminSidebar = [
     icon: <Home />,
   },
   {
-    link: "/shipment/arrange",
+    link: "/shipment",
     title: "Chuyến xe",
     icon: <TurnSharpRight />,
   },

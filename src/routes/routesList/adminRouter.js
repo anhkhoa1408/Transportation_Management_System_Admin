@@ -75,6 +75,10 @@ const ArrangePage = lazy(() =>
   import("./../../views/DashboardPage/ArrangePackagePage/ArrangePage"),
 );
 
+const EditShipment = lazy(() => import("./../../views/DashboardPage/ArrangePackagePage/EditShipment"))
+
+const ShipmentList = lazy(() => import("./../../views/DashboardPage/ArrangePackagePage/ShipmentList"))
+
 const SettingPage = lazy(() => import('./../../views/DashboardPage/SettingPage/SettingPage'))
 
 const adminRouter = [
@@ -173,6 +177,14 @@ const adminRouter = [
   {
     link: "/account/info",
     component: AccountPage,
+  },
+  {
+    link: "/shipment",
+    component: ShipmentList,
+  },
+  {
+    link: "/shipment/detail",
+    component: EditShipment,
   },
   {
     link: "/shipment/arrange",
