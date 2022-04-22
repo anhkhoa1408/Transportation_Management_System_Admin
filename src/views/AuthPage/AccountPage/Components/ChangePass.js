@@ -7,9 +7,9 @@ import React from "react";
 
 export const ChangePass = ({ formik, ...props }) => {
   return (
-    <Grid container spacing={1} direction="column">
+    <Grid container direction="column">
       <Box className="d-flex flex-row py-3 mb-4 align-items-center justify-content-between border-bottom">
-        <Typography className="fs-5 fw-bold">Đổi mật khẩu</Typography>
+        <Typography variant="h6">Đổi mật khẩu</Typography>
         <Button variant="outlined" onClick={formik.submitForm}>Lưu lại</Button>
       </Box>
       <Grid container md={12} className="mb-4">

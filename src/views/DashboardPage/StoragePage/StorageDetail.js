@@ -133,7 +133,7 @@ const StorageDetail = (props) => {
             <Box className="px-5 py-2">
               <Grid container className="mt-3 mb-4">
                 <Grid item md={8}>
-                  <Typography className="fs-5 fw-bold">
+                  <Typography variant="h6">
                     Thông tin kho
                   </Typography>
                 </Grid>
@@ -142,13 +142,15 @@ const StorageDetail = (props) => {
                   md={4}
                   className="d-flex flex-row justify-content-end"
                 >
-                  <Button
-                    variant="outlined"
-                    color="success"
-                    onClick={formik.submitForm}
-                  >
-                    Lưu
-                  </Button>
+                  {role.name === "Admin" && (
+                    <Button
+                      variant="outlined"
+                      color="success"
+                      onClick={formik.submitForm}
+                    >
+                      Lưu
+                    </Button>
+                  )}
                 </Grid>
               </Grid>
 

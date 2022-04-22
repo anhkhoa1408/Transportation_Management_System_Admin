@@ -161,7 +161,7 @@ export const AccountPage = (props) => {
           <Box className="d-flex flex-row align-items-center px-4 py-2">
             <AvatarUpload avatar={avatar} setAvatar={setAvatar} />
             <Box className="flex-grow-1">
-              <Typography variant="h5">{data.name || "[Họ và tên]"}</Typography>
+              <Typography variant="h6">{data.name || "[Họ và tên]"}</Typography>
               <Typography
                 variant="h5"
                 className="fs-6 mt-2 text-success fw-bold"

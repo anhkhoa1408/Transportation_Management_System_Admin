@@ -1,13 +1,14 @@
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import React from "react";
 
-
 export const ChangeInfo = ({ formik }) => {
   return (
     <Grid container direction="column">
       <Box className="d-flex flex-row py-3 mb-4 align-items-center justify-content-between border-bottom">
-        <Typography className="fs-5 fw-bold">Thông tin cá nhân</Typography>
-        <Button variant="outlined" onClick={formik.submitForm}>Lưu lại</Button>
+        <Typography variant="h6">Thông tin cá nhân</Typography>
+        <Button variant="outlined" onClick={formik.submitForm}>
+          Lưu lại
+        </Button>
       </Box>
       <Grid container md={12} className="mb-4">
         <Grid item md={3} className="align-items-center d-flex flex-row">
@@ -51,7 +52,7 @@ export const ChangeInfo = ({ formik }) => {
           />
         </Grid>
       </Grid>
-      
+
       <Grid container className="mb-4">
         <Grid item md={3} className="align-items-center d-flex flex-row">
           <Typography>Tên đường</Typography>
@@ -88,7 +89,9 @@ export const ChangeInfo = ({ formik }) => {
           <TextField
             fullWidth
             label="Quận / huyện"
-            error={formik.touched.province && formik.errors.province ? true : false}
+            error={
+              formik.touched.province && formik.errors.province ? true : false
+            }
             helperText={formik.touched.province && formik.errors.province}
             {...formik.getFieldProps("province")}
           />

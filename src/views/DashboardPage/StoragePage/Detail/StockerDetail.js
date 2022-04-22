@@ -18,6 +18,7 @@ const StockerDetail = ({ formik, stockers, selectStockers, handleChangeStocker }
         </Grid>
         <Grid item md={9}>
           <TextField
+            disabled
             fullWidth
             label="Tên kho"
             inputProps={{
@@ -54,6 +55,7 @@ const StockerDetail = ({ formik, stockers, selectStockers, handleChangeStocker }
         </Grid>
         <Grid item md={9}>
           <TextField
+            disabled
             type="number"
             fullWidth
             label="Diện tích"
@@ -77,6 +79,7 @@ const StockerDetail = ({ formik, stockers, selectStockers, handleChangeStocker }
         </Grid>
         <Grid item md={9}>
           <TextField
+            disabled
             fullWidth
             label="Ngày thành lập"
             inputProps={{

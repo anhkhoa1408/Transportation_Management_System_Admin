@@ -177,7 +177,7 @@ const VehicleDetail = (props) => {
         onConfirm={handleDelete}
         confirmBtnText={"Chấp nhận"}
         cancelBtnText={"Hủy bỏ"}
-        title="Bạn có thật sự muốn xóa thông tin này không ?"
+        title="Bạn có thật sự muốn xóa phương tiện này không ?"
       />,
     );
   };
@@ -286,7 +286,7 @@ const VehicleDetail = (props) => {
                 rowsText={"hàng"}
                 ofText="/"
                 LoadingComponent={LoadingTable}
-                defaultPageSize={5}
+                defaultPageSize={10}
                 showPaginationBottom={true}
                 sortable={false}
                 resizable={false}

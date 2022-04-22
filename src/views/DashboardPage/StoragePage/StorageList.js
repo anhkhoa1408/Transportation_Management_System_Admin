@@ -62,13 +62,13 @@ export const StorageList = (props) => {
         Header: "Tên",
         accessor: "name",
         filterable: false,
-        width: 180
+        width: 230
       },
       {
         Header: "Địa chỉ",
         accessor: "address",
         filterable: false,
-        width: 350
+        width: 400
       },
       {
         Header: "Diện tích kho",
