@@ -1,6 +1,7 @@
 {
   "name": "tms_frontend_admin",
   "version": "0.1.0",
+  "homepage": "https://anhkhoa1408.github.io/Transportation_Management_System_Admin/",
   "private": true,
   "dependencies": {
     "@babel/runtime": "^7.17.7",
