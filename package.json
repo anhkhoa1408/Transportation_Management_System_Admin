@@ -1,7 +1,6 @@
 {
   "name": "tms_frontend_admin",
   "version": "0.1.0",
-  "homepage": "https://anhkhoa1408.github.io/Transportation_Management_System_Admin/",
   "private": true,
   "dependencies": {
     "@babel/runtime": "^7.17.7",
@@ -48,8 +47,7 @@
   "scripts": {
     "dev": "webpack serve --mode development --config webpack.config.js --env env=dev --open --hot",
     "prod": "webpack serve --mode development --config webpack.config.js --env env=prod --open --hot",
-    "build": "webpack build --mode production --config webpack.config.js --env env=prod",
-    "deploy": "gh-pages -d build"
+    "build": "webpack build --mode production --config webpack.config.js --env env=prod"
   },
   "eslintConfig": {
     "extends": [
