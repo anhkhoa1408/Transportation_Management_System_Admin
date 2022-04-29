@@ -93,7 +93,7 @@ export const StaffList = (props) => {
           <Button
             variant="contained"
             endIcon={<Info />}
-            className="app-primary-bg-color"
+            className="app-bg--primary"
             onClick={() =>
               history.push("/staff/info", {
                 id: prop.id,
@@ -141,7 +141,7 @@ export const StaffList = (props) => {
           >
             <Typography
               variant="h5"
-              className="flex-grow-1 fs-5 app-primary-color"
+              className="flex-grow-1 fs-5 app--primary"
             >
               Danh sách nhân viên
             </Typography>

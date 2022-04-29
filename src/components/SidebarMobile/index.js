@@ -59,13 +59,13 @@ const SidebarMobile = (props) => {
       }}
     >
       <label htmlFor="toggle-sidebar-mobile" className="d-flex flex-column btn">
-        <Close className="app-primary-color align-self-end m-2" />
+        <Close className="app--primary align-self-end m-2" />
       </label>
 
       <NavLink className="nav-link" to="/dashboard">
         <ListItem
           button
-          className="app-primary-color d-flex align-items-center justify-content-center"
+          className="app--primary d-flex align-items-center justify-content-center"
         >
           <ListItemIcon className="m-0 w-0">
             <Home />
@@ -90,7 +90,7 @@ const SidebarMobile = (props) => {
         <NavLink key={index} className="nav-link" to={item.link}>
           <ListItem
             button
-            className="app-primary-color d-flex align-items-center justify-content-center"
+            className="app--primary d-flex align-items-center justify-content-center"
           >
             <ListItemIcon className="m-0 w-0">{item.icon}</ListItemIcon>
             <ListItemText primary={item.title} />
@@ -112,7 +112,7 @@ const SidebarMobile = (props) => {
       <NavLink className="nav-link" to="/report">
         <ListItem
           button
-          className="app-primary-color d-flex align-items-center justify-content-center"
+          className="app--primary d-flex align-items-center justify-content-center"
         >
           <ListItemIcon className="m-0 w-0">
             <Description />
@@ -124,7 +124,7 @@ const SidebarMobile = (props) => {
       <NavLink className="nav-link" to="/feedback">
         <ListItem
           button
-          className="app-primary-color d-flex align-items-center justify-content-center"
+          className="app--primary d-flex align-items-center justify-content-center"
         >
           <ListItemIcon className="m-0 w-0">
             <ModeComment />

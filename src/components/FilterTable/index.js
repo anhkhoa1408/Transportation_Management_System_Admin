@@ -102,7 +102,7 @@ function Filter({ name, value, onChangeName, onChangeValue, listParam = [] }) {
           <Box className="w-100 mb-3">
             <Button
               onClick={handleFind}
-              className="w-100 app-primary-bg-color"
+              className="w-100 app-bg--primary"
               variant="contained"
               endIcon={<Search />}
             >
@@ -114,7 +114,7 @@ function Filter({ name, value, onChangeName, onChangeValue, listParam = [] }) {
             <Box className="w-50">
               <Button
                 onClick={handleReset}
-                className="w-100 app-primary-color"
+                className="w-100 app--primary"
                 endIcon={<RestartAlt />}
               >
                 Đặt lại

@@ -15,7 +15,7 @@ export default function Loading({ message = "" }) {
         color="#7fc3dc"
         ariaLabel="loading"
       />
-      <Typography className="app-primary-color">
+      <Typography className="app--primary">
         {message ? message : "Xin vui lòng đợi trong giây lát"}
       </Typography>
     </div>

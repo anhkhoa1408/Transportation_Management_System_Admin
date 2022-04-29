@@ -18,7 +18,7 @@ const AppNotification = (props) => {
   return (
     <UncontrolledDropdown direction="left" className="me-3">
       <DropdownToggle className="border-0 shadow-none bg-light p-1">
-        <Notifications className="app-primary-color" />
+        <Notifications className="app--primary" />
       </DropdownToggle>
       <DropdownMenu
         className="col-lg-12 position-absolute shadow"
@@ -42,8 +42,8 @@ const AppNotification = (props) => {
           {Array.from({ length: 10 }, (_, index) => (
             <div key={index}>
               <DropdownItem className="d-flex flex-row align-items-center p-4">
-                <Box className="app-primary-bg-color-neutral icon-notification p-2 me-4">
-                  <NotificationsOutlined className="app-primary-color" />
+                <Box className="app-bg--neutral-primary icon-notification p-2 me-4">
+                  <NotificationsOutlined className="app--primary" />
                 </Box>
                 <Box className="d-flex flex-column">
                   <Typography className="fw-bold fs-6">

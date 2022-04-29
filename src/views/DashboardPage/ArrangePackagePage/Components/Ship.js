@@ -53,7 +53,7 @@ function Ship({ shipmentData }) {
               style={getListStyle(snapshot.isDraggingOver)}
             >
               <Box className={clsx("py-1 mb-1")}>
-                <Button className="d-flex flex-row justify-content-between align-items-center w-100 app-primary-color">
+                <Button className="d-flex flex-row justify-content-between align-items-center w-100 app--primary">
                   <Typography className="my-2">Kiện hàng đã chọn</Typography>
                 </Button>
               </Box>
@@ -74,9 +74,9 @@ function Ship({ shipmentData }) {
                       )}
                     >
                       <Box className="d-flex flex-row align-items-start p-1">
-                        <Box className="p-2 bg-color-gray me-3">
+                        <Box className="p-2 app-bg--neutral-gray me-3">
                           <Inventory2
-                            className="app-primary-color hover-sm"
+                            className="app--primary hover-sm"
                             sx={{ fontSize: 30 }}
                           ></Inventory2>
                         </Box>

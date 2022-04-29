@@ -206,7 +206,7 @@ export const HomePage = (props) => {
                 borderBottomRightRadius: 0,
               }}
             >
-              <Typography variant="h5" className="fs-5 app-primary-color">
+              <Typography variant="h5" className="fs-5 app--primary">
                 Lượt vận chuyển tháng
               </Typography>
             </Paper>

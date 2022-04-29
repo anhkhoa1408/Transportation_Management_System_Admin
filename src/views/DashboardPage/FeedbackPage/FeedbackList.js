@@ -131,7 +131,7 @@ export const FeedbackList = (props) => {
           >
             <Typography
               variant="h5"
-              className="flex-grow-1 fs-5 app-primary-color"
+              className="flex-grow-1 fs-5 app--primary"
             >
               Danh sách đánh giá
             </Typography>

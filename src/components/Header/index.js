@@ -126,11 +126,11 @@ const Header = (props) => {
                   <Typography className="opacity-50" sx={{ fontSize: 13 }}>
                     Chào mừng
                   </Typography>
-                  <Typography className="fs-6 app-primary-color">
+                  <Typography className="fs-6 app--primary">
                     {simplifyString(data.name, 18)}
                   </Typography>
                 </DropdownItem>
-                <Divider className="app-primary-color m-1" />
+                <Divider className="app--primary m-1" />
                 <DropdownItem
                   onClick={() => history.push("/account/info")}
                   className="d-flex flex-row align-items-center justify-content-start px-4 py-3"

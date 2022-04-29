@@ -5,6 +5,7 @@ import React, { useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ReactTable from "react-table-v6";
+import { Badge } from "reactstrap";
 import orderApi from "../../../api/orderApi";
 import { CustomPagination } from "../../../components/CustomPagination";
 import Filter from "../../../components/FilterTable";
@@ -19,7 +20,6 @@ export const OrderList = (props) => {
   const [totalPage, setTotalPage] = useState(0);
   const [_limit, setLimit] = useState(10);
   const [sort, setSort] = useState("createdAt:DESC");
-
 
   const history = useHistory();
 
@@ -47,33 +47,47 @@ export const OrderList = (props) => {
   const handleState = (state) => {
     switch (state) {
       case 0:
-        return <Chip variant="outlined" label="Đang xử lý" color="warning" />;
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
       case 1:
         return (
-          <Chip variant="outlined" label="Chuẩn bị kiện hàng" color="primary" />
+          <Badge className="app-bg--neutral-secondary">
+            <span className="app--secondary">Đang gom hàng</span>
+          </Badge>
         );
       case 2:
-        return <Chip variant="outlined" label="Đang vận chuyển" color="info" />;
+        return (
+          <Badge className="app-bg--neutral-secondary">
+            <span className="app--secondary">Đang vận chuyển</span>
+          </Badge>
+        );
       case 3:
         return (
-          <Chip
-            variant="outlined"
-            label="Chuẩn bị giao hàng"
-            color="secondary"
-          />
+          <Badge className="app-bg--neutral-primary">
+            <span className="app--primary">Chuẩn bị giao hàng</span>
+          </Badge>
         );
       case 4:
         return (
-          <Chip
-            variant="outlined"
-            label="Giao hàng thành công"
-            color="success"
-          />
+          <Badge className="app-bg--neutral-success">
+            <span className="app--success">Giao hàng thành công</span>
+          </Badge>
         );
       case 5:
-        return <Chip variant="outlined" label="Đã hủy" color="error" />;
+        return (
+          <Badge className="app-bg--neutral-danger">
+            <span className="app--danger">Đã hủy</span>
+          </Badge>
+        );
       default:
-        return <Chip variant="outlined" label="Đang xử lý" color="warning" />;
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
     }
   };
 
@@ -136,7 +150,7 @@ export const OrderList = (props) => {
           <Button
             variant="contained"
             endIcon={<Info />}
-            className="app-primary-bg-color"
+            className="app-bg--primary"
             onClick={() =>
               history.push("/order/detail", {
                 id: prop.id,
@@ -165,12 +179,12 @@ export const OrderList = (props) => {
           _start,
           _limit,
           [filterName]: filterValue,
-          _sort: sort
+          _sort: sort,
         }
       : {
           _start,
           _limit,
-          _sort: sort
+          _sort: sort,
         },
   );
 
@@ -192,10 +206,7 @@ export const OrderList = (props) => {
               borderBottomLeftRadius: 0,
             }}
           >
-            <Typography
-              variant="h5"
-              className="flex-grow-1 fs-5 app-primary-color"
-            >
+            <Typography variant="h5" className="flex-grow-1 fs-5 app--primary">
               Danh sách đơn hàng
             </Typography>
             <Box>

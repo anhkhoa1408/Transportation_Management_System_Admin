@@ -84,7 +84,7 @@ const Sidebar = (props) => {
       }}
     >
       <DrawerHeader className="d-flex flex-column align-items-center mb-3">
-        <IconButton className="app-primary-bg-color" onClick={handleToggle}>
+        <IconButton className="app-bg--primary" onClick={handleToggle}>
           {toggle ? (
             <ChevronRight className="text-white" />
           ) : (
@@ -97,7 +97,7 @@ const Sidebar = (props) => {
         <NavLink key={index} className="nav-link" to={item.link}>
           <ListItem
             button
-            className="app-primary-color d-flex align-items-center justify-content-center"
+            className="app--primary d-flex align-items-center justify-content-center"
           >
             {!toggle ? (
               <>

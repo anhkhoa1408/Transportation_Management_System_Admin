@@ -108,7 +108,7 @@ export const ReportList = (props) => {
           <Button
             variant="contained"
             endIcon={<Info />}
-            className="app-primary-bg-color"
+            className="app-bg--primary"
             onClick={() =>
               history.push("/report/detail", {
                 id: prop.id,
@@ -165,7 +165,7 @@ export const ReportList = (props) => {
           >
             <Typography
               variant="h5"
-              className="flex-grow-1 fs-5 app-primary-color"
+              className="flex-grow-1 fs-5 app--primary"
             >
               Danh sách báo cáo
             </Typography>

@@ -1,6 +1,21 @@
 :root {
-  --app-primary: #7fc3dc;
-  --app-primary-neutral: #cce7f1;
+  --primary: #7fc3dc;
   --white: #fff;
-  --gray: #F8F9FC;
+  --gray: #d4d4d4;
+  --danger: #df4759;
+  --success: #69e781;
+  --warning: #ffbb33;
+  --backdrop: #b4b3db;
+  --black: #000;
+  --gray: #d4d4d4;
+  --red: #bf3b3b;
+  --purple: #ac4ff7;
+  --secondary: #39b2f7;
+  --neutral-gray: #f3f3fa;
+  --neutral-primary: #d1f3ff;
+  --neutral-success: #bfffcc;
+  --neutral-warning: #ffeecc;
+  --neutral-danger: #ffd4d9;
+  --neutral-secondary: #def1fc;
+  --neutral-purple: #f6ebff;
 }

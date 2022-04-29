@@ -65,7 +65,7 @@ function FurloughList() {
         state: handleState(prop.state),
         options: (
           <UncontrolledDropdown direction="left">
-            <DropdownToggle className="app-primary-bg-color border-0 shadow-sm">Tùy chọn</DropdownToggle>
+            <DropdownToggle className="app-bg--primary border-0 shadow-sm">Tùy chọn</DropdownToggle>
             <DropdownMenu >
               <DropdownItem onClick={() => handleAction(prop.id, "accepted")}>Chấp nhận</DropdownItem>
               <DropdownItem onClick={() => handleAction(prop.id, "canceled")} className="text-danger">Không cho phép</DropdownItem>

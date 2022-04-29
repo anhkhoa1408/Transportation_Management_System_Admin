@@ -12,7 +12,7 @@ export default function LoadingTable(props) {
         color="#7fc3dc"
         ariaLabel="loading"
       />
-      <Typography className="app-primary-color">
+      <Typography className="app--primary">
         Xin vui lòng đợi trong giây lát
       </Typography>
     </div>

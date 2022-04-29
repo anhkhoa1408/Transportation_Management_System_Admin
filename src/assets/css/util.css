@@ -45,13 +45,168 @@
 
 .hover-danger-sm:hover {
   background-color: #dc3545;
-  color: #FFF
+  color: #fff;
 }
 
-.color-gray {
-  color: var(--gray)
+/* Background color */
+
+.app-bg--success {
+  background-color: var(--success) !important;
 }
 
-.bg-color-gray {
-  background-color: var(--gray)
+.app-bg--warning {
+  background-color: var(--warning) !important;
+}
+
+.app-bg--danger {
+  background-color: var(--danger) !important;
+}
+
+.app-bg--gray {
+  background-color: var(--gray) !important;
+}
+
+.app-bg--purple {
+  background-color: var(--purple) !important;
+}
+
+.app-bg--secondary {
+  background-color: var(--secondary) !important;
+}
+
+.app-bg--primary {
+  background-color: var(--primary) !important;
+}
+
+/* Neutral background color */
+.app-bg--neutral-success {
+  background-color: var(--neutral-success) !important;
+}
+
+.app-bg--neutral-warning {
+  background-color: var(--neutral-warning) !important;
+}
+
+.app-bg--neutral-danger {
+  background-color: var(--neutral-danger) !important;
+}
+
+.app-bg--neutral-gray {
+  background-color: var(--neutral-gray) !important;
+}
+
+.app-bg--neutral-purple {
+  background-color: var(--neutral-purple) !important;
+}
+
+.app-bg--neutral-secondary {
+  background-color: var(--neutral-secondary) !important;
+}
+
+.app-bg--neutral-primary {
+  background-color: var(--neutral-primary) !important;
+}
+
+/* color */
+.app--success {
+  color: var(--success) !important;
+}
+
+.app--warning {
+  color: var(--warning) !important;
+}
+
+.app--danger {
+  color: var(--danger) !important;
+}
+
+.app--gray {
+  color: var(--gray) !important;
+}
+
+.app--purple {
+  color: var(--purple) !important;
+}
+
+.app--secondary {
+  color: var(--secondary) !important;
+}
+
+.app--primary {
+  color: var(--primary) !important;
+}
+
+/* neutral color */
+.app--neutral-success {
+  color: var(--neutral-success) !important;
+}
+
+.app--neutral-warning {
+  color: var(--neutral-warning) !important;
+}
+
+.app--neutral-danger {
+  color: var(--neutral-danger) !important;
+}
+
+.app--neutral-gray {
+  color: var(--neutral-gray) !important;
+}
+
+.app--neutral-purple {
+  color: var(--neutral-purple) !important;
+}
+
+.app--neutral-secondary {
+  color: var(--neutral-secondary) !important;
+}
+
+/* outline color */
+.app-outline--success {
+  color: var(--success) !important;
+  border-style: solid !important;
+  border-width: 1 !important;
+  border-color: var(--success) !important;
+}
+
+.app-outline--warning {
+  color: var(--warning) !important;
+  border-style: solid !important;
+  border-width: 1 !important;
+  border-color: var(--warning) !important;
+}
+
+.app-outline--danger {
+  color: var(--danger) !important;
+  border-style: solid !important;
+  border-width: 1 !important;
+  border-color: var(--danger) !important;
+}
+
+.app-outline--gray {
+  color: var(--gray) !important;
+  border-style: solid !important;
+  border-width: 1 !important;
+  border-color: var(--gray) !important;
+}
+
+.app-outline--purple {
+  color: var(--purple) !important;
+  border-style: solid !important;
+  border-width: 1 !important;
+  border-color: var(--purple) !important;
+}
+
+.app-outline--secondary {
+  color: var(--secondary) !important;
+  border-style: solid !important;
+  border-width: 1 !important;
+  border-color: var(--secondary) !important;
+}
+
+.app-outline--primary {
+  color: var(--primary) !important;
+  border-style: solid !important;
+  border-width: 1 !important;
+  border-color: var(--primary) !important;
 }

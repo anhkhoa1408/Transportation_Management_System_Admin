@@ -158,7 +158,7 @@ const VoucherDetail = (props) => {
         onConfirm={handleDelete}
         confirmBtnText={"Chấp nhận"}
         cancelBtnText={"Hủy bỏ"}
-        title="Bạn có thật sự muốn xóa thông tin này không ?"
+        title="Bạn có thật sự muốn xóa mã giảm giá này không ?"
       />,
     );
   };

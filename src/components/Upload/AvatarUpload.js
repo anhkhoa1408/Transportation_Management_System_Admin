@@ -33,7 +33,7 @@ export default function AvatarUpload({ avatar, setAvatar }) {
         <div className="rounded-circle position-relative">
           <Button
             onClick={open}
-            className="rounded-circle app-primary-bg-color badge badge-style badge-position shadow-sm text-white hover-sm"
+            className="rounded-circle app-bg--primary badge badge-style badge-position shadow-sm text-white hover-sm"
           >
             <Edit className="text-white" fontSize="small" />
           </Button>

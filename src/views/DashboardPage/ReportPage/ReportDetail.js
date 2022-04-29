@@ -147,7 +147,7 @@ const ReportDetail = (props) => {
                   <>
                     <Button
                       variant="contained"
-                      className="app-primary-bg-color me-2"
+                      className="app-bg--primary me-2"
                       // endIcon={<Download />}
                       onClick={handleExport}
                     >

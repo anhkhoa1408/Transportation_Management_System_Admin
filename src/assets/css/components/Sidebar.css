@@ -40,7 +40,7 @@
 .nav-link.active .MuiButtonBase-root:active,
 .nav-link.active .MuiButtonBase-root,
 .nav-link .MuiButtonBase-root:hover {
-  background-color: var(--app-primary);
+  background-color: var(--primary);
   color: var(--white);
   border-radius: 5px;
   transition: 0.3s linear;
@@ -59,7 +59,7 @@
 }
 
 .nav-link .MuiListItemIcon-root {
-  color: var(--app-primary);
+  color: var(--primary);
 }
 
 @keyframes fadeIn {

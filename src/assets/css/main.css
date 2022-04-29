@@ -18,24 +18,12 @@ body {
   width: "50%";
 }
 
-.app-primary-color {
-  color: var(--app-primary) !important;
-}
-
-.app-primary-bg-color-neutral {
-  background-color: var(--app-primary-neutral) !important;
-}
-
-.app-primary-bg-color {
-  background-color: var(--app-primary) !important;
-}
-
 .dropdown-item {
   padding: 12px !important;
 }
 
 .dropdown-item:active {
-  background-color: var(--app-primary);
+  background-color: var(--primary);
 }
 
 .dropdown-menu {
