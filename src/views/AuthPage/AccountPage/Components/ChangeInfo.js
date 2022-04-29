@@ -6,7 +6,7 @@ export const ChangeInfo = ({ formik }) => {
     <Grid container direction="column">
       <Box className="d-flex flex-row py-3 mb-4 align-items-center justify-content-between border-bottom">
         <Typography variant="h6">Thông tin cá nhân</Typography>
-        <Button variant="outlined" onClick={formik.submitForm}>
+        <Button variant="outlined" color="success" onClick={formik.submitForm}>
           Lưu lại
         </Button>
       </Box>

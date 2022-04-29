@@ -141,7 +141,7 @@ const EditShipment = (props) => {
               >
                 Tạm ngưng
               </Button>
-              <Button variant="outlined" onClick={() => handleSubmit("update")}>
+              <Button variant="outlined" color="success" onClick={() => handleSubmit("update")}>
                 Lưu
               </Button>
             </Box>

@@ -104,7 +104,7 @@ export const ShipmentList = (props) => {
         sortable: true,
       },
       {
-        Header: "Loại hình chuyến xe",
+        Header: "Loại hình",
         accessor: "type",
         filterable: false,
       },
