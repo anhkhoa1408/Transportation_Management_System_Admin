@@ -160,7 +160,7 @@ function SettingPage() {
             <Button
               onClick={formik.submitForm}
               variant="outlined"
-              color="success"
+              className="app-btn app-btn--success"
             >
               Lưu
             </Button>
@@ -280,7 +280,7 @@ function SettingPage() {
             <Button
               onClick={formik.submitForm}
               variant="outlined"
-              color="success"
+              className="app-btn app-btn--success"
             >
               Lưu
             </Button>
@@ -350,7 +350,7 @@ function SettingPage() {
             <Button
               onClick={formik.submitForm}
               variant="outlined"
-              color="success"
+              className="app-btn app-btn--success"
             >
               Lưu
             </Button>

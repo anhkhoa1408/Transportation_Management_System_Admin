@@ -64,7 +64,7 @@ export const ArrangePack = ({
   });
 
   const getListStyle = (isDraggingOver) => ({
-    background: isDraggingOver ? "#b6f3fc" : "#F8F9FC",
+    background: isDraggingOver ? "#b6f3fc" : "#F3F3FA",
     padding: "8px",
     height: 500,
     flex: 1,
@@ -205,7 +205,7 @@ export const ArrangePack = ({
                       </UncontrolledTooltip>
                       <Button
                         id="merge-btn"
-                        className="d-flex flex-row justify-content-center align-items-center mb-2"
+                        className="d-flex flex-row justify-content-center align-items-center mb-2 app--secondary"
                         onClick={handleCancel}
                       >
                         <Merge />
@@ -215,7 +215,7 @@ export const ArrangePack = ({
                       </UncontrolledTooltip>
                       <Button
                         id="calculate-btn"
-                        className="d-flex flex-row justify-content-center align-items-center mb-2 text-success"
+                        className="d-flex flex-row justify-content-center align-items-center mb-2 app--success"
                         onClick={handleCalculate}
                       >
                         <Calculate />
@@ -225,7 +225,7 @@ export const ArrangePack = ({
                       </UncontrolledTooltip>
                       <Button
                         id="sort-btn"
-                        className="d-flex flex-row justify-content-center align-items-center mb-2 text-warning"
+                        className="d-flex flex-row justify-content-center align-items-center mb-2 app--warning"
                         onClick={handleQuickSort}
                       >
                         <Sort />
@@ -345,7 +345,7 @@ export const ArrangePack = ({
                                 }
                               ></TextField>
                               <Button
-                                color="success"
+                                className="app-btn app-btn--success"
                                 disabled={
                                   quantity < 0 ||
                                   quantity > item.quantity ||

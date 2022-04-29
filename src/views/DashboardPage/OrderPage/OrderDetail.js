@@ -125,8 +125,7 @@ const OrderDetail = (props) => {
               >
                 <Button
                   variant="outlined"
-                  color="success"
-                  className="me-2 py-1"
+                  className="me-2 py-1 app-btn app-btn--success"
                   onClick={formik.submitForm}
                 >
                   Lưu

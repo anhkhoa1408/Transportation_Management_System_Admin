@@ -107,10 +107,10 @@ function FurloughList() {
         return <Chip variant="outlined" label="Chờ xử lý" color="warning" />;
       case "accepted":
         return (
-          <Chip variant="outlined" label="Chấp nhận" color="success" />
+          <Chip variant="outlined" label="Chấp nhận" className="app-btn app-btn--success" />
         );
       case "canceled":
-        return <Chip variant="outlined" label="Không cho phép" color="error" />;
+        return <Chip variant="outlined" label="Không cho phép" className="app-btn app-btn--danger" />;
       default:
         return <Chip variant="outlined" label="Đang xử lý" color="warning" />;
     }

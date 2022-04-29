@@ -122,9 +122,9 @@ function Filter({ name, value, onChangeName, onChangeValue, listParam = [] }) {
             </Box>
             <Box className="w-50">
               <Button
+                color="error"
                 onClick={() => setToggle(false)}
                 className="w-100"
-                color="error"
                 endIcon={<Close />}
               >
                 Hủy

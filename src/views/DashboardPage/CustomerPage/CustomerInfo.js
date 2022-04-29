@@ -165,12 +165,12 @@ const Customer = (props) => {
               </Typography>
               <Typography
                 variant="h5"
-                className="fs-6 mt-2 text-success fw-bold"
+                className="fs-6 mt-2 app--success fw-bold"
               >
                 {handleUserRole(data.type)}
               </Typography>
             </Box>
-            <Button variant="outlined" color={data.blocked ? "success" : "error"} onClick={handleConfirm}>
+            <Button variant="outlined" className={data.blocked ? "app-btn app-btn--success" : "app-btn app-btn--danger"} onClick={handleConfirm}>
               {data.blocked ? "kích hoạt" : "khóa"}
             </Button>
           </Box>
@@ -212,7 +212,7 @@ const Customer = (props) => {
                   <Typography variant="h6">
                     Thông tin người dùng
                   </Typography>
-                  <Button variant="outlined" color="success" onClick={formik.submitForm}>
+                  <Button variant="outlined" className="app-btn app-btn--success" onClick={formik.submitForm}>
                     Lưu
                   </Button>
                 </Box>

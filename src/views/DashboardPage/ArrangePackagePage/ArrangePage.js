@@ -323,7 +323,7 @@ const Customer = (props) => {
           <Paper id="detail-header" className="px-4 py-3 shadow-sm mb-4">
             <Box className="p-2 d-flex flex-row justify-content-between align-items-center">
               <Typography variant="h6">Chuyến xe</Typography>
-              <Button onClick={handleCreate} variant="outlined">
+              <Button onClick={handleCreate} className="app-btn app-btn--success">
                 Tạo
               </Button>
             </Box>

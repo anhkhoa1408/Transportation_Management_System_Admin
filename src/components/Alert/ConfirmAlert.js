@@ -19,10 +19,8 @@ function ContentAlert(props) {
         <div className="text-center pt-2">
           {props.content}
           <Button
-            variant="outlined"
             onClick={props.onConfirm}
-            color={props.color ? props.color : "success"}
-            className={`mx-1 mt-3 btn-pill`}
+            className={`app-btn mx-1 mt-3 btn-pill ${props.color ? "app-btn--" + props.color : "app-btn--success"}`}
           >
             <span className={`font-weight-bold`}>
               {props.confirmBtnText ? props.confirmBtnText : "Xác nhận"}
@@ -30,10 +28,8 @@ function ContentAlert(props) {
           </Button>
           {props.hideCancel ? null : (
             <Button
-              variant="outlined"
               onClick={props.onClose}
-              color={props.colorCancel ? props.colorCancel : "error"}
-              className="mx-1 mt-3"
+              className={`app-btn mx-1 mt-3 btn-pill ${props.color ? "app-btn--" + props.color : "app-btn--danger"}`}
             >
               <span>
                 {props.cancelBtnText ? props.cancelBtnText : "Huỷ bỏ"}

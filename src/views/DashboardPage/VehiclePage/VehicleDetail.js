@@ -245,8 +245,7 @@ const VehicleDetail = (props) => {
                     <Button
                       onClick={handleConfirm}
                       variant="outlined"
-                      color="error"
-                      className="me-2"
+                      className="me-2 app-btn app-btn--danger"
                     >
                       Xóa
                     </Button>
@@ -254,7 +253,7 @@ const VehicleDetail = (props) => {
                   <Button
                     onClick={formik.submitForm}
                     variant="outlined"
-                    color="success"
+                    className="app-btn app-btn--success"
                   >
                     Lưu
                   </Button>

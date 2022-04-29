@@ -11,6 +11,7 @@ import {
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { connect, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import * as Bonk from "yup";
 import shipmentApi from "../../../api/shipmentApi";
@@ -22,6 +23,7 @@ import Detail from "./Components/Detail";
 import Ship from "./Components/Ship";
 
 const EditShipment = (props) => {
+  const history = useHistory()
   const location = useLocation();
   const userInfo = useSelector((state) => state.userInfo.user);
   const { role } = userInfo;
@@ -73,6 +75,7 @@ const EditShipment = (props) => {
         .then((response) => {
           successNotify("Cập nhật thành công");
           setData(response);
+          history.push("/shipment")
         })
         .catch((error) => {
           errorNotify("Cập nhật thất bại");
@@ -136,12 +139,11 @@ const EditShipment = (props) => {
               <Button
                 variant="outlined"
                 onClick={() => handleSubmit("cancel")}
-                className="me-2"
-                color="error"
+                className="me-2 app-btn app-btn--danger"
               >
                 Tạm ngưng
               </Button>
-              <Button variant="outlined" color="success" onClick={() => handleSubmit("update")}>
+              <Button variant="outlined" className="app-btn app-btn--success" onClick={() => handleSubmit("update")}>
                 Lưu
               </Button>
             </Box>

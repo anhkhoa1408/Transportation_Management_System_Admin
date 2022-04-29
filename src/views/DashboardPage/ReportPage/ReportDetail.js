@@ -155,7 +155,7 @@ const ReportDetail = (props) => {
                     </Button>
                     <Button
                       variant="outlined"
-                      color="success"
+                      className="app-btn app-btn--success"
                       onClick={formik.submitForm}
                     >
                       Lưu
@@ -164,7 +164,7 @@ const ReportDetail = (props) => {
                 ) : (
                   <Button
                     variant="outlined"
-                    color="success"
+                    className="app-btn app-btn--success"
                     onClick={formik.submitForm}
                   >
                     Tạo

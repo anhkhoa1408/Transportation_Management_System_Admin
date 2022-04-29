@@ -145,7 +145,7 @@ const StorageDetail = (props) => {
                   {role.name === "Admin" && (
                     <Button
                       variant="outlined"
-                      color="success"
+                      className="app-btn app-btn--success"
                       onClick={formik.submitForm}
                     >
                       Lưu

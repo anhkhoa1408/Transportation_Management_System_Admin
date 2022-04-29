@@ -73,7 +73,7 @@ export const OrderList = (props) => {
       case 4:
         return (
           <Badge className="app-bg--neutral-success">
-            <span className="app--success">Giao hàng thành công</span>
+            <span className="app--success">Đã giao hàng</span>
           </Badge>
         );
       case 5:

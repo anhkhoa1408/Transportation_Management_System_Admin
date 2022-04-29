@@ -27,8 +27,8 @@ export const HomePage = (props) => {
   const actions = [
     {
       icon: <ImportExport color="primary" />,
-      name: "Nhập xuất",
-      link: "/dashboard",
+      name: "Chuyến xe",
+      link: "/shipment",
     },
     { icon: <Archive color="primary" />, name: "Đơn hàng", link: "/order" },
     { icon: <Chat color="primary" />, name: "Phản hồi", link: "/feedback" },
@@ -133,7 +133,7 @@ export const HomePage = (props) => {
               <Box component="div" className="flex-grow-1">
                 <Typography
                   variant="h5"
-                  className="text-success fs-6 fw-bold mb-2"
+                  className="app--success fs-6 fw-bold mb-2"
                 >
                   Thu nhập hằng quý
                 </Typography>
@@ -149,7 +149,7 @@ export const HomePage = (props) => {
               <Box component="div" className="flex-grow-1">
                 <Typography
                   variant="h5"
-                  className="text-warning fs-6 fw-bold mb-2"
+                  className="app--warning fs-6 fw-bold mb-2"
                 >
                   Thu nhập hằng năm
                 </Typography>
@@ -165,7 +165,7 @@ export const HomePage = (props) => {
               <Box component="div" className="flex-grow-1">
                 <Typography
                   variant="h5"
-                  className="text-primary fs-6 fw-bold mb-2"
+                  className="app--secondary fs-6 fw-bold mb-2"
                 >
                   Đơn hàng hiện tại
                 </Typography>
@@ -181,7 +181,7 @@ export const HomePage = (props) => {
               <Box component="div" className="flex-grow-1">
                 <Typography
                   variant="h5"
-                  className="text-danger fs-6 fw-bold mb-2"
+                  className="app--danger fs-6 fw-bold mb-2"
                 >
                   Đơn hàng còn lại
                 </Typography>

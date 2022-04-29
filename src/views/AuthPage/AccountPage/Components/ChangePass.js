@@ -10,7 +10,7 @@ export const ChangePass = ({ formik, ...props }) => {
     <Grid container direction="column">
       <Box className="d-flex flex-row py-3 mb-4 align-items-center justify-content-between border-bottom">
         <Typography variant="h6">Đổi mật khẩu</Typography>
-        <Button variant="outlined" color="success" onClick={formik.submitForm}>Lưu lại</Button>
+        <Button variant="outlined" className="app-btn app-btn--success" onClick={formik.submitForm}>Lưu lại</Button>
       </Box>
       <Grid container md={12} className="mb-4">
         <Grid item md={3} className="align-items-center d-flex flex-row">

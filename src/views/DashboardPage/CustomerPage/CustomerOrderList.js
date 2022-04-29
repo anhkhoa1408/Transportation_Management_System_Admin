@@ -3,6 +3,7 @@ import { Box, Chip, Grid, Paper } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ReactTable from "react-table-v6";
+import { Badge } from "reactstrap";
 import orderApi from "../../../api/orderApi";
 import { CustomPagination } from "../../../components/CustomPagination";
 import LoadingTable from "../../../components/LoadingTable";
@@ -100,33 +101,47 @@ function CustomerOrderList() {
   const handleState = (state) => {
     switch (state) {
       case 0:
-        return <Chip variant="outlined" label="Đang xử lý" color="warning" />;
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
       case 1:
         return (
-          <Chip variant="outlined" label="Chuẩn bị kiện hàng" color="primary" />
+          <Badge className="app-bg--neutral-secondary">
+            <span className="app--secondary">Đang gom hàng</span>
+          </Badge>
         );
       case 2:
-        return <Chip variant="outlined" label="Đang vận chuyển" color="info" />;
+        return (
+          <Badge className="app-bg--neutral-secondary">
+            <span className="app--secondary">Đang vận chuyển</span>
+          </Badge>
+        );
       case 3:
         return (
-          <Chip
-            variant="outlined"
-            label="Chuẩn bị giao hàng"
-            color="secondary"
-          />
+          <Badge className="app-bg--neutral-primary">
+            <span className="app--primary">Chuẩn bị giao hàng</span>
+          </Badge>
         );
       case 4:
         return (
-          <Chip
-            variant="outlined"
-            label="Giao hàng thành công"
-            color="success"
-          />
+          <Badge className="app-bg--neutral-success">
+            <span className="app--success">Đã giao hàng</span>
+          </Badge>
         );
       case 5:
-        return <Chip variant="outlined" label="Đã hủy" color="error" />;
+        return (
+          <Badge className="app-bg--neutral-danger">
+            <span className="app--danger">Đã hủy</span>
+          </Badge>
+        );
       default:
-        return <Chip variant="outlined" label="Đang xử lý" color="warning" />;
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
     }
   };
 

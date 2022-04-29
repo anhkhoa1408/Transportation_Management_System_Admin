@@ -102,8 +102,7 @@ const PackageDetail = (props) => {
               >
                 <Button
                   variant="outlined"
-                  color="success"
-                  className="py-1"
+                  className="py-1 app-btn app-btn--success"
                   onClick={formik.submitForm}
                 >
                   Lưu
