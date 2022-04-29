@@ -26,6 +26,8 @@ export const StorageList = (props) => {
   const [totalPage, setTotalPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
+  const [sort, setSort] = useState("name:ASC");
+
   const userInfo = useSelector(state => state.userInfo.user)
 
   const history = useHistory();
@@ -62,18 +64,21 @@ export const StorageList = (props) => {
         Header: "Tên",
         accessor: "name",
         filterable: false,
-        width: 230
+        width: 230,
+        sortable: true,
       },
       {
         Header: "Địa chỉ",
         accessor: "address",
         filterable: false,
-        width: 400
+        width: 400,
+        sortable: true,
       },
       {
         Header: "Diện tích kho",
         accessor: "size",
         filterable: false,
+        sortable: true,
       },
       // {
       //   Header: "Thủ kho",
@@ -130,10 +135,12 @@ export const StorageList = (props) => {
           _start,
           _limit,
           [filterName]: filterValue,
+          _sort: sort,
         }
       : {
           _start,
           _limit,
+          _sort: sort,
         },
   );
 
@@ -214,6 +221,10 @@ export const StorageList = (props) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
                 setTotalPage(Math.ceil(total / state.pageSize));
+                if (state.sorted.length) {
+                  let { id, desc } = state.sorted[0];
+                  setSort(`${id}:${desc ? "DESC" : "ASC"}`);
+                }
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {

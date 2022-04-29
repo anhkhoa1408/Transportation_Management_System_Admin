@@ -18,6 +18,8 @@ export const OrderList = (props) => {
   const [total, setTotal] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [_limit, setLimit] = useState(10);
+  const [sort, setSort] = useState("createdAt:DESC");
+
 
   const history = useHistory();
 
@@ -88,26 +90,31 @@ export const OrderList = (props) => {
         accessor: "id",
         filterable: false,
         width: 250,
+        sortable: true,
       },
       {
         Header: "Tên khách hàng",
         accessor: "sender_name",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Số điện thoại",
         accessor: "sender_phone",
         filterable: false,
+        sortable: true,
       },
       {
-        Header: "Trạng thái đơn hàng",
+        Header: "Trạng thái",
         accessor: "state",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Thời gian đặt hàng",
         accessor: "createdAt",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Tuỳ chọn",
@@ -158,10 +165,12 @@ export const OrderList = (props) => {
           _start,
           _limit,
           [filterName]: filterValue,
+          _sort: sort
         }
       : {
           _start,
           _limit,
+          _sort: sort
         },
   );
 
@@ -229,6 +238,10 @@ export const OrderList = (props) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
                 setTotalPage(Math.ceil(total / state.pageSize));
+                if (state.sorted.length) {
+                  let { id, desc } = state.sorted[0];
+                  setSort(`${id}:${desc ? "DESC" : "ASC"}`);
+                }
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {

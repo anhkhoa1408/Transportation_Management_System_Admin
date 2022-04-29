@@ -21,6 +21,7 @@
   text-align: left;
   padding: 20px 10px;
 }
+
 .ReactTable .rt-tbody .rt-td {
   padding: 20px 10px;
   border-right: none;
@@ -41,4 +42,29 @@
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1;
+}
+
+.ReactTable .rt-thead .rt-th.-sort-desc,
+.ReactTable .rt-thead .rt-td.-sort-desc,
+.ReactTable .rt-thead .rt-th.-sort-asc,
+.ReactTable .rt-thead .rt-td.-sort-asc {
+  box-shadow: none;
+}
+
+.ReactTable .rt-thead .rt-th.-sort-desc div,
+.ReactTable .rt-thead .rt-th.-sort-asc div {
+  display: inline-block;
+}
+
+.ReactTable .rt-thead .rt-th.-sort-desc::after {
+  content: "▼";
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 14px;
+}
+.ReactTable .rt-thead .rt-th.-sort-asc::after {
+  content: "▲";
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 14px;
 }

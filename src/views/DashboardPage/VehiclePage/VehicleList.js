@@ -17,7 +17,9 @@ export const VehicleList = (props) => {
   const [totalPage, setTotalPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
-  const userInfo = useSelector(state => state.userInfo.user)
+  const [sort, setSort] = useState("type:ASC");
+
+  const userInfo = useSelector((state) => state.userInfo.user);
 
   const history = useHistory();
 
@@ -64,26 +66,31 @@ export const VehicleList = (props) => {
         Header: "Biển số xe",
         accessor: "licence",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Người quản lý",
         accessor: "manager",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Loại",
         accessor: "type",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Tải trọng tối đa",
         accessor: "load",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Tuỳ chọn",
         accessor: "options",
         filterable: false,
+        sortable: true,
       },
     ],
     [],
@@ -95,6 +102,7 @@ export const VehicleList = (props) => {
         ...prop,
         stt: _start * _limit + index + 1,
         load: prop.load + " kg",
+        type: prop.type === "Truck" ? "Xe tải" : "Xe container",
         manager: prop?.manager?.name || "Trống",
         options: (
           <Button
@@ -129,10 +137,12 @@ export const VehicleList = (props) => {
           _start,
           _limit,
           [filterName]: filterValue,
+          _sort: sort,
         }
       : {
           _start,
           _limit,
+          _sort: sort,
         },
   );
 
@@ -169,7 +179,7 @@ export const VehicleList = (props) => {
                 onChangeValue={setFilterValue}
               />
               <Button
-               hidden={userInfo.type !== "admin"}
+                hidden={userInfo.type !== "admin"}
                 variant="outlined"
                 className="ms-2"
                 endIcon={<Add />}
@@ -213,6 +223,10 @@ export const VehicleList = (props) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
                 setTotalPage(Math.ceil(total / state.pageSize));
+                if (state.sorted.length) {
+                  let { id, desc } = state.sorted[0];
+                  setSort(`${id}:${desc ? "DESC" : "ASC"}`);
+                }
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {

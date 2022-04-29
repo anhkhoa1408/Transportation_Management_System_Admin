@@ -22,6 +22,7 @@ export const ReportList = (props) => {
   const [_start, setStart] = useState(0);
   const [totalPage, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
+  const [sort, setSort] = useState("createdAt:DESC");
 
   const history = useHistory();
 
@@ -58,26 +59,31 @@ export const ReportList = (props) => {
         Header: "Ngày thực hiện",
         accessor: "createdAt",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Ngày cập nhật",
         accessor: "updatedAt",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Người thực hiện",
         accessor: "stocker",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Tên kho",
         accessor: "storage",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Loại báo cáo",
         accessor: "type",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Tuỳ chọn",
@@ -130,10 +136,12 @@ export const ReportList = (props) => {
           _start,
           _limit,
           [filterName]: filterValue,
+          _sort: sort,
         }
       : {
           _start,
           _limit,
+          _sort: sort,
         },
   );
 
@@ -213,6 +221,10 @@ export const ReportList = (props) => {
               onFetchData={async (state, instance) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
+                if (state.sorted.length) {
+                  let { id, desc } = state.sorted[0];
+                  setSort(`${id}:${desc ? "DESC" : "ASC"}`);
+                }
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {

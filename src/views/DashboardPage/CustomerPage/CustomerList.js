@@ -19,6 +19,7 @@ export const CustomerList = (props) => {
   const [_start, setStart] = useState(0);
   const [totalPage, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
+  const [sort, setSort] = useState("name:ASC");
 
   // Filter section
   const filterParam = [
@@ -54,21 +55,25 @@ export const CustomerList = (props) => {
         Header: "Tên",
         accessor: "name",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Số điện thoại",
         accessor: "phone",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Loại thành viên",
         accessor: "type",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Ngày sinh",
         accessor: "birthday",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Tuỳ chọn",
@@ -114,10 +119,12 @@ export const CustomerList = (props) => {
           _start,
           _limit,
           [filterName]: filterValue,
+          _sort: sort,
         }
       : {
           _start,
           _limit,
+          _sort: sort,
         },
   );
 
@@ -181,6 +188,10 @@ export const CustomerList = (props) => {
               onFetchData={async (state, instance) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
+                if (state.sorted.length) {
+                  let { id, desc } = state.sorted[0];
+                  setSort(`${id}:${desc ? "DESC" : "ASC"}`);
+                }
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {

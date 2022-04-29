@@ -18,6 +18,7 @@ export const FeedbackList = (props) => {
   const [_start, setStart] = useState(0);
   const [totalPage, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
+  const [sort, setSort] = useState("createdAt:DESC");
 
   const filterParam = [
     {
@@ -29,8 +30,6 @@ export const FeedbackList = (props) => {
   ];
   const [filterName, setFilterName] = useState(filterParam[0].value);
   const [filterValue, setFilterValue] = useState("");
-
-  const history = useHistory();
 
   const columns = useMemo(
     () => [
@@ -44,21 +43,25 @@ export const FeedbackList = (props) => {
         Header: "Tên khách hàng",
         accessor: "customer",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Ngày đánh giá",
         accessor: "createdAt",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Xếp hạng",
         accessor: "rating_point",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Bình luận",
         accessor: "rating_note",
         filterable: false,
+        sortable: true,
       },
     ],
     [],
@@ -105,10 +108,12 @@ export const FeedbackList = (props) => {
           _start,
           _limit,
           [filterName]: filterValue,
+          _sort: sort,
         }
       : {
           _start,
           _limit,
+          _sort: sort,
         },
   );
 
@@ -169,6 +174,10 @@ export const FeedbackList = (props) => {
               onFetchData={async (state, instance) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
+                if (state.sorted.length) {
+                  let { id, desc } = state.sorted[0];
+                  setSort(`${id}:${desc ? "DESC" : "ASC"}`);
+                }
               }}
               className="-striped -highlight"
               // getTdProps={(state, rowInfo, column, instance) => {

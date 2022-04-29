@@ -19,6 +19,8 @@ export const ShipmentList = (props) => {
   const [totalPage, setTotalPage] = useState(0);
   const [total, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
+  const [sort, setSort] = useState("createdAt:DESC");
+
   const userInfo = useSelector((state) => state.userInfo.user);
 
   const history = useHistory();
@@ -86,17 +88,20 @@ export const ShipmentList = (props) => {
       {
         Header: "Người phụ trách",
         accessor: "driver",
+        sortable: true,
         filterable: false,
       },
       {
         Header: "Từ địa chỉ",
         accessor: "from_address",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Đến địa chỉ",
         accessor: "to_address",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Loại hình chuyến xe",
@@ -107,6 +112,7 @@ export const ShipmentList = (props) => {
         Header: "Chờ hoàn thành",
         accessor: "arrived_time",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Tuỳ chọn",
@@ -179,10 +185,12 @@ export const ShipmentList = (props) => {
           _start,
           _limit,
           [filterName]: filterValue,
+          _sort: sort
         }
       : {
           _start,
           _limit,
+          _sort: sort
         },
   );
 
@@ -258,6 +266,10 @@ export const ShipmentList = (props) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
                 setTotalPage(Math.ceil(total / state.pageSize));
+                if (state.sorted.length) {
+                  let { id, desc } = state.sorted[0];
+                  setSort(`${id}:${desc ? "DESC" : "ASC"}`);
+                }
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {

@@ -1,9 +1,5 @@
 import { Add, FilterList, Info } from "@mui/icons-material";
-import {
-  Box,
-  Button, Grid, Paper,
-  Typography
-} from "@mui/material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import ReactTable from "react-table-v6";
@@ -20,6 +16,7 @@ export const StaffList = (props) => {
   const [_start, setStart] = useState(0);
   const [totalPage, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
+  const [sort, setSort] = useState("name:ASC");
 
   const filterParam = [
     {
@@ -56,21 +53,25 @@ export const StaffList = (props) => {
         Header: "Tên",
         accessor: "name",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Số điện thoại",
         accessor: "phone",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Chức vụ",
-        accessor: "role",
+        accessor: "type",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Thuộc kho",
         accessor: "storage",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Tuỳ chọn",
@@ -86,7 +87,7 @@ export const StaffList = (props) => {
       return {
         ...prop,
         stt: _start * _limit + index + 1,
-        role: handleUserRole(prop.type),
+        type: handleUserRole(prop.type),
         storage: prop?.storage?.name || "Chưa phân công",
         options: (
           <Button
@@ -117,10 +118,12 @@ export const StaffList = (props) => {
           _start,
           _limit,
           [filterName]: filterValue,
+          _sort: sort,
         }
       : {
           _start,
           _limit,
+          _sort: sort,
         },
   );
 
@@ -150,9 +153,16 @@ export const StaffList = (props) => {
                 onChangeName={setFilterName}
                 onChangeValue={setFilterValue}
               />
-              <Button variant="outlined" className="ms-2" endIcon={<Add />} onClick={() => history.push("/staff/create", {
-                create: true
-              })}>
+              <Button
+                variant="outlined"
+                className="ms-2"
+                endIcon={<Add />}
+                onClick={() =>
+                  history.push("/staff/create", {
+                    create: true,
+                  })
+                }
+              >
                 Thêm
               </Button>
             </Box>
@@ -186,6 +196,10 @@ export const StaffList = (props) => {
               onFetchData={async (state, instance) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
+                if (state.sorted.length) {
+                  let { id, desc } = state.sorted[0];
+                  setSort(`${id}:${desc ? "DESC" : "ASC"}`);
+                }
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {

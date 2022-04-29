@@ -18,6 +18,7 @@ export const VoucherList = (props) => {
   const [_start, setStart] = useState(0);
   const [totalPage, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
+  const [sort, setSort] = useState("customer_type:ASC");
 
   const history = useHistory();
 
@@ -66,21 +67,31 @@ export const VoucherList = (props) => {
         Header: "Tên",
         accessor: "name",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Ngày hết hạn",
         accessor: "expired",
         filterable: false,
+        sortable: true,
       },
       {
         Header: "Hình ảnh",
         accessor: "voucher_img",
         filterable: false,
+        sortable: true,
       },
       {
-        Header: "Loại hình khách hàng",
+        Header: "Áp dụng",
         accessor: "customer_type",
         filterable: false,
+        sortable: true,
+      },
+      {
+        Header: "Loại",
+        accessor: "sale_type",
+        filterable: false,
+        sortable: true,
       },
       {
         Header: "Chi tiết",
@@ -96,6 +107,7 @@ export const VoucherList = (props) => {
       return {
         ...prop,
         stt: _start * _limit + index + 1,
+        sale_type: prop.sale_type === "percentage" ? "Theo phần trăm" : "Theo giá trị",
         customer_type: handleUserRole(prop.customer_type),
         expired: moment(prop.expired).format("DD/MM/YYYY"),
         voucher_img: prop.voucher_img ? (
@@ -143,10 +155,12 @@ export const VoucherList = (props) => {
           _start,
           _limit,
           [filterName]: filterValue,
+          _sort: sort,
         }
       : {
           _start,
           _limit,
+          _sort: sort,
         },
   );
 
@@ -225,6 +239,10 @@ export const VoucherList = (props) => {
               onFetchData={async (state, instance) => {
                 setStart(state.page);
                 setLimit(state.pageSize);
+                if (state.sorted.length) {
+                  let { id, desc } = state.sorted[0];
+                  setSort(`${id}:${desc ? "DESC" : "ASC"}`);
+                }
               }}
               className="-striped -highlight"
               getTdProps={(state, rowInfo, column, instance) => {
