@@ -77,7 +77,14 @@ const Header = (props) => {
     if (props.userInfo) {
       setData(props.userInfo.user);
       if (props.userInfo.user.avatar && props.userInfo.user?.avatar?.url) {
-        setAvatar(process.env.MAIN_URL + props.userInfo.user.avatar.url);
+        let isValidUrl = new RegExp("https://").test(
+          props.userInfo.user.avatar.url,
+        );
+        setAvatar(
+          isValidUrl
+            ? props.userInfo.user.avatar.url
+            : process.env.MAIN_URL + props.userInfo.user.avatar.url,
+        );
       }
     }
   }, [props.userInfo]);
@@ -121,7 +128,10 @@ const Header = (props) => {
                   <Avatar alt="Remy Sharp" src={avatar} />
                 </StyledBadge>
               </DropdownToggle>
-              <DropdownMenu className="shadow" style={{ minWidth: 180, maxWidth: 200 }}>
+              <DropdownMenu
+                className="shadow"
+                style={{ minWidth: 180, maxWidth: 200 }}
+              >
                 <DropdownItem header className="d-flex flex-column py-2">
                   <Typography className="opacity-50" sx={{ fontSize: 13 }}>
                     Chào mừng

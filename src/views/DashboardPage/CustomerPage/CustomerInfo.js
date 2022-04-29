@@ -69,7 +69,12 @@ const Customer = (props) => {
       userApi
         .updateAvatar(avatar, location.state.id, data?.avatar?.id)
         .then((response) => {
-          setAvatar(process.env.MAIN_URL + response.avatar.url);
+          let isValidUrl = new RegExp("https://").test(response.avatar.url);
+          setAvatar(
+            isValidUrl
+              ? response.avatar.url
+              : process.env.MAIN_URL + response.avatar.url,
+          );
           successNotify("Cập nhật ảnh đại diện thành công");
         })
         .catch((error) => {
@@ -117,9 +122,7 @@ const Customer = (props) => {
         })
         .then((response) => {
           setData(response);
-          successNotify(
-            `${value ? "Khóa" : "Kích hoạt"} tài khoản thành công`,
-          );
+          successNotify(`${value ? "Khóa" : "Kích hoạt"} tài khoản thành công`);
         })
         .catch((error) => {
           errorNotify(`${value ? "Khóa" : "Kích hoạt"} tài khoản thất bại`);
@@ -146,7 +149,12 @@ const Customer = (props) => {
       userApi.staffDetail(location.state.id).then((response) => {
         setData(response);
         if (response.avatar) {
-          setAvatar(process.env.MAIN_URL + response.avatar.url);
+          let isValidUrl = new RegExp("https://").test(response.avatar.url);
+          setAvatar(
+            isValidUrl
+              ? response.avatar.url
+              : process.env.MAIN_URL + response.avatar.url,
+          );
         }
       });
     }
@@ -170,7 +178,15 @@ const Customer = (props) => {
                 {handleUserRole(data.type)}
               </Typography>
             </Box>
-            <Button variant="outlined" className={data.blocked ? "app-btn app-btn--success" : "app-btn app-btn--danger"} onClick={handleConfirm}>
+            <Button
+              variant="outlined"
+              className={
+                data.blocked
+                  ? "app-btn app-btn--success"
+                  : "app-btn app-btn--danger"
+              }
+              onClick={handleConfirm}
+            >
               {data.blocked ? "kích hoạt" : "khóa"}
             </Button>
           </Box>
@@ -209,10 +225,12 @@ const Customer = (props) => {
             <TabContent activeTab={activeTab}>
               <TabPane tabId="1">
                 <Box className="d-flex flex-row py-3 mb-4 align-items-center justify-content-between border-bottom">
-                  <Typography variant="h6">
-                    Thông tin người dùng
-                  </Typography>
-                  <Button variant="outlined" className="app-btn app-btn--success" onClick={formik.submitForm}>
+                  <Typography variant="h6">Thông tin người dùng</Typography>
+                  <Button
+                    variant="outlined"
+                    className="app-btn app-btn--success"
+                    onClick={formik.submitForm}
+                  >
                     Lưu
                   </Button>
                 </Box>
@@ -220,7 +238,10 @@ const Customer = (props) => {
               </TabPane>
 
               <TabPane tabId="2">
-                <Typography className="py-3 mb-4 w-100 border-bottom" variant="h6">
+                <Typography
+                  className="py-3 mb-4 w-100 border-bottom"
+                  variant="h6"
+                >
                   Đơn hàng
                 </Typography>
                 <CustomerOrderList />

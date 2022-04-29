@@ -107,14 +107,19 @@ export const VoucherList = (props) => {
       return {
         ...prop,
         stt: _start * _limit + index + 1,
-        sale_type: prop.sale_type === "percentage" ? "Theo phần trăm" : "Theo giá trị",
+        sale_type:
+          prop.sale_type === "percentage" ? "Theo phần trăm" : "Theo giá trị",
         customer_type: handleUserRole(prop.customer_type),
         expired: moment(prop.expired).format("DD/MM/YYYY"),
         voucher_img: prop.voucher_img ? (
           <div className="img-cropper__rounded-sm-small d-50 shadow-sm">
             <img
               alt=""
-              src={process.env.MAIN_URL + prop.voucher_img.url}
+              src={
+                new RegExp("https://").test(prop.voucher_img.url)
+                  ? prop.voucher_img.url
+                  : process.env.MAIN_URL + prop.voucher_img.url
+              }
               className="img-fit-container"
             />
           </div>
@@ -182,10 +187,7 @@ export const VoucherList = (props) => {
               borderBottomLeftRadius: 0,
             }}
           >
-            <Typography
-              variant="h5"
-              className="flex-grow-1 fs-5 app--primary"
-            >
+            <Typography variant="h5" className="flex-grow-1 fs-5 app--primary">
               Danh sách mã giảm giá
             </Typography>
             <Box className="d-flex flex-row">

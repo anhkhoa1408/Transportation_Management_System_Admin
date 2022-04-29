@@ -3,7 +3,7 @@ function convertOrderState(state) {
     case 0:
       return 'Đang xử lý';
     case 1:
-      return 'Chuẩn bị kiện hàng';
+      return 'Đang gom hàng';
     case 2:
       return 'Đang vận chuyển';
     case 3:

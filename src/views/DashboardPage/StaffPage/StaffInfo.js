@@ -90,7 +90,12 @@ const StaffInfo = (props) => {
       userApi
         .updateAvatar(avatar, location.state.id, data?.avatar?.id)
         .then((response) => {
-          setAvatar(process.env.MAIN_URL + response.avatar.url);
+          let isValidUrl = new RegExp("https://").test(response.avatar.url);
+          setAvatar(
+            isValidUrl
+              ? response.avatar.url
+              : process.env.MAIN_URL + response.avatar.url,
+          );
           successNotify("Cập nhật ảnh đại diện thành công");
         })
         .catch((error) => {
@@ -169,7 +174,12 @@ const StaffInfo = (props) => {
       userApi.staffDetail(location.state.id).then((response) => {
         setData(response);
         if (response.avatar) {
-          setAvatar(process.env.MAIN_URL + response.avatar.url);
+          let isValidUrl = new RegExp("https://").test(response.avatar.url);
+          setAvatar(
+            isValidUrl
+              ? response.avatar.url
+              : process.env.MAIN_URL + response.avatar.url,
+          );
         }
       });
     }

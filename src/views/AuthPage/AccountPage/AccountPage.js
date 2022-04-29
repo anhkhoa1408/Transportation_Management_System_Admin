@@ -110,7 +110,12 @@ export const AccountPage = (props) => {
       userApi
         .updateAvatar(avatar, data.id, data?.avatar?.id)
         .then((response) => {
-          setAvatar(process.env.MAIN_URL + response.avatar.url);
+          let isValidUrl = new RegExp("https://").test(response.avatar.url);
+          setAvatar(
+            isValidUrl
+              ? response.avatar.url
+              : process.env.MAIN_URL + response.avatar.url,
+          );
           successNotify("Cập nhật ảnh đại diện thành công");
           dispatch(
             saveInfoSuccess({
@@ -144,7 +149,12 @@ export const AccountPage = (props) => {
     if (userInfo) {
       setData(userInfo.user);
       if (userInfo?.user?.avatar?.url) {
-        setAvatar(process.env.MAIN_URL + userInfo.user.avatar.url);
+        let isValidUrl = new RegExp("https://").test(userInfo.user.avatar.url);
+        setAvatar(
+          isValidUrl
+            ? userInfo.user.avatar.url
+            : process.env.MAIN_URL + userInfo.user.avatar.url,
+        );
       }
     }
   }, [userInfo]);

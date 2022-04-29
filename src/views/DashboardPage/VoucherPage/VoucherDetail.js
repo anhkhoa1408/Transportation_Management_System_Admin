@@ -171,7 +171,10 @@ const VoucherDetail = (props) => {
           setData(response);
           console.log(response);
           if (response.voucher_img) {
-            setImage(process.env.MAIN_URL + response.voucher_img.url);
+            let isValidUrl = new RegExp("https://").test(response.voucher_img.url);
+            setImage(isValidUrl
+              ? response.voucher_img.url
+              : process.env.MAIN_URL + response.voucher_img.url,);
           }
         })
         .catch((error) => {
