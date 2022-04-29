@@ -1,10 +1,11 @@
 import { Grid, InputAdornment, TextField, Typography } from "@mui/material";
 import moment from "moment";
 import React, { memo } from "react";
+import { useSelector } from "react-redux";
 import { joinAddress } from "../../../../utils/address";
 
 function Detail({ formik }) {
-  
+  const { role } = useSelector((state) => state.userInfo.user) 
   return (
     <>
       <Grid container className="mb-4">
@@ -156,6 +157,7 @@ function Detail({ formik }) {
         <Grid item md={9}>
           <TextField
             fullWidth
+            disabled={role.name === "Customer"}
             value={formik.values.fee}
             label="Tổng chi phí"
             InputProps={{
@@ -180,6 +182,7 @@ function Detail({ formik }) {
         <Grid item md={9}>
           <TextField
             fullWidth
+            disabled={role.name === "Customer"}
             label="Chi phí còn lại"
             value={formik.values.remain_fee}
             InputProps={{

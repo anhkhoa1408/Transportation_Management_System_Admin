@@ -14,6 +14,7 @@ import orderApi from "../../../api/orderApi";
 import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../hooks/useScroll";
 import Detail from "./Detail/Detail";
+import clsx from "clsx";
 
 const OrderDetail = (props) => {
   const history = useHistory();
@@ -125,8 +126,12 @@ const OrderDetail = (props) => {
               >
                 <Button
                   variant="outlined"
-                  className="me-2 py-1 app-btn app-btn--success"
+                  className={clsx("me-2 py-1 app-btn", {
+                    "app-btn--success": data.state === 0,
+                    "app-btn--gray": data.state !== 0
+                  })}
                   onClick={formik.submitForm}
+                  disabled={data.state !== 0}
                 >
                   Lưu
                 </Button>

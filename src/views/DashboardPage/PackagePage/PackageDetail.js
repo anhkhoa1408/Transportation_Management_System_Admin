@@ -8,6 +8,7 @@ import packageApi from "../../../api/packageApi";
 import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../hooks/useScroll";
 import Detail from "./Detail/Detail";
+import clsx from "clsx";
 
 const PackageDetail = (props) => {
   const location = useLocation();
@@ -102,8 +103,12 @@ const PackageDetail = (props) => {
               >
                 <Button
                   variant="outlined"
-                  className="py-1 app-btn app-btn--success"
                   onClick={formik.submitForm}
+                  className={clsx("py-1 app-btn", {
+                    "app-btn--success": data.state === 0,
+                    "app-btn--gray": data.state !== 0
+                  })}
+                  disabled={data.state !== 0}
                 >
                   Lưu
                 </Button>

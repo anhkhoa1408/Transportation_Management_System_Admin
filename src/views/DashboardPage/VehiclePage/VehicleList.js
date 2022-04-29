@@ -90,7 +90,6 @@ export const VehicleList = (props) => {
         Header: "Tuỳ chọn",
         accessor: "options",
         filterable: false,
-        sortable: true,
       },
     ],
     [],
