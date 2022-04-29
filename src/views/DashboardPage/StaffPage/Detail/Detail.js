@@ -133,8 +133,8 @@ function Detail({ formik, storage }) {
               {...formik.getFieldProps("type")}
             >
               <MenuItem value={"Stocker"}>Thủ kho</MenuItem>
-              <MenuItem value={"Driver"}>Tài xế</MenuItem>
-              <MenuItem value={"Assistance"}>Phụ xe</MenuItem>
+              <MenuItem value={"Driver"}>Người vận chuyển</MenuItem>
+              <MenuItem value={"Assistance"}>Người hỗ trợ</MenuItem>
             </Select>
           </FormControl>
         </Grid>

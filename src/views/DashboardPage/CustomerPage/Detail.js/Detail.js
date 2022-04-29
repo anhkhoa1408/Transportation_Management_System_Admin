@@ -140,7 +140,7 @@ function Detail({ formik }) {
               label="Loại thành viên"
               {...formik.getFieldProps("type")}
             >
-              <MenuItem value={"User"}>Người dùng thông thường</MenuItem>
+              <MenuItem value={"User"}>Khách hàng thông thường</MenuItem>
               <MenuItem value={"Iron"}>Thành viên bạc</MenuItem>
               <MenuItem value={"Gold"}>Thành viên vàng</MenuItem>
               <MenuItem value={"Diamond"}>Thành viên kim cương</MenuItem>
