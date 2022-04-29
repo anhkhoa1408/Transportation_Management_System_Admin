@@ -8,6 +8,8 @@ function handleUserRole(role) {
       return "Người vận chuyển";
     case "Assistance":
       return "Người hỗ trợ";
+    case "User":
+      return "Khách hàng thông thường";
     case "Iron":
       return "Thành viên bạc";
     case "Gold":
@@ -16,6 +18,8 @@ function handleUserRole(role) {
       return "Thành viên kim cương";
     case "Platinum":
       return "Thành viên bạch kim";
+    case "All":
+      return "Tất cả khách hàng";
     default:
       return "Tất cả";
   }

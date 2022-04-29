@@ -115,4 +115,26 @@ const reportType = [
   },
 ]
 
-export { customerType, staffType, orderState, vehicle, ratingPoint, saleType, reportType };
+const arriveType = [
+  {
+    value: "true",
+    label: "Chưa hoàn thành",
+  },
+  {
+    value: "false",
+    label: "Đã hoàn thành",
+  },
+]
+
+const shipmentCreatedType = [
+  {
+    value: "createdAt:ASC",
+    label: "Sớm nhất",
+  },
+  {
+    value: "createdAt:DESC",
+    label: "Trễ nhất",
+  },
+]
+
+export { customerType, staffType, orderState, vehicle, ratingPoint, saleType, reportType, arriveType, shipmentCreatedType };

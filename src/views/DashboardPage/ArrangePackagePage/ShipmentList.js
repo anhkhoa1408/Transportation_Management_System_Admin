@@ -11,6 +11,7 @@ import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
 import { joinAddress } from "./../../../utils/address";
 import { useQueryTable } from "./../../../utils/queryUtils.js";
+import { arriveType, shipmentCreatedType } from "./../../../utils/filterParams";
 
 export const ShipmentList = (props) => {
   const [data, setData] = useState([]);
@@ -24,19 +25,46 @@ export const ShipmentList = (props) => {
 
   const filterParam = [
     {
-      value: "name",
-      name: "Tên",
+      value: "driver.name_contains",
+      name: "Người vận chuyển",
       type: "input",
     },
     {
-      value: "size_gte",
-      name: "Diện tích lớn hơn",
+      value: "from_storage.name_contains",
+      name: "Từ kho",
       type: "input",
     },
     {
-      value: "size_lte",
-      name: "Diện tích nhỏ hơn",
+      value: "to_storage.name_contains",
+      name: "Đến kho",
       type: "input",
+    },
+    {
+      value: "arrived_time_null",
+      name: "Hoàn thành",
+      type: "select",
+      params: arriveType,
+    },
+    {
+      value: "_sort",
+      name: "Thời gian tạo",
+      type: "select",
+      params: shipmentCreatedType,
+    },
+    {
+      value: "driver_null",
+      name: "Chưa được nhận",
+      type: "select",
+      params: [
+        {
+          value: "true",
+          label: "Chưa nhận",
+        },
+        {
+          value: "false",
+          label: "Đã nhận",
+        },
+      ],
     },
   ];
   const [filterName, setFilterName] = useState(filterParam[0].value);
@@ -51,8 +79,8 @@ export const ShipmentList = (props) => {
         width: 50,
       },
       {
-        Header: "Thời gian tạo",
-        accessor: "createdAt",
+        Header: "Chờ nhận",
+        accessor: "status",
         filterable: false,
       },
       {
@@ -76,7 +104,7 @@ export const ShipmentList = (props) => {
         filterable: false,
       },
       {
-        Header: "Thời gian hoàn thành",
+        Header: "Chờ hoàn thành",
         accessor: "arrived_time",
         filterable: false,
       },
@@ -89,15 +117,24 @@ export const ShipmentList = (props) => {
     [],
   );
 
+  const calcWaitingShipmentTime = (startDate) => {
+    let start = new Date(startDate);
+    let end = new Date();
+    let diff = Math.abs(end - start);
+    let diffToDate = diff / (1000 * 60 * 60 * 24);
+    let remainHour = ((diff % (1000 * 60 * 60)) / (1000 * 60 * 60)) * 24;
+    return `${Math.floor(diffToDate)} ngày ${Math.floor(remainHour)} giờ`;
+  };
+
   const handleData = (data) => {
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
         stt: _start * _limit + index + 1,
-        createdAt: prop.createdAt
-          ? moment(prop.createdAt).format("DD/MM/YYYY HH:mm")
-          : "",
-        driver: prop?.driver?.name  || "Chưa có",
+        status: prop.driver
+          ? "Đã được nhận"
+          : calcWaitingShipmentTime(prop.updatedAt),
+        driver: prop?.driver?.name || "Chưa có",
         type:
           prop.from_storage && prop.to_storage
             ? "Liên tỉnh"
@@ -108,7 +145,7 @@ export const ShipmentList = (props) => {
         to_address: joinAddress(prop.to_address),
         arrived_time: prop.arrived_time
           ? moment(prop.arrived_time).format("DD/MM/YYYY HH:mm")
-          : "Chưa hoàn thành",
+          : calcWaitingShipmentTime(prop.createdAt),
         options: (
           <Button
             variant="contained"
