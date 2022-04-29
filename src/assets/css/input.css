@@ -7,3 +7,24 @@
 .MuiOutlinedInput-root {
   background-color: #f3f3fa !important;
 }
+
+.MuiOutlinedInput-notchedOutline {
+  border: 2px solid;
+}
+
+.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--primary) !important;
+  border-width: 2px;
+}
+
+.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: var(--primary) !important;
+}
+
+.Mui-focused.MuiInputLabel-root {
+  color: var(--primary) !important;
+}
+
+.MuiFormControl-root:hover .MuiInputLabel-root {
+  color: var(--primary) !important;
+}

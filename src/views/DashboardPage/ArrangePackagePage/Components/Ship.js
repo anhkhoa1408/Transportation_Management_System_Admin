@@ -35,7 +35,7 @@ function Ship({ shipmentData }) {
   });
 
   const getListStyle = (isDraggingOver) => ({
-    background: isDraggingOver ? "#b6f3fc" : "#F8F9FC",
+    background: isDraggingOver ? "#b6f3fc" : "#F3F3FA",
     padding: "8px",
     height: 350,
     flex: 1,
