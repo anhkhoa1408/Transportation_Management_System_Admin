@@ -1,3 +1,5 @@
+@import url("./_variable.css");
+
 .ReactTable {
   border: none;
   /* padding: 20px; */
@@ -67,4 +69,17 @@
   display: inline-block;
   margin-left: 10px;
   font-size: 14px;
+}
+
+.ReactTable.-striped .rt-tr.-odd {
+  background: var(--neutral-gray) !important;
+}
+
+.ReactTable.-highlight .rt-tbody .rt-tr:not(.-padRow) {
+  transition: 0.3s ease;
+}
+
+.ReactTable.-highlight .rt-tbody .rt-tr:not(.-padRow):hover {
+  background: var(--neutral-gray) !important;
+  opacity: 0.4 !important;
 }

@@ -122,7 +122,7 @@ export const FeedbackList = (props) => {
       <Grid container className="p-4" direction="column">
         <Grid item md={12}>
           <Paper
-            className="d-flex flex-row align-items-center p-3 rounded-top shadow-sm"
+            className="d-flex flex-row align-items-center p-4 rounded-top shadow-sm"
             sx={{
               bgcolor: "#F8F9FC",
               borderBottomRightRadius: 0,
