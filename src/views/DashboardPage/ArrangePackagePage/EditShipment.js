@@ -46,14 +46,15 @@ const EditShipment = (props) => {
   const [date, setDate] = useState();
 
   const handleSubmit = (type) => {
-    let _car = cars.find(item => item.id === car)
+    let _car = cars.find((item) => item.id === car);
     if (type === "update") {
       shipmentApi
         .update(location.state.id, {
           ...data,
           assistance: assistance ? assistance : null,
           car: _car && _car.id ? _car.id : null,
-          driver :_car && _car.manager && _car.manager.id ? _car.manager.id : null,
+          driver:
+            _car && _car.manager && _car.manager.id ? _car.manager.id : null,
         })
         .then((response) => {
           successNotify("Cập nhật thành công");
@@ -85,14 +86,18 @@ const EditShipment = (props) => {
         .getDetail(location.state.id)
         .then((response) => {
           setData(response);
-          setCar(response.car)
-          setAssistance(response.assistance)
+          setCar(response.car);
+          setAssistance(response.assistance);
           let storageQuery =
             response.from_storage && response.to_storage
               ? response.from_storage
               : response.from_storage && !response.to_storage
               ? response.from_storage
               : response.to_storage;
+          let type =
+            response.from_storage && response.to_storage
+              ? "Container"
+              : "Truck";
           return Promise.all([
             userApi.getStaffs({
               type: "Assistance",
@@ -100,6 +105,7 @@ const EditShipment = (props) => {
             }),
             vehicleApi.getList({
               "manager.storage": storageQuery.id,
+              type
             }),
             shipmentApi.getItemList({
               shipment: response.id,
