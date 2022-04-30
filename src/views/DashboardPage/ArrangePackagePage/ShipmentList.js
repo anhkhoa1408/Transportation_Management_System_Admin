@@ -128,8 +128,10 @@ export const ShipmentList = (props) => {
     let end = new Date();
     let diff = Math.abs(end - start);
     let diffToDate = diff / (1000 * 60 * 60 * 24);
-    let remainHour = ((diff % (1000 * 60 * 60)) / (1000 * 60 * 60)) * 24;
-    return `${Math.floor(diffToDate)} ngày ${Math.floor(remainHour)} giờ`;
+    let remainHour = (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+    return `${
+      Math.floor(diffToDate) ? Math.floor(diffToDate) + " ngày" : ""
+    } ${Math.floor(remainHour) ? Math.floor(remainHour) + " giờ" : ""}`;
   };
 
   const handleData = (data) => {
@@ -185,12 +187,12 @@ export const ShipmentList = (props) => {
           _start,
           _limit,
           [filterName]: filterValue,
-          _sort: sort
+          _sort: sort,
         }
       : {
           _start,
           _limit,
-          _sort: sort
+          _sort: sort,
         },
   );
 
@@ -212,10 +214,7 @@ export const ShipmentList = (props) => {
               borderBottomLeftRadius: 0,
             }}
           >
-            <Typography
-              variant="h5"
-              className="flex-grow-1 fs-5 app--primary"
-            >
+            <Typography variant="h5" className="flex-grow-1 fs-5 app--primary">
               Danh sách chuyến xe
             </Typography>
             <Box className="d-flex flex-row">
