@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { connect, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { Badge } from "reactstrap";
 import * as Bonk from "yup";
 import shipmentApi from "../../../api/shipmentApi";
 import storageApi from "../../../api/storageApi";
@@ -21,9 +22,11 @@ import vehicleApi from "../../../api/vehicleApi";
 import { errorNotify, successNotify } from "../../../utils/notification";
 import Detail from "./Components/Detail";
 import Ship from "./Components/Ship";
+import clsx from "clsx";
+import moment from "moment";
 
 const EditShipment = (props) => {
-  const history = useHistory()
+  const history = useHistory();
   const location = useLocation();
   const userInfo = useSelector((state) => state.userInfo.user);
   const { role } = userInfo;
@@ -35,9 +38,18 @@ const EditShipment = (props) => {
     from_storage: "",
     to_storage: "",
     shipment_items: [],
+    createdAt: new Date(),
   });
 
   const [car, setCar] = useState("");
+  const [carInfo, setCarInfo] = useState({
+    id: "",
+    manager: {
+      name: "",
+    },
+    load: 0,
+
+  });
   const [cars, setCars] = useState([]);
   const [assistance, setAssistance] = useState("");
   const [assistances, setAssistances] = useState([]);
@@ -48,6 +60,11 @@ const EditShipment = (props) => {
   const [date, setDate] = useState();
 
   const handleSubmit = (type) => {
+    if (data.arrived_time) {
+      errorNotify("Chuyến xe đã hoàn thành, không thể cập nhật");
+      return;
+    }
+
     let _car = cars.find((item) => item.id === car);
     if (type === "update") {
       shipmentApi
@@ -75,7 +92,7 @@ const EditShipment = (props) => {
         .then((response) => {
           successNotify("Cập nhật thành công");
           setData(response);
-          history.push("/shipment")
+          history.push("/shipment");
         })
         .catch((error) => {
           errorNotify("Cập nhật thất bại");
@@ -89,7 +106,7 @@ const EditShipment = (props) => {
         .getDetail(location.state.id)
         .then((response) => {
           setData(response);
-          setCar(response.car);
+          setCar(response.car || '');
           setAssistance(response.assistance);
           let storageQuery =
             response.from_storage && response.to_storage
@@ -108,17 +125,19 @@ const EditShipment = (props) => {
             }),
             vehicleApi.getList({
               "manager.storage": storageQuery.id,
-              type
+              type,
             }),
             shipmentApi.getItemList({
               shipment: response.id,
             }),
+            response.car ? vehicleApi.getDetail(response.car) : null,
           ]);
         })
         .then((response) => {
           setAssistances(response[0]);
           setCars(response[1]);
           setShipments(response[2]);
+          setCarInfo(response[3]);
         })
         .catch((error) => errorNotify("Có lỗi xảy ra"));
     }
@@ -143,12 +162,41 @@ const EditShipment = (props) => {
               >
                 Tạm ngưng
               </Button>
-              <Button variant="outlined" className="app-btn app-btn--success" onClick={() => handleSubmit("update")}>
+              <Button
+                variant="outlined"
+                className="app-btn app-btn--success"
+                onClick={() => handleSubmit("update")}
+              >
                 Lưu
               </Button>
             </Box>
           </Box>
           <Grid container>
+            <Grid
+              className="d-flex flex-row justify-content-end px-2 mb-3"
+              item
+              md={12}
+              sm={12}
+            >
+              <Badge
+                className={clsx("p-2", {
+                  "app-bg--neutral-success": data.arrived_time,
+                  "app-bg--neutral-warning": !data.arrived_time,
+                })}
+              >
+                <span
+                  className={clsx({
+                    "app--success": data.arrived_time,
+                    "app--warning": !data.arrived_time,
+                  })}
+                >
+                  {data.arrived_time
+                    ? "Đã hoàn thành: " +
+                      moment(data.arrived_time).format("DD/MM/YYYY HH:mm")
+                    : "Chưa hoàn thành"}
+                </span>
+              </Badge>
+            </Grid>
             <Grid item sm={12} md={6}>
               <Detail
                 detail={data}
@@ -156,6 +204,8 @@ const EditShipment = (props) => {
                 assistances={assistances}
                 car={car}
                 setCar={setCar}
+                carInfo={carInfo}
+                setCarInfo={setCarInfo}
                 assistance={assistance}
                 setAssistance={setAssistance}
               />

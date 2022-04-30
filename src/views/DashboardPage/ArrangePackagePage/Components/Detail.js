@@ -1,21 +1,15 @@
 import {
-  Box,
-  Button,
   FormControl,
   Grid,
+  InputAdornment,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   TextField,
-  Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { connect, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
-import * as Bonk from "yup";
+import moment from "moment";
+import React from "react";
 import { joinAddress } from "../../../../utils/address";
-import { errorNotify, successNotify } from "../../../../utils/notification";
 
 function Detail({ detail, cars, assistances, ...props }) {
   let type =
@@ -44,23 +38,59 @@ function Detail({ detail, cars, assistances, ...props }) {
   return (
     <Grid container direction="column">
       <Grid item sm={12} md={12} className="p-2">
-        <TextField label="Loại hình" disabled fullWidth variant="outlined" value={type} />
-      </Grid>
-      <Grid item sm={12} md={12} className="p-2">
-        <TextField label="Nơi đi" disabled fullWidth variant="outlined" value={address.from} />
-      </Grid>
-      <Grid item sm={12} md={12} className="p-2">
-        <TextField label="Nơi đến" disabled fullWidth variant="outlined" value={address.to} />
-      </Grid>
-      {/* <Grid item sm={12} md={12} className="p-2">
         <TextField
-          label="Người phụ trách"
+          label="Ngày tạo"
           disabled
           fullWidth
           variant="outlined"
-          // value=
+          value={moment(detail.createdAt).format("DD/MM/YYYY HH:mm")}
         />
-      </Grid> */}
+      </Grid>
+      <Grid item sm={12} md={12} className="p-2">
+        <TextField
+          label="Ngày cập nhật"
+          disabled
+          fullWidth
+          variant="outlined"
+          value={moment(detail.updatedAt).format("DD/MM/YYYY HH:mm")}
+        />
+      </Grid>
+      <Grid item sm={12} md={12} className="p-2">
+        <TextField
+          label="Loại hình"
+          disabled
+          fullWidth
+          variant="outlined"
+          value={type}
+        />
+      </Grid>
+      <Grid item sm={12} md={12} className="p-2">
+        <TextField
+          label="Nơi đi"
+          disabled
+          fullWidth
+          variant="outlined"
+          value={address.from}
+        />
+      </Grid>
+      <Grid item sm={12} md={12} className="p-2">
+        <TextField
+          label="Nơi đến"
+          disabled
+          fullWidth
+          variant="outlined"
+          value={address.to}
+        />
+      </Grid>
+      <Grid item sm={12} md={12} className="p-2">
+        <TextField
+          label="Người vận chuyển"
+          disabled
+          fullWidth
+          variant="outlined"
+          value={props.carInfo?.manager?.name || ""}
+        />
+      </Grid>
       <Grid item sm={12} md={12} className="p-2">
         <FormControl fullWidth>
           <InputLabel>Xe vận chuyển</InputLabel>
@@ -68,15 +98,31 @@ function Detail({ detail, cars, assistances, ...props }) {
             fullWidth
             label="Xe vận chuyển"
             value={props.car}
-            onChange={(e) => props.setCar(e.target.value)}
+            onChange={(e) => {
+              let carInfo = cars.find((item) => item.id === e.target.value);
+              props.setCar(e.target.value);
+              props.setCarInfo(carInfo);
+            }}
           >
             {cars.map((item) => (
               <MenuItem key={item.id} value={item.id}>
-                {item.licence}
+                {`${item.licence}`}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
+      </Grid>
+      <Grid item sm={12} md={12} className="p-2">
+        <TextField
+          label="Tải trọng"
+          disabled
+          fullWidth
+          variant="outlined"
+          value={props.carInfo?.load}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+          }}
+        />
       </Grid>
       <Grid item sm={12} md={12} className="p-2">
         <FormControl fullWidth>

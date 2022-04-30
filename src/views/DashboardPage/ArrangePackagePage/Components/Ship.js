@@ -37,17 +37,18 @@ function Ship({ shipmentData }) {
   const getListStyle = (isDraggingOver) => ({
     background: isDraggingOver ? "#b6f3fc" : "#F3F3FA",
     padding: "8px",
-    height: 350,
+    height: '100%',
     flex: 1,
     margin: "0px 10px",
     overflowY: "auto",
   });
   return (
-    <Grid item sm={12} md={12}>
+    <Grid item sm={12} md={12} className="h-100">
       <DragDropContext>
         <Droppable key="shipDrop" droppableId="shipDrop">
           {(provided, snapshot) => (
             <div
+              className="h-100"
               {...provided.droppableProps}
               ref={provided.innerRef}
               style={getListStyle(snapshot.isDraggingOver)}

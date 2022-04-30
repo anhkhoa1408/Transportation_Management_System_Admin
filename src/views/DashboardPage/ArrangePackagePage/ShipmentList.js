@@ -10,8 +10,8 @@ import { CustomPagination } from "../../../components/CustomPagination";
 import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
 import { joinAddress } from "./../../../utils/address";
-import { useQueryTable } from "./../../../utils/queryUtils.js";
 import { arriveType, shipmentCreatedType } from "./../../../utils/filterParams";
+import { useQueryTable } from "./../../../utils/queryUtils.js";
 
 export const ShipmentList = (props) => {
   const [data, setData] = useState([]);
@@ -129,9 +129,15 @@ export const ShipmentList = (props) => {
     let diff = Math.abs(end - start);
     let diffToDate = diff / (1000 * 60 * 60 * 24);
     let remainHour = (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
-    return `${
-      Math.floor(diffToDate) ? Math.floor(diffToDate) + " ngày" : ""
-    } ${Math.floor(remainHour) ? Math.floor(remainHour) + " giờ" : ""}`;
+    return `${Math.floor(diffToDate) ? Math.floor(diffToDate) + " ngày" : ""} ${
+      Math.floor(diffToDate) && Math.floor(remainHour)
+        ? Math.floor(remainHour) + " giờ"
+        : !Math.floor(diffToDate) && Math.floor(remainHour)
+        ? Math.floor(remainHour) + " giờ"
+        : Math.floor(diffToDate) && !Math.floor(remainHour)
+        ? ""
+        : "Đang chờ"
+    }`;
   };
 
   const handleData = (data) => {
@@ -139,9 +145,13 @@ export const ShipmentList = (props) => {
       return {
         ...prop,
         stt: _start * _limit + index + 1,
-        status: prop.driver
-          ? "Đã được nhận"
-          : calcWaitingShipmentTime(prop.updatedAt),
+        status: prop.driver ? (
+          <span className="app--success fw-bold">Đã được nhận</span>
+        ) : (
+          <span className="app--warning fw-bold">
+            {calcWaitingShipmentTime(prop.updatedAt)}
+          </span>
+        ),
         driver: prop?.driver?.name || "Chưa có",
         type:
           prop.from_storage && prop.to_storage
@@ -151,9 +161,15 @@ export const ShipmentList = (props) => {
             : "Thu gom hàng",
         from_address: joinAddress(prop.from_address),
         to_address: joinAddress(prop.to_address),
-        arrived_time: prop.arrived_time
-          ? moment(prop.arrived_time).format("DD/MM/YYYY HH:mm")
-          : calcWaitingShipmentTime(prop.createdAt),
+        arrived_time: prop.arrived_time ? (
+          <span className="app--success fw-bold">
+            {moment(prop.arrived_time).format("DD/MM/YYYY HH:mm")}
+          </span>
+        ) : (
+          <span className="app--warning fw-bold">
+            {calcWaitingShipmentTime(prop.createdAt)}
+          </span>
+        ),
         options: (
           <Button
             variant="contained"
