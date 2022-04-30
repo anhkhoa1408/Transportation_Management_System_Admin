@@ -12,6 +12,7 @@ import { useQueryTable } from "./../../../utils/queryUtils.js";
 import voucher_alt from "./../../../assets/img/voucher_alt.jpg";
 import { handleUserRole } from "../../../utils/role";
 import { customerType, saleType } from "../../../utils/filterParams";
+import { Badge } from "reactstrap";
 
 export const VoucherList = (props) => {
   const [data, setData] = useState([]);
@@ -102,14 +103,83 @@ export const VoucherList = (props) => {
     [],
   );
 
+  const handleVoucherTypeStyle = (type) => {
+    switch (type) {
+      case "percentage":
+        return (
+          <Badge className="app-bg--neutral-primary">
+            <span className="app--primary">Theo phần trăm</span>
+          </Badge>
+        );
+      case "value":
+        return (
+          <Badge className="app-bg--neutral-success">
+            <span className="app--success">Theo giá trị</span>
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
+    }
+  };
+
+  const handleRoleStyle = (role) => {
+    switch (role) {
+      case "User":
+        return (
+          <Badge className="app-bg--neutral-dark">
+            <span className="app--dark">Khách hàng thông thường</span>
+          </Badge>
+        );
+      case "Iron":
+        return (
+          <Badge className="app-bg--neutral-secondary">
+            <span className="app--secondary">Thành viên bạc</span>
+          </Badge>
+        );
+      case "Gold":
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Thành viên vàng</span>
+          </Badge>
+        );
+      case "Diamond":
+        return (
+          <Badge className="app-bg--neutral-primary">
+            <span className="app--primary">Thành viên kim cương</span>
+          </Badge>
+        );
+      case "Platinum":
+        return (
+          <Badge className="app-bg--neutral-purple">
+            <span className="app--purple">Thành viên bạch kim</span>
+          </Badge>
+        );
+      case "All":
+        return (
+          <Badge className="app-bg--neutral-success">
+            <span className="app--success">Tất cả khách hàng</span>
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
+    }
+  };
+
   const handleData = (data) => {
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
         stt: _start * _limit + index + 1,
-        sale_type:
-          prop.sale_type === "percentage" ? "Theo phần trăm" : "Theo giá trị",
-        customer_type: handleUserRole(prop.customer_type),
+        sale_type: handleVoucherTypeStyle(prop.sale_type),
+        customer_type: handleRoleStyle(prop.customer_type),
         expired: moment(prop.expired).format("DD/MM/YYYY"),
         voucher_img: prop.voucher_img ? (
           <div className="img-cropper__rounded-sm-small d-50 shadow-sm">

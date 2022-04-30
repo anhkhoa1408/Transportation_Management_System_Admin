@@ -78,6 +78,10 @@
   background-color: var(--primary) !important;
 }
 
+.app-bg--dark {
+  background-color: var(--dark) !important;
+}
+
 /* Neutral background color */
 .app-bg--neutral-success {
   background-color: var(--neutral-success) !important;
@@ -107,6 +111,10 @@
   background-color: var(--neutral-primary) !important;
 }
 
+.app-bg--neutral-dark {
+  background-color: var(--neutral-dark) !important;
+}
+
 /* color */
 .app--success {
   color: var(--success) !important;
@@ -134,6 +142,10 @@
 
 .app--primary {
   color: var(--primary) !important;
+}
+
+.app--dark {
+  color: var(--dark) !important;
 }
 
 /* neutral color */

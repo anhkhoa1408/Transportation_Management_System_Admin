@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import { connect, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ReactTable from "react-table-v6";
+import { Badge } from "reactstrap";
 import vehicleApi from "../../../api/vehicleApi";
 import { CustomPagination } from "../../../components/CustomPagination";
 import Filter from "../../../components/FilterTable";
@@ -95,13 +96,36 @@ export const VehicleList = (props) => {
     [],
   );
 
+  const handleTruckTypeStyle = (type) => {
+    switch (type) {
+      case "Truck":
+        return (
+          <Badge className="app-bg--neutral-primary">
+            <span className="app--primary">Xe tải</span>
+          </Badge>
+        );
+      case "Container":
+        return (
+          <Badge className="app-bg--neutral-success">
+            <span className="app--success">Xe container</span>
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
+    }
+  };
+
   const handleData = (data) => {
     let data_table = data.map((prop, index) => {
       return {
         ...prop,
         stt: _start * _limit + index + 1,
         load: prop.load + " kg",
-        type: prop.type === "Truck" ? "Xe tải" : "Xe container",
+        type: handleTruckTypeStyle(prop.type),
         manager: prop?.manager?.name || "Trống",
         options: (
           <Button

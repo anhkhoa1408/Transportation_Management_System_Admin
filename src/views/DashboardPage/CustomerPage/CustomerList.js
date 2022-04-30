@@ -4,6 +4,7 @@ import React, { useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ReactTable from "react-table-v6";
+import { Badge } from "reactstrap";
 import { CustomPagination } from "../../../components/CustomPagination";
 import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
@@ -84,11 +85,52 @@ export const CustomerList = (props) => {
     [],
   );
 
+  const handleRoleStyle = (role) => {
+    switch (role) {
+      case "User":
+        return (
+          <Badge className="app-bg--neutral-dark">
+            <span className="app--dark">Khách hàng thông thường</span>
+          </Badge>
+        );
+      case "Iron":
+        return (
+          <Badge className="app-bg--neutral-secondary">
+            <span className="app--secondary">Thành viên bạc</span>
+          </Badge>
+        );
+      case "Gold":
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Thành viên vàng</span>
+          </Badge>
+        );
+      case "Diamond":
+        return (
+          <Badge className="app-bg--neutral-primary">
+            <span className="app--primary">Thành viên kim cương</span>
+          </Badge>
+        );
+      case "Platinum":
+        return (
+          <Badge className="app-bg--neutral-purple">
+            <span className="app--purple">Thành viên bạch kim</span>
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
+    }
+  };
+
   const handleData = (data) => {
     let data_table = data.customers.map((prop, index) => {
       return {
         ...prop,
-        type: handleUserRole(prop.type),
+        type: handleRoleStyle(prop.type),
         stt: _start * _limit + index + 1,
         options: (
           <Button
@@ -140,10 +182,7 @@ export const CustomerList = (props) => {
               borderBottomLeftRadius: 0,
             }}
           >
-            <Typography
-              variant="h5"
-              className="flex-grow-1 fs-5 app--primary"
-            >
+            <Typography variant="h5" className="flex-grow-1 fs-5 app--primary">
               Danh sách khách hàng
             </Typography>
             <Box>

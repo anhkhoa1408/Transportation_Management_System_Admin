@@ -28,6 +28,7 @@
   padding: 20px 10px;
   border-right: none;
   cursor: pointer;
+  align-self: center !important;
 }
 
 .ReactTable .rt-tbody .rt-td:last-child {

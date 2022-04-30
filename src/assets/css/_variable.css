@@ -7,6 +7,7 @@
   --warning: #ffbb33;
   --backdrop: #b4b3db;
   --black: #000;
+  --dark: #616161;
   --gray: #d4d4d4;
   --red: #bf3b3b;
   --purple: #ac4ff7;
@@ -18,4 +19,5 @@
   --neutral-danger: #ffd4d9;
   --neutral-secondary: #def1fc;
   --neutral-purple: #f6ebff;
+  --neutral-dark: #ebe6e6
 }

@@ -9,6 +9,7 @@ import React, { useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ReactTable from "react-table-v6";
+import { Badge } from "reactstrap";
 import { CustomPagination } from "../../../components/CustomPagination";
 import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
@@ -94,6 +95,35 @@ export const ReportList = (props) => {
     [],
   );
 
+  const handleReportTypeStyle = (type) => {
+    switch (type) {
+      case "day":
+        return (
+          <Badge className="app-bg--neutral-primary">
+            <span className="app--primary">Báo cáo ngày</span>
+          </Badge>
+        );
+      case "week":
+        return (
+          <Badge className="app-bg--neutral-secondary">
+            <span className="app--secondary">Báo cáo tuần</span>
+          </Badge>
+        );
+      case "month":
+        return (
+          <Badge className="app-bg--neutral-success">
+            <span className="app--success">Báo cáo tháng</span>
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
+    }
+  };
+
   const handleData = (data) => {
     let data_table = data.map((prop, index) => {
       return {
@@ -103,7 +133,7 @@ export const ReportList = (props) => {
         storage: prop.storage.name,
         createdAt: moment(prop.createdAt).format("DD/MM/YYYY HH:mm"),
         updatedAt: moment(prop.updatedAt).format("DD/MM/YYYY HH:mm"),
-        type: convertReportType(prop.type),
+        type: handleReportTypeStyle(prop.type),
         options: (
           <Button
             variant="contained"

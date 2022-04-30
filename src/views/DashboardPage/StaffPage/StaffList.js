@@ -3,6 +3,7 @@ import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import React, { useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import ReactTable from "react-table-v6";
+import { Badge } from "reactstrap";
 import { CustomPagination } from "../../../components/CustomPagination";
 import Filter from "../../../components/FilterTable";
 import LoadingTable from "../../../components/LoadingTable";
@@ -82,12 +83,47 @@ export const StaffList = (props) => {
     [],
   );
 
+  const handleRoleStyle = (role) => {
+    switch (role) {
+      case "Admin":
+        return (
+          <Badge className="app-bg--neutral-primary">
+            <span className="app--primary">Người quản trị</span>
+          </Badge>
+        );
+      case "Stocker":
+        return (
+          <Badge className="app-bg--neutral-success">
+            <span className="app--success">Thủ kho</span>
+          </Badge>
+        );
+      case "Driver":
+        return (
+          <Badge className="app-bg--neutral-secondary">
+            <span className="app--secondary">Người vận chuyển</span>
+          </Badge>
+        );
+      case "Assistance":
+        return (
+          <Badge className="app-bg--neutral-purple">
+            <span className="app--purple">Người hỗ trợ</span>
+          </Badge>
+        );
+      default:
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
+    }
+  };
+
   const handleData = (data) => {
     let data_table = data.staffs.map((prop, index) => {
       return {
         ...prop,
         stt: _start * _limit + index + 1,
-        type: handleUserRole(prop.type),
+        type: handleRoleStyle(prop.type),
         storage: prop?.storage?.name || "Chưa phân công",
         options: (
           <Button
