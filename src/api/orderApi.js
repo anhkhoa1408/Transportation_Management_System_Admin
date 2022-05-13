@@ -21,6 +21,10 @@ class OrderApi {
     const url = process.env.MAIN_URL.concat(`/orders`);
     return axiosClient.post(url, data);
   };
+  getNearestStore = data => {
+    const url = process.env.MAIN_URL.concat(`/address/nearest-storage`);
+    return axiosClient.post(url, data);
+  }
 }
 
 const orderApi = new OrderApi();

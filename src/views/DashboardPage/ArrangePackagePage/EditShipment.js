@@ -47,7 +47,7 @@ const EditShipment = (props) => {
     manager: {
       name: "",
     },
-    load: 0,
+    load: "",
 
   });
   const [cars, setCars] = useState([]);

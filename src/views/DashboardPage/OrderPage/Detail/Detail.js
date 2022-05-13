@@ -157,7 +157,8 @@ function Detail({ formik }) {
         <Grid item md={9}>
           <TextField
             fullWidth
-            disabled={role.name === "Customer"}
+            // disabled={role.name === "Customer"}
+            disabled
             value={formik.values.fee}
             label="Tổng chi phí"
             InputProps={{
@@ -182,7 +183,8 @@ function Detail({ formik }) {
         <Grid item md={9}>
           <TextField
             fullWidth
-            disabled={role.name === "Customer"}
+            // disabled={role.name === "Customer"}
+            disabled
             label="Chi phí còn lại"
             value={formik.values.remain_fee}
             InputProps={{

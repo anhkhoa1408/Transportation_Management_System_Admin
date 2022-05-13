@@ -12,14 +12,16 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { PopoverBody, PopoverHeader, UncontrolledPopover } from "reactstrap";
+import orderApi from "./../../../../api/orderApi";
 import packageApi from "../../../../api/packageApi";
 import storageApi from "../../../../api/storageApi";
 import userApi from "../../../../api/userApi";
 import vehicleApi from "../../../../api/vehicleApi";
 import { joinAddress } from "../../../../utils/address";
 import { errorNotify } from "../../../../utils/notification";
+import Loading from "../../../../components/Loading";
 
 export const Edit = ({
   storage,
@@ -49,10 +51,13 @@ export const Edit = ({
   setShipments,
   initial,
   setInitial,
+  setLoading
 }) => {
   useEffect(() => {
     storageApi
-      .getList()
+      .getList({
+        _limit: 100,
+      })
       .then((response) => {
         setStorages(response);
       })
@@ -65,81 +70,162 @@ export const Edit = ({
     setFrom("");
     setTo("");
     setCar("");
+    setAssistance("")
     setPackages([]);
     setShipments([]);
-    if (type) {
-      let provinces = storages
-        .find((item) => item.id === storage)
-        .provinces.map((item) => item.name);
-      if (type === "collect") {
-        packageApi
-          .getUnCollect(storage, {
-            from_address: JSON.stringify({
-              city: provinces,
-            }),
-            state_in: [0, 1],
-          })
-          .then((response) => {
-            let temp = response.map((item, index) => ({
-              value: {
-                ...item,
-                address: item.from_address,
-                packages: item.packages,
-              },
-              label: joinAddress(item.from_address),
-            }));
+    setAssistances([])
+    setCars([])
+    // setLoading(<Loading />)
+    if (type === "collect") {
+      orderApi
+        .getList({
+          _limit: 100,
+          state_in: [0, 1],
+        })
+        .then((response) => {
+          let temp = response.map((item, index) => ({
+            value: {
+              ...item,
+              address: item.from_address,
+              packages: item.packages,
+            },
+            label: joinAddress(item.from_address),
+          }));
+          setListFrom(temp);
+          // setLoading(null)
+        });
+    } else if (type === "ship") {
+      orderApi
+        .getList({
+          _limit: 100,
+          state: 3,
+        })
+        .then((response) => {
+          let temp = response.map((item, index) => ({
+            value: {
+              ...item,
+              address: item.to_address,
+              packages: item.packages,
+            },
+            label: joinAddress(item.to_address),
+          }));
+          setListTo(temp);
+          // setLoading(null)
+        });
+    }
+  }, [type]);
 
-            let store = storages.find((item) => item.id === storage);
-            setListTo([
-              {
-                value: store,
-                label: store.name,
-              },
+  useEffect(() => {
+    if (Object.keys(from).length) {
+      if (type === "collect") {
+        setLoading(<Loading />)
+        orderApi
+          .getNearestStore(from)
+          .then((response) => {
+            setTo(response);
+            return Promise.all([
+              packageApi.getUnCollect(response.id, {
+                state_in: [0, 1],
+                id: from.id,
+              }),
+              vehicleApi.getList({
+                "manager.storage": response.id,
+                type: "Truck",
+                _limit: 1000,
+              }),
+              userApi.getStaffs({
+                type: "Assistance",
+                storage: storage,
+                _limit: 1000,
+              }),
             ]);
-            setListFrom(temp);
-            setTo(store);
-          })
-          .catch((error) => {
-            errorNotify("Có lỗi xảy ra khi lấy danh sách đơn hàng");
-          });
-      } else if (type === "ship") {
-        packageApi
-          .getUnShip(storage, {
-            to_address: JSON.stringify({
-              city: provinces,
-            }),
-            state: 3,
           })
           .then((response) => {
-            let temp = response.map((item) => ({
-              value: {
-                ...item,
-                address: item.to_address,
-                packages: item.packages,
-              },
-              label: joinAddress(item.to_address),
-            }));
-            let store = storages.find((item) => item.id === storage);
-            setListFrom([
-              {
-                value: store,
-                label: store.name,
-              },
-            ]);
-            setListTo(temp);
-            setFrom(store);
+            setPackages(response[0].packages);
+            setInitial({
+              ...initial,
+              pack: response[0].packages,
+            });
+            setCars(response[1]);
+            setAssistances(response[2].staffs);
+            setLoading(null)
           })
           .catch((error) => {
-            errorNotify("Có lỗi xảy ra khi lấy danh sách đơn hàng");
+            errorNotify("Có lỗi xảy ra, xin vui lòng thử lại!");
+            setLoading(null)
           });
-      } else {
+      }
+    }
+  }, [from]);
+
+  useEffect(() => {
+    if (Object.keys(to).length) {
+      if (type === "ship") {
+        setLoading(<Loading />)
+        let address = to.packages[0].current_address;
+        orderApi
+          .getNearestStore({
+            address,
+          })
+          .then((response) => {
+            setFrom(response);
+            return Promise.all([
+              packageApi.getUnShip(response.id, {
+                state: 3,
+                id: to.id,
+              }),
+              vehicleApi.getList({
+                "manager.storage": response.id,
+                type: "Truck",
+                _limit: 1000,
+              }),
+              userApi.getStaffs({
+                type: "Assistance",
+                storage: storage,
+                _limit: 1000,
+              }),
+            ]);
+          })
+          .then((response) => {
+            setPackages(response[0].packages);
+            setInitial({
+              ...initial,
+              pack: response[0].packages,
+            });
+            setCars(response[1]);
+            setAssistances(response[2].staffs);
+            setLoading(null)
+          })
+          .catch((error) => {
+            errorNotify("Có lỗi xảy ra, xin vui lòng thử lại!");
+            setLoading(null)
+          });
+      }
+    }
+  }, [to]);
+
+  useEffect(() => {
+    if (type === "interdepart") {
+      if (storage) {
+        setLoading(<Loading />)
         let store = storages.find((item) => item.id === storage);
-        packageApi
-          .getUnArrange(storage, {
+        return Promise.all([
+          packageApi.getUnArrange(storage, {
             state: 2,
-          })
+          }),
+          vehicleApi.getList({
+            "manager.storage": storage,
+            type: "Container",
+            _limit: 1000,
+          }),
+          userApi.getStaffs({
+            type: "Assistance",
+            storage: storage,
+            _limit: 1000,
+          }),
+        ])
           .then((response) => {
-            setPackages(response);
+            setPackages(response[0]);
             setListFrom([
               {
                 value: store,
@@ -155,50 +241,17 @@ export const Edit = ({
                 .filter((item) => item.value.id !== storage),
             );
             setFrom(store);
+            setCars(response[1]);
+            setAssistances(response[2].staffs);
+            setLoading(null)
           })
           .catch((error) => {
             errorNotify("Có lỗi xảy ra khi lấy danh sách kiện hàng trong kho");
+            setLoading(null)
           });
       }
     }
-  }, [type]);
-
-  useEffect(() => {
-    setFrom("");
-    setTo("");
-    setCar("");
-    setPackages([]);
-    setAssistance("");
-    setType("");
-    if (storage) {
-      userApi
-        .getStaffs({
-          type: "Assistance",
-          storage: storage,
-        })
-        .then((response) => {
-          setAssistances(response.staffs);
-        })
-        .catch((error) => {
-          errorNotify("Có lỗi xảy ra");
-        });
-    }
   }, [storage]);
-
-  useEffect(() => {
-    setCar("");
-    setAssistance("");
-    if (storage && type) {
-      vehicleApi
-        .getList({
-          "manager.storage": storage,
-          type: type === "interdepart" ? "Container" : "Truck",
-        })
-        .then((response) => {
-          setCars(response);
-        });
-    }
-  }, [storage, type]);
 
   return (
     <Grid item sm={12} md={12}>
@@ -210,25 +263,8 @@ export const Edit = ({
             tỉnh)
           </Typography>
         </Box>
-        <Grid container direction="column">
-          <Grid item sm={12} md={12} className="p-2">
-            <FormControl fullWidth>
-              <InputLabel>Kho</InputLabel>
-              <Select
-                fullWidth
-                label="Loại hình"
-                value={storage}
-                onChange={(e) => setSelectedStorage(e.target.value)}
-              >
-                {storages.map((item) => (
-                  <MenuItem key={item.id} value={item.id}>
-                    {item.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
 
+        <Grid container direction="column">
           <Grid item sm={12} md={12} className="p-2">
             <FormControl fullWidth>
               <InputLabel>Loại hình</InputLabel>
@@ -236,9 +272,10 @@ export const Edit = ({
                 fullWidth
                 label="Loại hình"
                 value={type}
-                onChange={(e) =>
-                  storage ? setType(e.target.value) : setType("")
-                }
+                // onChange={(e) =>
+                //   storage && type !== "interdepart" ? setType(e.target.value) : setType("")
+                // }
+                onChange={(e) => setType(e.target.value)}
               >
                 <MenuItem value="collect">Thu gom hàng</MenuItem>
                 <MenuItem value="ship">Giao hàng</MenuItem>
@@ -246,6 +283,26 @@ export const Edit = ({
               </Select>
             </FormControl>
           </Grid>
+
+          {type === "interdepart" && (
+            <Grid item sm={12} md={12} className="p-2">
+              <FormControl fullWidth>
+                <InputLabel>Kho</InputLabel>
+                <Select
+                  fullWidth
+                  label="Kho"
+                  value={storage}
+                  onChange={(e) => setSelectedStorage(e.target.value)}
+                >
+                  {storages.map((item) => (
+                    <MenuItem key={item.id} value={item.id}>
+                      {item.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
 
           {type !== "interdepart" && (
             <Grid item sm={12} md={12} className="p-2">
@@ -255,27 +312,27 @@ export const Edit = ({
                     <InputLabel>Đơn hàng</InputLabel>
                     <Select
                       fullWidth
-                      label="Loại hình"
+                      label="Đơn hàng"
                       value={type === "collect" ? from : to}
                       onChange={(e) => {
                         if (type === "ship") {
                           setTo(e.target.value);
-                          if (e.target.value.packages) {
-                            setPackages(e.target.value.packages);
-                            setInitial({
-                              ...initial,
-                              pack: e.target.value.packages,
-                            });
-                          }
+                          // if (e.target.value.packages) {
+                          //   setPackages(e.target.value.packages);
+                          //   setInitial({
+                          //     ...initial,
+                          //     pack: e.target.value.packages,
+                          //   });
+                          // }
                         } else {
                           setFrom(e.target.value);
-                          if (e.target.value.packages) {
-                            setPackages(e.target.value.packages);
-                            setInitial({
-                              ...initial,
-                              pack: e.target.value.packages,
-                            });
-                          }
+                          // if (e.target.value.packages) {
+                          //   setPackages(e.target.value.packages);
+                          //   setInitial({
+                          //     ...initial,
+                          //     pack: e.target.value.packages,
+                          //   });
+                          // }
                         }
                       }}
                     >
@@ -287,7 +344,7 @@ export const Edit = ({
                           ))
                         : listTo.map((item, index) => (
                             <MenuItem key={index} value={item.value}>
-                              {item.label}
+                              {item.value.id}
                             </MenuItem>
                           ))}
                     </Select>
@@ -412,6 +469,7 @@ export const Edit = ({
                   <Select
                     fullWidth
                     label="Nơi đến"
+                    defaultValue=""
                     value={to}
                     onChange={(e) => {
                       setTo(e.target.value);
@@ -452,13 +510,14 @@ export const Edit = ({
                   fullWidth
                   label="Xe vận chuyển"
                   value={car}
+                  defaultValue=""
                   onChange={(e) => {
                     setCar(e.target.value);
                   }}
                 >
                   {cars.map((item) => (
                     <MenuItem key={item.id} value={item}>
-                      {`${item.licence} - tải trọng: ${item.load} kg`}
+                      {`Biển số: ${item.licence} - tải trọng: ${item.load} kg`}
                     </MenuItem>
                   ))}
                 </Select>
@@ -470,6 +529,7 @@ export const Edit = ({
                 <Select
                   fullWidth
                   label="Xe vận chuyển"
+                  defaultValue=""
                   value={assistance}
                   onChange={(e) => setAssistance(e.target.value)}
                 >

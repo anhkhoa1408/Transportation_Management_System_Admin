@@ -36,7 +36,7 @@ const Customer = (props) => {
   const [assistance, setAssistance] = useState("");
   const [assistances, setAssistances] = useState([]);
 
-  const [type, setType] = useState("");
+  const [type, setType] = useState("interdepart");
 
   const [packageData, setPackages] = useState([]);
   const [shipmentData, setShipments] = useState([]);
@@ -160,13 +160,14 @@ const Customer = (props) => {
     }
 
     let validate = handleValidate([...shipmentData, ...packageData], car);
-
     let isInvalidAll =
       Object.keys(validate).length &&
       packageData.every(
-        (item) => validate[item.id] && item.quantity === validate[item.id],
+        (item) => {
+          console.log(validate[item.id], item.quantity, validate)
+          return validate[item.id] && item.quantity <= validate[item.id]
+        },
       );
-
     if (Object.keys(validate).length && !isInvalidAll && !check) {
       let tempShip = [];
       let tempPack = [];
@@ -206,10 +207,9 @@ const Customer = (props) => {
   const handleValidate = (packages, car) => {
     let unfitPack = validateFit(packages, car);
     setValidate(unfitPack);
-
-    let isFullLoad = packageData.every(
-      (item) => unfitPack[item.id] === item.quantity,
-    );
+    let isFullLoad = packageData.length
+      ? packageData.every((item) => unfitPack[item.id] === item.quantity)
+      : false;
     setIsFull(isFullLoad);
     let temp;
 
@@ -258,7 +258,6 @@ const Customer = (props) => {
             item.quantity * item.size.len * item.size.width * item.size.height
           );
         }, 0);
-
     totalVolume = parseFloat(
       (totalVolume * 100) / (car.size.len * car.size.width * car.size.height),
     ).toFixed(2);
@@ -283,6 +282,10 @@ const Customer = (props) => {
 
   useEffect(() => {
     setArrange([]);
+    setCurVolume(0);
+    setCurWeight(0);
+    setPackages(initial.pack)
+    setShipments(initial.ship)
     if (car && car.shipments) {
       if (car.shipments.length) {
         setAssistance(car.shipments[car.shipments.length - 1].assistance);
@@ -310,7 +313,7 @@ const Customer = (props) => {
   }, [car]);
 
   useEffect(() => {
-    setShipments(initial.ship);
+    setShipments([]);
   }, [from, to]);
 
   useScroll("detail-header", "shadow-sm");
@@ -323,7 +326,10 @@ const Customer = (props) => {
           <Paper id="detail-header" className="px-4 py-3 shadow-sm mb-4">
             <Box className="p-2 d-flex flex-row justify-content-between align-items-center">
               <Typography variant="h6">Chuyến xe</Typography>
-              <Button onClick={handleCreate} className="app-btn app-btn--success">
+              <Button
+                onClick={handleCreate}
+                className="app-btn app-btn--success"
+              >
                 Tạo
               </Button>
             </Box>
@@ -360,6 +366,7 @@ const Customer = (props) => {
           setInitial={setInitial}
           setCurWeight={setCurWeight}
           setCurVolume={setCurVolume}
+          setLoading={setLoading}
         />
 
         <ArrangePack

@@ -138,7 +138,7 @@ export const HomePage = (props) => {
                   Thu nhập hằng quý
                 </Typography>
                 <Typography variant="h5" className="fs-4 fw-bold opacity-75">
-                  ${data.quarterlyIncome}
+                  {data.quarterlyIncome} đ
                 </Typography>
               </Box>
               <Paid sx={{ fontSize: 33, opacity: 0.3 }} />
@@ -154,7 +154,7 @@ export const HomePage = (props) => {
                   Thu nhập hằng năm
                 </Typography>
                 <Typography variant="h5" className="fs-4 fw-bold opacity-75">
-                  ${data.yearlyIncome}
+                  {data.yearlyIncome} đ
                 </Typography>
               </Box>
               <CalendarToday sx={{ fontSize: 33, opacity: 0.3 }} />

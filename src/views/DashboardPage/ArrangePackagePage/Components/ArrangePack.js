@@ -163,8 +163,9 @@ export const ArrangePack = ({
             <Grid item md={12} sm={12} className="px-2 py-1 d-flex flex-row">
               <ErrorOutline color="error" className="me-2" />{" "}
               <Typography>
-                Kiện hàng trên xe hiện tại đã đầy, không gian chiếm dụng và khối lượng kiện hàng đang hiển thị được
-                tính cho chuyến xe sau, khi xe rỗng
+                Kiện hàng trên xe hiện tại đã đầy, không gian chiếm dụng và khối
+                lượng kiện hàng đang hiển thị được tính cho chuyến xe sau, khi
+                xe rỗng
               </Typography>
             </Grid>
           )}
@@ -317,7 +318,7 @@ export const ArrangePack = ({
                           <Collapse isOpen={split === index ? true : false}>
                             <Box
                               className={clsx(
-                                "justify-content-center mt-2 py-2 px-1 d-flex flex-row",
+                                "justify-content-center mt-2 py-2 px-1 d-flex flex-row align-items-stretch",
                               )}
                             >
                               <TextField
@@ -345,7 +346,8 @@ export const ArrangePack = ({
                                 }
                               ></TextField>
                               <Button
-                                className="app-btn app-btn--success"
+                                sx={{ height: 60 }}
+                                color="success"
                                 disabled={
                                   quantity < 0 ||
                                   quantity > item.quantity ||
@@ -357,6 +359,7 @@ export const ArrangePack = ({
                                 <Check />
                               </Button>
                               <Button
+                                sx={{ height: 60 }}
                                 color="error"
                                 onClick={() => {
                                   setSplit(null);
@@ -384,12 +387,8 @@ export const ArrangePack = ({
                   style={getListStyle(snapshot.isDraggingOver)}
                 >
                   <Box className={clsx("py-1 mb-1")}>
-                    <Button
-                      className="d-flex flex-row justify-content-between align-items-center w-100 app--primary"
-                    >
-                      <Typography className="my-2">
-                        Kiện hàng đã chọn
-                      </Typography>
+                    <Button className="d-flex flex-row justify-content-between align-items-center w-100 app--primary">
+                      <Typography className="my-2">Kiện hàng đã xếp</Typography>
                     </Button>
                   </Box>
                   {shipmentData.map((item, index) => (
