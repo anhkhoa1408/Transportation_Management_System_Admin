@@ -226,6 +226,10 @@ export const Edit = ({
         ])
           .then((response) => {
             setPackages(response[0]);
+            setInitial({
+              ...initial,
+              pack: response[0]
+            })
             setListFrom([
               {
                 value: store,

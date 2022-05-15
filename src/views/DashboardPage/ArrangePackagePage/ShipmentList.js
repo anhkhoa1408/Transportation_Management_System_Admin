@@ -81,7 +81,7 @@ export const ShipmentList = (props) => {
         width: 50,
       },
       {
-        Header: "Chờ nhận",
+        Header: "Chờ tài xế",
         accessor: "status",
         filterable: false,
       },
@@ -136,7 +136,7 @@ export const ShipmentList = (props) => {
         ? Math.floor(remainHour) + " giờ"
         : Math.floor(diffToDate) && !Math.floor(remainHour)
         ? ""
-        : "Đang chờ"
+        : "0 giờ"
     }`;
   };
 
@@ -146,7 +146,7 @@ export const ShipmentList = (props) => {
         ...prop,
         stt: _start * _limit + index + 1,
         status: prop.driver ? (
-          <span className="app--success fw-bold">Đã được nhận</span>
+          <span className="app--success fw-bold">{calcWaitingShipmentTime(prop.updatedAt)}</span>
         ) : (
           <span className="app--warning fw-bold">
             {calcWaitingShipmentTime(prop.updatedAt)}

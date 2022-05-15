@@ -17,6 +17,7 @@ const Customer = (props) => {
   });
 
   const [check, setCheck] = useState(false);
+  const [checkTo, setCheckTo] = useState(false);
 
   const [search, setSearch] = useState(false);
   const [split, setSplit] = useState(null);
@@ -159,20 +160,37 @@ const Customer = (props) => {
       return;
     }
 
-    let validate = handleValidate([...shipmentData, ...packageData], car);
+    if (!to) {
+      errorNotify("Chưa có điểm đến");
+      return;
+    }
+
+    let sameCityList = packageData.filter(
+      (item) => item.to_address?.city === to?.address?.city,
+    );
+
+    let diffCityList = packageData.filter(
+      (item) => item.to_address?.city !== to?.address?.city,
+    );
+
+    if (checkTo && !sameCityList.length) {
+      return;
+    }
+
+    let packCheck = !checkTo ? packageData : sameCityList;
+
+    let validate = handleValidate([...shipmentData, ...packCheck], car);
     let isInvalidAll =
       Object.keys(validate).length &&
-      packageData.every(
-        (item) => {
-          console.log(validate[item.id], item.quantity, validate)
-          return validate[item.id] && item.quantity <= validate[item.id]
-        },
-      );
+      packCheck.every((item) => {
+        return validate[item.id] && item.quantity <= validate[item.id];
+      });
+
     if (Object.keys(validate).length && !isInvalidAll && !check) {
       let tempShip = [];
       let tempPack = [];
-      for (let item of packageData) {
-        let unfitPack = packageData.find(
+      for (let item of packCheck) {
+        let unfitPack = packCheck.find(
           (pack) =>
             pack.id === Object.keys(validate).find((id) => id === item.id),
         );
@@ -195,12 +213,22 @@ const Customer = (props) => {
         }
       }
       setShipments([...shipmentData, ...tempShip]);
-      setPackages(tempPack);
+      if (checkTo) {
+        setPackages([...tempPack, ...diffCityList]);
+      } else {
+        setPackages(tempPack);
+      }
       setArrange(tempShip);
     } else if (!Object.keys(validate).length || check) {
-      setShipments([...shipmentData, ...packageData]);
-      setPackages([]);
-      setArrange(packageData);
+      if (!checkTo) {
+        setShipments([...shipmentData, ...packCheck]);
+        setPackages([]);
+        setArrange(packCheck);
+      } else {
+        setShipments([...shipmentData, ...packCheck]);
+        setPackages(diffCityList);
+        setArrange(packCheck);
+      }
     }
   };
 
@@ -284,8 +312,8 @@ const Customer = (props) => {
     setArrange([]);
     setCurVolume(0);
     setCurWeight(0);
-    setPackages(initial.pack)
-    setShipments(initial.ship)
+    setPackages(initial.pack);
+    setShipments(initial.ship);
     if (car && car.shipments) {
       if (car.shipments.length) {
         setAssistance(car.shipments[car.shipments.length - 1].assistance);
@@ -394,6 +422,8 @@ const Customer = (props) => {
           handleCalculate={handleCalculate}
           setInitial={setInitial}
           isFullLoad={isFullLoad}
+          checkTo={checkTo}
+          setCheckTo={setCheckTo}
         />
       </Grid>
     </>

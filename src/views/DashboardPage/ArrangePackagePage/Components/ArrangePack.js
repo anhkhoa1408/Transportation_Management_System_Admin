@@ -52,6 +52,8 @@ export const ArrangePack = ({
   setCurWeight,
   setCurVolume,
   isFullLoad,
+  checkTo,
+  setCheckTo,
   ...props
 }) => {
   const getItemStyle = (isDragging, draggableStyle) => ({
@@ -171,13 +173,21 @@ export const ArrangePack = ({
           )}
         </Grid>
 
-        {(type === "collect" || type === "ship") && (
+        {type === "collect" || type === "ship" ? (
           <Box className="d-flex flex-row align-items-center my-2">
             <Checkbox
               checked={check}
               onChange={(e) => setCheck(e.target.checked)}
             />
             <Typography>Vận chuyển nhiều lần</Typography>
+          </Box>
+        ) : (
+          <Box className="d-flex flex-row align-items-center my-2">
+            <Checkbox
+              checked={checkTo}
+              onChange={(e) => setCheckTo(e.target.checked)}
+            />
+            <Typography>Kiện hàng cùng nơi đến</Typography>
           </Box>
         )}
 
@@ -283,6 +293,11 @@ export const ArrangePack = ({
                               <Typography>
                                 Số lượng: {item.quantity} kiện
                               </Typography>
+                              {type === "interdepart" && (
+                                <Typography>
+                                  Nơi đến: {item.to_address?.city}
+                                </Typography>
+                              )}
                             </Box>
                             <Box className="d-flex flex-column justify-content-center h-100 align-items-center">
                               <Button onClick={() => setSplit(index)}>
@@ -427,6 +442,11 @@ export const ArrangePack = ({
                               <Typography>
                                 Số lượng: {item.quantity} kiện
                               </Typography>
+                              {type === "interdepart" && item.to_address?.city && (
+                                <Typography>
+                                  Nơi đến: {item.to_address?.city}
+                                </Typography>
+                              )}
                             </Box>
                           </Box>
                         </div>
