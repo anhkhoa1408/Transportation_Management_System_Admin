@@ -1,9 +1,8 @@
-import { Grid3x3, Search } from "@mui/icons-material";
+import { Search } from "@mui/icons-material";
 import {
   Button,
   FormControl,
   Grid,
-  Input,
   InputLabel,
   MenuItem,
   Paper,
@@ -12,16 +11,17 @@ import {
   Typography,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { PopoverBody, PopoverHeader, UncontrolledPopover } from "reactstrap";
-import orderApi from "./../../../../api/orderApi";
 import packageApi from "../../../../api/packageApi";
 import storageApi from "../../../../api/storageApi";
 import userApi from "../../../../api/userApi";
 import vehicleApi from "../../../../api/vehicleApi";
+import Loading from "../../../../components/Loading";
 import { joinAddress } from "../../../../utils/address";
 import { errorNotify } from "../../../../utils/notification";
-import Loading from "../../../../components/Loading";
+import orderApi from "./../../../../api/orderApi";
 
 export const Edit = ({
   storage,
@@ -51,8 +51,10 @@ export const Edit = ({
   setShipments,
   initial,
   setInitial,
-  setLoading
+  setLoading,
 }) => {
+  const location = useLocation();
+
   useEffect(() => {
     storageApi
       .getList({
@@ -70,12 +72,11 @@ export const Edit = ({
     setFrom("");
     setTo("");
     setCar("");
-    setAssistance("")
+    setAssistance("");
     setPackages([]);
     setShipments([]);
-    setAssistances([])
-    setCars([])
-    // setLoading(<Loading />)
+    setAssistances([]);
+    setCars([]);
     if (type === "collect") {
       orderApi
         .getList({
@@ -92,7 +93,6 @@ export const Edit = ({
             label: joinAddress(item.from_address),
           }));
           setListFrom(temp);
-          // setLoading(null)
         });
     } else if (type === "ship") {
       orderApi
@@ -110,7 +110,6 @@ export const Edit = ({
             label: joinAddress(item.to_address),
           }));
           setListTo(temp);
-          // setLoading(null)
         });
     }
   }, [type]);
@@ -118,7 +117,7 @@ export const Edit = ({
   useEffect(() => {
     if (Object.keys(from).length) {
       if (type === "collect") {
-        setLoading(<Loading />)
+        setLoading(<Loading />);
         orderApi
           .getNearestStore(from)
           .then((response) => {
@@ -148,11 +147,11 @@ export const Edit = ({
             });
             setCars(response[1]);
             setAssistances(response[2].staffs);
-            setLoading(null)
+            setLoading(null);
           })
           .catch((error) => {
             errorNotify("Có lỗi xảy ra, xin vui lòng thử lại!");
-            setLoading(null)
+            setLoading(null);
           });
       }
     }
@@ -161,7 +160,7 @@ export const Edit = ({
   useEffect(() => {
     if (Object.keys(to).length) {
       if (type === "ship") {
-        setLoading(<Loading />)
+        setLoading(<Loading />);
         let address = to.packages[0].current_address;
         orderApi
           .getNearestStore({
@@ -194,11 +193,11 @@ export const Edit = ({
             });
             setCars(response[1]);
             setAssistances(response[2].staffs);
-            setLoading(null)
+            setLoading(null);
           })
           .catch((error) => {
             errorNotify("Có lỗi xảy ra, xin vui lòng thử lại!");
-            setLoading(null)
+            setLoading(null);
           });
       }
     }
@@ -207,7 +206,7 @@ export const Edit = ({
   useEffect(() => {
     if (type === "interdepart") {
       if (storage) {
-        setLoading(<Loading />)
+        setLoading(<Loading />);
         let store = storages.find((item) => item.id === storage);
         return Promise.all([
           packageApi.getUnArrange(storage, {
@@ -228,8 +227,8 @@ export const Edit = ({
             setPackages(response[0]);
             setInitial({
               ...initial,
-              pack: response[0]
-            })
+              pack: response[0],
+            });
             setListFrom([
               {
                 value: store,
@@ -247,15 +246,27 @@ export const Edit = ({
             setFrom(store);
             setCars(response[1]);
             setAssistances(response[2].staffs);
-            setLoading(null)
+            setLoading(null);
           })
           .catch((error) => {
             errorNotify("Có lỗi xảy ra khi lấy danh sách kiện hàng trong kho");
-            setLoading(null)
+            setLoading(null);
           });
       }
     }
   }, [storage]);
+
+  useEffect(() => {
+    if (location?.state?.order) {
+      setType("collect");
+      if (listFrom.length) {
+        let index = listFrom.findIndex(
+          (item) => item.value.id === location.state.order,
+        );
+        setFrom(listFrom[index].value);
+      }
+    }
+  }, [listFrom]);
 
   return (
     <Grid item sm={12} md={12}>
@@ -276,9 +287,6 @@ export const Edit = ({
                 fullWidth
                 label="Loại hình"
                 value={type}
-                // onChange={(e) =>
-                //   storage && type !== "interdepart" ? setType(e.target.value) : setType("")
-                // }
                 onChange={(e) => setType(e.target.value)}
               >
                 <MenuItem value="collect">Thu gom hàng</MenuItem>
@@ -318,25 +326,12 @@ export const Edit = ({
                       fullWidth
                       label="Đơn hàng"
                       value={type === "collect" ? from : to}
+                      defaultValue={type === "collect" ? from : to}
                       onChange={(e) => {
                         if (type === "ship") {
                           setTo(e.target.value);
-                          // if (e.target.value.packages) {
-                          //   setPackages(e.target.value.packages);
-                          //   setInitial({
-                          //     ...initial,
-                          //     pack: e.target.value.packages,
-                          //   });
-                          // }
                         } else {
                           setFrom(e.target.value);
-                          // if (e.target.value.packages) {
-                          //   setPackages(e.target.value.packages);
-                          //   setInitial({
-                          //     ...initial,
-                          //     pack: e.target.value.packages,
-                          //   });
-                          // }
                         }
                       }}
                     >

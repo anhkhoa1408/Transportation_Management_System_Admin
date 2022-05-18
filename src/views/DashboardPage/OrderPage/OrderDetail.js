@@ -152,6 +152,21 @@ const OrderDetail = (props) => {
                     >
                       Xem kiện hàng
                     </DropdownItem>
+
+                    <Divider className="app--primary" />
+
+                    <DropdownItem
+                      className="py-3 px-4"
+                      onClick={() =>
+                        history.push("/shipment/arrange", {
+                          order: data.id,
+                        })
+                      }
+                      disabled={data.state !== 0}
+                    >
+                      Sắp xếp chuyến
+                    </DropdownItem>
+
                     <Divider className="app--primary" />
 
                     <DropdownItem
