@@ -125,7 +125,11 @@ const Header = (props) => {
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                   variant="dot"
                 >
-                  <Avatar alt="Remy Sharp" src={avatar} />
+                  <Avatar
+                    key={Math.random().toString()}
+                    alt="Shober"
+                    src={avatar.concat("?.", Math.random().toString())}
+                  />
                 </StyledBadge>
               </DropdownToggle>
               <DropdownMenu

@@ -152,15 +152,15 @@ export const AccountPage = (props) => {
         let isValidUrl = new RegExp("https://").test(userInfo.user.avatar.url);
         setAvatar(
           isValidUrl
-            ? userInfo.user.avatar.url
-            : process.env.MAIN_URL + userInfo.user.avatar.url,
+            ? userInfo.user.avatar.url + "?.".concat(Math.random().toString())
+            : process.env.MAIN_URL + userInfo.user.avatar.url + "?.".concat(Math.random().toString()),
         );
       }
     }
   }, [userInfo]);
 
   return (
-    <Box className="px-5 py-4">
+    <Grid container className="px-5 py-4">
       <Grid
         item
         md={12}
@@ -224,7 +224,7 @@ export const AccountPage = (props) => {
           </Box>
         </Paper>
       </Grid>
-    </Box>
+    </Grid>
   );
 };
 

@@ -60,8 +60,8 @@ export const OrderList = (props) => {
         );
       case 2:
         return (
-          <Badge className="app-bg--neutral-secondary">
-            <span className="app--secondary">Đang vận chuyển</span>
+          <Badge className="app-bg--neutral-purple">
+            <span className="app--purple">Đang vận chuyển</span>
           </Badge>
         );
       case 3:
