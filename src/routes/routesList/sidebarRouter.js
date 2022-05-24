@@ -1,6 +1,6 @@
 import {
   AccountCircle, ConfirmationNumber, Description, Home, ListAlt,
-  LocalShipping, ModeComment, People, Storage, TurnSharpRight
+  LocalShipping, ModeComment, People, Storage, TurnSharpRight, Store
 } from "@mui/icons-material";
 import React from "react";
 
@@ -24,7 +24,7 @@ const adminSidebar = [
   { link: "/order", title: "Đơn hàng", icon: <ListAlt /> },
   { link: "/vehicle", title: "Phương tiện", icon: <LocalShipping /> },
   { link: "/voucher", title: "Khuyến mãi", icon: <ConfirmationNumber /> },
-  { link: "/storage", title: "Kho hàng", icon: <Storage /> },
+  { link: "/storage", title: "Kho hàng", icon: <Store /> },
   { link: "/report", title: "Báo cáo định kỳ", icon: <Description /> },
   { link: "/feedback", title: "Phản hồi", icon: <ModeComment /> },
 ];

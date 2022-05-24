@@ -186,7 +186,7 @@ const VehicleDetail = (props) => {
     if (location?.state?.id) {
       Promise.all([
         vehicleApi.getDetail(location.state.id),
-        role.name === "Admin" ? userApi.getStaffs({ type: "Driver" }) : [],
+        role.name === "Admin" ? userApi.getStaffs({ type: "Driver", _limit: 1000 }) : [],
         vehicleApi.getBroken({ car: location.state.id }),
       ])
         .then((response) => {

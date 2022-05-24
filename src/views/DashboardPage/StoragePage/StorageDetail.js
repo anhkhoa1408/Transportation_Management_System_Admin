@@ -106,6 +106,7 @@ const StorageDetail = (props) => {
         role.name === "Admin"
           ? userApi.getStaffs({
               type: "Stocker",
+              _limit: 1000
             })
           : [],
       ]).then((response) => {

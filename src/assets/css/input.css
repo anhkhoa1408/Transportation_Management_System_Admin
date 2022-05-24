@@ -28,3 +28,7 @@
 .MuiFormControl-root:hover .MuiInputLabel-root {
   color: var(--primary) !important;
 }
+
+.MuiMenu-paper {
+  max-height: 250px !important;
+}

@@ -112,7 +112,9 @@ const ReportDetail = (props) => {
         });
     } else {
       storageApi
-        .getList()
+        .getList({
+          _limit: 100
+        })
         .then((response) => {
           setStorages(response);
         })

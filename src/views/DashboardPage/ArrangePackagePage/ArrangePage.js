@@ -341,7 +341,7 @@ const Customer = (props) => {
   }, [car]);
 
   useEffect(() => {
-    setShipments([]);
+    // setShipments([]);
   }, [from, to]);
 
   useScroll("detail-header", "shadow-sm");

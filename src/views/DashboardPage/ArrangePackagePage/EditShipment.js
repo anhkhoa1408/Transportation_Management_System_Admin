@@ -48,7 +48,6 @@ const EditShipment = (props) => {
       name: "",
     },
     load: "",
-
   });
   const [cars, setCars] = useState([]);
   const [assistance, setAssistance] = useState("");
@@ -106,7 +105,7 @@ const EditShipment = (props) => {
         .getDetail(location.state.id)
         .then((response) => {
           setData(response);
-          setCar(response.car || '');
+          setCar(response.car || "");
           setAssistance(response.assistance);
           let storageQuery =
             response.from_storage && response.to_storage
@@ -122,11 +121,20 @@ const EditShipment = (props) => {
             userApi.getStaffs({
               type: "Assistance",
               storage: storageQuery.id,
+              _limit: 1000,
             }),
-            vehicleApi.getList({
-              "manager.storage": storageQuery.id,
-              type,
-            }),
+            vehicleApi.getList(
+              type === "Container"
+                ? {
+                    "manager.storage": storageQuery.id,
+                    type,
+                    _limit: 1000,
+                  }
+                : {
+                    type,
+                    _limit: 1000,
+                  },
+            ),
             shipmentApi.getItemList({
               shipment: response.id,
             }),
