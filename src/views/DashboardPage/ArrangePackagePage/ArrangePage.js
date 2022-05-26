@@ -1,14 +1,13 @@
 import { Button, Grid, Paper, Typography } from "@mui/material";
+import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
-import packageApi from "../../../api/packageApi";
 import shipmentApi from "../../../api/shipmentApi";
+import Loading from "../../../components/Loading";
+import useScroll from "../../../hooks/useScroll";
 import { validateFit } from "../../../services/packing";
 import { errorNotify, successNotify } from "../../../utils/notification";
-import useScroll from "../../../hooks/useScroll";
 import { ArrangePack } from "./Components/ArrangePack";
 import { Edit } from "./Components/Edit";
-import Loading from "../../../components/Loading";
-import { Box } from "@mui/system";
 
 const Customer = (props) => {
   const [initial, setInitial] = useState({
@@ -54,20 +53,23 @@ const Customer = (props) => {
   const [loading, setLoading] = useState(null);
   const [isFullLoad, setIsFull] = useState(false);
 
+  const [validated, setValidated] = useState(false);
+
   const handleSplit = (item, index) => {
     let tempArray = [...packageData];
     let tempPack = {
       ...tempArray[index],
-      quantity: quantity,
+      quantity: Number.parseInt(quantity),
+      split: true,
     };
     tempArray[index] = {
       ...tempArray[index],
-      quantity: tempArray[index].quantity - quantity,
+      origin: Number.parseInt(tempArray[index].quantity),
+      quantity: tempArray[index].quantity - Number.parseInt(quantity),
     };
     tempArray.splice(tempArray.length, 0, tempPack);
     setPackages(tempArray);
     setSplit(null);
-    setArrange([...arrangePack, tempArray[index]]);
     setQuantity(1);
   };
 
@@ -76,10 +78,6 @@ const Customer = (props) => {
       errorNotify("Chưa thêm kiện hàng");
       return;
     }
-    // if (!assistance) {
-    //   errorNotify("Chưa thêm nhân viên hỗ trợ");
-    //   return;
-    // }
     if (!Object.keys(from).length || !Object.keys(to).length) {
       errorNotify("Chưa thêm địa chỉ chuyến xe");
       return;
@@ -177,7 +175,7 @@ const Customer = (props) => {
       return;
     }
 
-    let packCheck = !checkTo ? packageData : sameCityList;
+    let packCheck = !checkTo ? initial.pack : sameCityList;
 
     let validate = handleValidate([...shipmentData, ...packCheck], car);
     let isInvalidAll =
@@ -298,6 +296,7 @@ const Customer = (props) => {
   };
 
   const handleCalculate = () => {
+    setValidated(true);
     if (!car) {
       errorNotify("Chưa chọn xe cần tính toán");
       return;
@@ -345,7 +344,8 @@ const Customer = (props) => {
   }, [from, to]);
 
   useScroll("detail-header", "shadow-sm");
-
+  
+  console.log(arrangePack);
   return (
     <>
       {loading}
@@ -424,6 +424,10 @@ const Customer = (props) => {
           isFullLoad={isFullLoad}
           checkTo={checkTo}
           setCheckTo={setCheckTo}
+          arrangePack={arrangePack}
+          setArrange={setArrange}
+          validated={validated}
+          setValidated={setValidated}
         />
       </Grid>
     </>

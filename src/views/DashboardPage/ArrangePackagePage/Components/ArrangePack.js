@@ -20,10 +20,11 @@ import {
 } from "@mui/material";
 import { Box } from "@mui/system";
 import clsx from "clsx";
-import React from "react";
+import React, { useState } from "react";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { Collapse, UncontrolledTooltip } from "reactstrap";
-import { validate } from "schema-utils";
+import { convertPackageType } from "../../../../utils/package";
+import { errorNotify } from "./../../../../utils/notification";
 
 export const ArrangePack = ({
   curVolume,
@@ -54,6 +55,10 @@ export const ArrangePack = ({
   isFullLoad,
   checkTo,
   setCheckTo,
+  arrangePack,
+  setArrange,
+  validated,
+  setValidated,
   ...props
 }) => {
   const getItemStyle = (isDragging, draggableStyle) => ({
@@ -80,12 +85,18 @@ export const ArrangePack = ({
       return;
     }
 
+    if (!validated && type === "interdepart") {
+      errorNotify("Xin hãy tính toán trước khi tiến hành sắp xếp");
+      return;
+    }
+
     if (
       source.droppableId === "packDrop" &&
       destination.droppableId === "shipDrop"
     ) {
       if (Object.keys(validate).length) {
         setCheck(true);
+        setArrange([...arrangePack, packageData[source.index]]);
       }
     }
 
@@ -140,9 +151,61 @@ export const ArrangePack = ({
     setShipments(initial.ship);
     setPackages(initial.pack);
     setValidate({});
-    // setCurWeight(0)
-    // setCurVolume(0)
+    setArrange([]);
+    setValidated(false);
   };
+
+  const handleQuantity = (item, validate) => {
+    if (!item.origin) {
+      if (item.quantity > validate[item.id]) {
+        return `Tối đa tách được: ${item.quantity - validate[item.id]} kiện`;
+      } else {
+        return "Không thể tách";
+      }
+    } else {
+      if (item.origin > validate[item.id]) {
+        return `Tối đa tách được: ${item.origin - validate[item.id]} kiện`;
+      } else {
+        return "Không thể tách";
+      }
+    }
+  };
+
+  const handleErrQuantity = (item, validate) => {
+    if (quantity <= 0) {
+      return {
+        status: true,
+        message: "Số lượng phải lớn hơn 0",
+      };
+    } else if (
+      quantity > item.quantity ||
+      quantity > item.quantity - validate[item.id]
+    ) {
+      return {
+        status: true,
+        message: "Vượt quá số lượng",
+      };
+    } else if (!quantity) {
+      return {
+        status: true,
+        message: "Số lượng không hợp lệ",
+      };
+    } else {
+      return {
+        status: false,
+        message: "",
+      };
+    }
+  };
+
+  const handleValidated = (type) => {
+    if (type === "calculate") {
+      handleCalculate();
+    } else if (type === "sort") {
+      handleQuickSort();
+    }
+  };
+
   return (
     <Grid item sm={12} md={12}>
       <Paper className="d-flex flex-column w-100 align-self-center p-4 shadow-sm">
@@ -227,7 +290,7 @@ export const ArrangePack = ({
                       <Button
                         id="calculate-btn"
                         className="d-flex flex-row justify-content-center align-items-center mb-2 app--success"
-                        onClick={handleCalculate}
+                        onClick={() => handleCalculate("calculate")}
                       >
                         <Calculate />
                       </Button>
@@ -237,7 +300,7 @@ export const ArrangePack = ({
                       <Button
                         id="sort-btn"
                         className="d-flex flex-row justify-content-center align-items-center mb-2 app--warning"
-                        onClick={handleQuickSort}
+                        onClick={() => handleValidated("sort")}
                       >
                         <Sort />
                       </Button>
@@ -259,134 +322,115 @@ export const ArrangePack = ({
                   {packageData.map((item, index) => (
                     <Draggable
                       key={item.id + index.toString()}
-                      draggableId={item.id + index.toString()}
+                      draggableId={
+                        item.id + item.quantity.toString() + index.toString()
+                      }
                       index={index}
                     >
-                      {(provided, snapshot) => (
-                        <div
-                          className="d-flex flex-column"
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={getItemStyle(
-                            snapshot.isDragging,
-                            provided.draggableProps.style,
-                          )}
-                        >
-                          <Box className="d-flex flex-row align-items-start w-100 p-1">
-                            <Box className="p-2 app-bg--neutral-gray me-3">
-                              <Inventory2
-                                className="app--primary hover-sm"
-                                sx={{ fontSize: 30 }}
-                              ></Inventory2>
-                            </Box>
-                            <Box className="flex-grow-1">
-                              <Typography
-                                variant="subtitle1"
-                                className="fw-bold"
-                              >
-                                Tên kiện hàng: {item.name || "Không có"}
-                              </Typography>
-                              <Typography>
-                                Khối lượng mỗi kiện: {item.weight} kg
-                              </Typography>
-                              <Typography>
-                                Số lượng: {item.quantity} kiện
-                              </Typography>
-                              {type === "interdepart" && (
-                                <Typography>
-                                  Nơi đến: {item.to_address?.city}
+                      {(provided, snapshot) => {
+                        let error = handleErrQuantity(item, validate);
+                        return (
+                          <div
+                            className="d-flex flex-column"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={getItemStyle(
+                              snapshot.isDragging,
+                              provided.draggableProps.style,
+                            )}
+                          >
+                            <Box className="d-flex flex-row align-items-start w-100 p-1">
+                              <Box className="p-2 app-bg--neutral-gray me-3">
+                                <Inventory2
+                                  className="app--primary hover-sm"
+                                  sx={{ fontSize: 30 }}
+                                ></Inventory2>
+                              </Box>
+                              <Box className="flex-grow-1">
+                                <Typography
+                                  variant="subtitle1"
+                                  className="fw-bold"
+                                >
+                                  Tên: {item.name || "Không có"} - Loại:{" "}
+                                  {convertPackageType(item.package_type)}
                                 </Typography>
-                              )}
-                            </Box>
-                            <Box className="d-flex flex-column justify-content-center h-100 align-items-center">
-                              <Button onClick={() => setSplit(index)}>
-                                Tách
-                              </Button>
-                              {validate[item.id] && (
-                                <>
-                                  <UncontrolledTooltip
-                                    flip
-                                    target={"error-mess-" + index}
-                                  >
-                                    {item.quantity - validate[item.id] > 0
-                                      ? `Tối đa tách được: 
-                                        ${
-                                          item.quantity - validate[item.id]
-                                        } kiện`
-                                      : "Không thể tách"}
-                                  </UncontrolledTooltip>
-                                  <Button
-                                    className="d-flex flex-row justify-content-center align-items-center px-3"
-                                    color="error"
-                                  >
-                                    <ErrorOutline
-                                      id={"error-mess-" + index}
+                                <Typography>
+                                  Khối lượng mỗi kiện: {item.weight} kg
+                                </Typography>
+                                <Typography>
+                                  Số lượng: {item.quantity} kiện
+                                </Typography>
+                                {type === "interdepart" && (
+                                  <Typography>
+                                    Nơi đến: {item.to_address?.city}
+                                  </Typography>
+                                )}
+                              </Box>
+                              <Box className="d-flex flex-column justify-content-center h-100 align-items-center">
+                                <Button onClick={() => setSplit(index)}>
+                                  Tách
+                                </Button>
+                                {validate[item.id] && !item.split && (
+                                  <>
+                                    <UncontrolledTooltip
+                                      flip
+                                      target={"error-mess-" + index}
+                                    >
+                                      {handleQuantity(item, validate)}
+                                    </UncontrolledTooltip>
+                                    <Button
+                                      className="d-flex flex-row justify-content-center align-items-center px-3"
                                       color="error"
-                                      sx={{ fontSize: 20 }}
-                                    />
-                                  </Button>
-                                </>
-                              )}
+                                    >
+                                      <ErrorOutline
+                                        id={"error-mess-" + index}
+                                        color="error"
+                                        sx={{ fontSize: 20 }}
+                                      />
+                                    </Button>
+                                  </>
+                                )}
+                              </Box>
                             </Box>
-                          </Box>
-                          <Collapse isOpen={split === index ? true : false}>
-                            <Box
-                              className={clsx(
-                                "justify-content-center mt-2 py-2 px-1 d-flex flex-row align-items-stretch",
-                              )}
-                            >
-                              <TextField
-                                type="number"
-                                label="Số lượng"
-                                className="flex-grow-1 w-100"
-                                onChange={(e) => setQuantity(e.target.value)}
-                                value={quantity}
-                                error={
-                                  quantity <= 0 ||
-                                  quantity >
-                                    item.quantity - validate[item.id] ||
-                                  !quantity ||
-                                  quantity > item.quantity
-                                }
-                                helperText={
-                                  (quantity <= 0 &&
-                                    "Số lượng phải lớn hơn 0") ||
-                                  (quantity >
-                                    item.quantity - validate[item.id] &&
-                                    "Vượt quá số lượng tách được") ||
-                                  (!quantity && "Số lượng không hợp lệ") ||
-                                  (quantity > item.quantity &&
-                                    "Số lượng tách phải nhỏ hơn số lượng hiện tại")
-                                }
-                              ></TextField>
-                              <Button
-                                sx={{ height: 60 }}
-                                color="success"
-                                disabled={
-                                  quantity < 0 ||
-                                  quantity > item.quantity ||
-                                  !quantity ||
-                                  item.quantity - validate[item.id] <= 0
-                                }
-                                onClick={() => handleSplit(item, index)}
+                            <Collapse isOpen={split === index ? true : false}>
+                              <Box
+                                className={clsx(
+                                  "justify-content-center mt-2 py-2 px-1 d-flex flex-row align-items-stretch",
+                                )}
                               >
-                                <Check />
-                              </Button>
-                              <Button
-                                sx={{ height: 60 }}
-                                color="error"
-                                onClick={() => {
-                                  setSplit(null);
-                                  setQuantity(1);
-                                }}
-                              >
-                                <Close />
-                              </Button>
-                            </Box>
-                          </Collapse>
-                        </div>
-                      )}
+                                <TextField
+                                  type="number"
+                                  label="Số lượng"
+                                  className="flex-grow-1 w-100"
+                                  onChange={(e) => setQuantity(e.target.value)}
+                                  value={quantity}
+                                  error={error.status}
+                                  helperText={error.message}
+                                ></TextField>
+                                <Button
+                                  sx={{ height: 60 }}
+                                  color="success"
+                                  disabled={error.status}
+                                  onClick={() => handleSplit(item, index)}
+                                >
+                                  <Check />
+                                </Button>
+                                <Button
+                                  sx={{ height: 60 }}
+                                  color="error"
+                                  onClick={() => {
+                                    setSplit(null);
+                                    setQuantity(1);
+                                  }}
+                                >
+                                  <Close />
+                                </Button>
+                              </Box>
+                            </Collapse>
+                          </div>
+                        );
+                      }}
                     </Draggable>
                   ))}
                   {provided.placeholder}
@@ -409,7 +453,7 @@ export const ArrangePack = ({
                   {shipmentData.map((item, index) => (
                     <Draggable
                       key={item.id + index.toString()}
-                      draggableId={item.id + index.toString()}
+                      draggableId={item.id + item.quantity.toString()}
                       index={index}
                     >
                       {(provided, snapshot) => (
@@ -434,7 +478,8 @@ export const ArrangePack = ({
                                 variant="subtitle1"
                                 className="fw-bold"
                               >
-                                Tên kiện hàng: {item.name || "Không có"}
+                                Tên: {item.name || "Không có"} - Loại:{" "}
+                                {convertPackageType(item.package_type)}
                               </Typography>
                               <Typography>
                                 Khối lượng: {item.weight} kg
@@ -442,11 +487,12 @@ export const ArrangePack = ({
                               <Typography>
                                 Số lượng: {item.quantity} kiện
                               </Typography>
-                              {type === "interdepart" && item.to_address?.city && (
-                                <Typography>
-                                  Nơi đến: {item.to_address?.city}
-                                </Typography>
-                              )}
+                              {type === "interdepart" &&
+                                item.to_address?.city && (
+                                  <Typography>
+                                    Nơi đến: {item.to_address?.city}
+                                  </Typography>
+                                )}
                             </Box>
                           </Box>
                         </div>
