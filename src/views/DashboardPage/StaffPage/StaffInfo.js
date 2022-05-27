@@ -171,6 +171,9 @@ const StaffInfo = (props) => {
 
   useEffect(() => {
     if (location?.state?.id) {
+      if (location?.state?.tab) {
+        setActive(location.state.tab)
+      }
       userApi.staffDetail(location.state.id).then((response) => {
         setData(response);
         if (response.avatar) {

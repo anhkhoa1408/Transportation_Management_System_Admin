@@ -7,5 +7,7 @@ import "./assets/css/main.css";
 import "react-toastify/dist/ReactToastify.css";
 import "./assets/css/input.css"
 import "./assets/css/navtabs.css"
+import { startSocketIO } from "./config/socketIO";
 
+startSocketIO();
 ReactDOM.render(<App />, document.getElementById("root"));

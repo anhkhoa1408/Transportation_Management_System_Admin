@@ -4,10 +4,12 @@ import localStorage from "redux-persist/lib/storage";
 import { persistor } from "../config/configureStore";
 import userInfo from "./userInfo";
 import layoutOption from "./layoutOption";
+import notification from "./notification"
 
 const appReducer = combineReducers({
   userInfo: userInfo,
   layoutOption: layoutOption,
+  notification: notification
 });
 
 const rootReducer = (state, action) => {

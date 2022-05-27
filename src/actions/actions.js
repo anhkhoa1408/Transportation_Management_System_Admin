@@ -27,3 +27,25 @@ export const saveInfoError = (payload) => {
     payload: payload,
   };
 };
+
+// For notification
+export const saveNotiSuccess = (payload) => {
+  return {
+    type: types.SAVE_NOTI_SUCCESS,
+    payload: payload,
+  };
+}
+
+export const saveNotiError = (payload) => {
+  return {
+    type: types.SAVE_NOTI_ERROR,
+    payload: payload,
+  };
+}
+
+export const addNoti = (payload) => {
+  return {
+    type: types.ADD_NOTI,
+    payload: payload,
+  };
+}
