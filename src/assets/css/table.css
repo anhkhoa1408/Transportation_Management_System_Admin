@@ -81,6 +81,5 @@
 }
 
 .ReactTable.-highlight .rt-tbody .rt-tr:not(.-padRow):hover {
-  background: var(--neutral-gray) !important;
-  opacity: 0.4 !important;
+  background: rgba(209, 243, 255, 0.6) !important;
 }

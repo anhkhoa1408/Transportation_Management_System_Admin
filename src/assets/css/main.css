@@ -20,6 +20,8 @@ body {
 
 .dropdown-item {
   padding: 12px !important;
+  min-width: inherit;
+  max-width: inherit;
 }
 
 .dropdown-item:active {
