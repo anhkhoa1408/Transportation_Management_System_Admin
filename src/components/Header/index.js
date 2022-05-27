@@ -117,7 +117,7 @@ const Header = (props) => {
             component="div"
             className="ms-auto d-flex flex-row align-items-center"
           >
-            <AppNotification />
+            {data.role.name === "Admin" && <AppNotification />}
             <UncontrolledDropdown>
               <DropdownToggle className="border-0 shadow-none bg-white p-0">
                 <StyledBadge

@@ -7,7 +7,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  UncontrolledDropdown
+  UncontrolledDropdown,
 } from "reactstrap";
 import * as Bonk from "yup";
 import orderApi from "../../../api/orderApi";
@@ -15,10 +15,13 @@ import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../hooks/useScroll";
 import Detail from "./Detail/Detail";
 import clsx from "clsx";
+import { useSelector } from "react-redux";
 
 const OrderDetail = (props) => {
   const history = useHistory();
   const location = useLocation();
+
+  const userInfo = useSelector((state) => state.userInfo);
 
   const [data, setData] = useState({
     id: "",
@@ -128,7 +131,7 @@ const OrderDetail = (props) => {
                   variant="outlined"
                   className={clsx("me-2 py-1 app-btn", {
                     "app-btn--success": data.state === 0,
-                    "app-btn--gray": data.state !== 0
+                    "app-btn--gray": data.state !== 0,
                   })}
                   onClick={formik.submitForm}
                   disabled={data.state !== 0}
@@ -155,17 +158,19 @@ const OrderDetail = (props) => {
 
                     <Divider className="app--primary" />
 
-                    <DropdownItem
-                      className="py-3 px-4"
-                      onClick={() =>
-                        history.push("/shipment/arrange", {
-                          order: data.id,
-                        })
-                      }
-                      disabled={data.state !== 0}
-                    >
-                      Sắp xếp chuyến
-                    </DropdownItem>
+                    {userInfo.user.type === "Admin" && (
+                      <DropdownItem
+                        className="py-3 px-4"
+                        onClick={() =>
+                          history.push("/shipment/arrange", {
+                            order: data.id,
+                          })
+                        }
+                        disabled={data.state !== 0}
+                      >
+                        Sắp xếp chuyến
+                      </DropdownItem>
+                    )}
 
                     <Divider className="app--primary" />
 
@@ -194,6 +199,5 @@ const OrderDetail = (props) => {
     </Grid>
   );
 };
-
 
 export default OrderDetail;
