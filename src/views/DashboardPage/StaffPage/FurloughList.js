@@ -1,22 +1,27 @@
 import { Chip, Grid, Paper } from "@mui/material";
-import moment from 'moment';
+import moment from "moment";
 import React, { useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 import ReactTable from "react-table-v6";
-import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from "reactstrap";
+import {
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
+  UncontrolledDropdown,
+  Badge,
+} from "reactstrap";
 import userApi from "../../../api/userApi";
 import { CustomPagination } from "../../../components/CustomPagination";
 import LoadingTable from "../../../components/LoadingTable";
 import { useQueryTable, useUpdateTable } from "./../../../utils/queryUtils.js";
 
-
 function FurloughList() {
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
   const [_start, setStart] = useState(0);
   const [totalPage, setTotal] = useState(0);
   const [_limit, setLimit] = useState(10);
 
-  const location = useLocation()
+  const location = useLocation();
 
   const columns = useMemo(
     () => [
@@ -65,13 +70,21 @@ function FurloughList() {
         state: handleState(prop.state),
         options: (
           <UncontrolledDropdown direction="left">
-            <DropdownToggle className="app-bg--primary border-0 shadow-sm">Tùy chọn</DropdownToggle>
-            <DropdownMenu >
-              <DropdownItem onClick={() => handleAction(prop.id, "accepted")}>Chấp nhận</DropdownItem>
-              <DropdownItem onClick={() => handleAction(prop.id, "canceled")} className="text-danger">Không cho phép</DropdownItem>
+            <DropdownToggle className="app-bg--primary border-0 shadow-sm">
+              Tùy chọn
+            </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem onClick={() => handleAction(prop.id, "accepted")}>
+                Chấp nhận
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => handleAction(prop.id, "canceled")}
+                className="text-danger"
+              >
+                Không cho phép
+              </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
-
         ),
       };
     });
@@ -86,33 +99,51 @@ function FurloughList() {
     {
       _start,
       _limit,
-      driver: location?.state?.id
+      driver: location?.state?.id,
+      _sort: "createdAt:DESC",
     },
   );
 
-  const FurloughUpdate = useUpdateTable("furlough-list", userApi.updateFurlough)
+  const FurloughUpdate = useUpdateTable(
+    "furlough-list",
+    userApi.updateFurlough,
+  );
 
   const handleAction = (id, type) => {
     FurloughUpdate.mutate({
       id: id,
       body: {
-        state: type
-      }
-    })
-  }
+        state: type,
+      },
+    });
+  };
 
   const handleState = (state) => {
     switch (state) {
       case "pending":
-        return <Chip variant="outlined" label="Chờ xử lý" color="warning" />;
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
       case "accepted":
         return (
-          <Chip variant="outlined" label="Chấp nhận" className="app-btn app-btn--success" />
+          <Badge className="app-bg--neutral-success">
+            <span className="app--success">Chấp nhận</span>
+          </Badge>
         );
       case "canceled":
-        return <Chip variant="outlined" label="Không cho phép" className="app-btn app-btn--danger" />;
+        return (
+          <Badge className="app-bg--neutral-danger">
+            <span className="app--danger">Không đồng ý</span>
+          </Badge>
+        );
       default:
-        return <Chip variant="outlined" label="Đang xử lý" color="warning" />;
+        return (
+          <Badge className="app-bg--neutral-warning">
+            <span className="app--warning">Đang xử lý</span>
+          </Badge>
+        );
     }
   };
 

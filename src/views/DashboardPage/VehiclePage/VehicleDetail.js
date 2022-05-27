@@ -187,7 +187,7 @@ const VehicleDetail = (props) => {
       Promise.all([
         vehicleApi.getDetail(location.state.id),
         role.name === "Admin" ? userApi.getStaffs({ type: "Driver", _limit: 1000 }) : [],
-        vehicleApi.getBroken({ car: location.state.id }),
+        vehicleApi.getBroken({ car: location.state.id, _sort: "time:DESC" }),
       ])
         .then((response) => {
           setData(response[0]);
