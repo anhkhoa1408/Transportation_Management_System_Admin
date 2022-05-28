@@ -1,38 +1,30 @@
-import { Download } from "@mui/icons-material";
 import {
-  Box,
-  Button,
   FormControl,
   FormHelperText,
   Grid,
   InputAdornment,
   InputLabel,
-  MenuItem,
-  Paper,
-  Select,
+  MenuItem, Select,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import * as Bonk from "yup";
-import { useFormik } from "formik";
 import moment from "moment";
-import { joinAddress } from "../../../../utils/address";
+import React from "react";
 import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
+import { joinAddress } from "../../../../utils/address";
 import { convertReportType } from "../../../../utils/report";
 
 function Detail({ formik, storages }) {
   const location = useLocation();
-  console.log(storages);
   return (
     <>
       {location?.state?.id ? (
         <>
           <Grid container md={12} className="mb-4">
-            <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
               <Typography>Tên kho</Typography>
             </Grid>
-            <Grid item md={9}>
+            <Grid item md={9} sm={9}>
               <TextField
                 fullWidth
                 label="Tên kho"
@@ -42,10 +34,10 @@ function Detail({ formik, storages }) {
             </Grid>
           </Grid>
           <Grid container className="mb-4">
-            <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
               <Typography>Địa chỉ kho</Typography>
             </Grid>
-            <Grid item md={9}>
+            <Grid item md={9} sm={9}>
               <TextField
                 fullWidth
                 label="Địa chỉ kho"
@@ -58,10 +50,10 @@ function Detail({ formik, storages }) {
             </Grid>
           </Grid>
           <Grid container className="mb-4">
-            <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
               <Typography>Người thực hiện</Typography>
             </Grid>
-            <Grid item md={9}>
+            <Grid item md={9} sm={9}>
               <TextField
                 fullWidth
                 label="Người thực hiện"
@@ -71,10 +63,10 @@ function Detail({ formik, storages }) {
             </Grid>
           </Grid>
           <Grid container className="mb-4">
-            <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
               <Typography>Thời gian thực hiện</Typography>
             </Grid>
-            <Grid item md={9}>
+            <Grid item md={9} sm={9}>
               <TextField
                 fullWidth
                 disabled
@@ -86,10 +78,10 @@ function Detail({ formik, storages }) {
             </Grid>
           </Grid>
           <Grid container className="mb-4">
-            <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
               <Typography>Thời gian cập nhật</Typography>
             </Grid>
-            <Grid item md={9}>
+            <Grid item md={9} sm={9}>
               <TextField
                 fullWidth
                 disabled
@@ -101,10 +93,10 @@ function Detail({ formik, storages }) {
             </Grid>
           </Grid>
           <Grid container className="mb-4">
-            <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
               <Typography>Loại báo cáo</Typography>
             </Grid>
-            <Grid item md={9}>
+            <Grid item md={9} sm={9}>
               <TextField
                 fullWidth
                 disabled
@@ -114,10 +106,10 @@ function Detail({ formik, storages }) {
             </Grid>
           </Grid>
           <Grid container className="mb-4">
-            <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
               <Typography>Tổng nhập</Typography>
             </Grid>
-            <Grid item md={9}>
+            <Grid item md={9} sm={9}>
               <TextField
                 disabled
                 type="number"
@@ -133,10 +125,10 @@ function Detail({ formik, storages }) {
             </Grid>
           </Grid>
           <Grid container className="mb-4">
-            <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
               <Typography>Tổng xuất</Typography>
             </Grid>
-            <Grid item md={9}>
+            <Grid item md={9} sm={9}>
               <TextField
                 disabled
                 type="number"
@@ -155,10 +147,10 @@ function Detail({ formik, storages }) {
       ) : (
         <>
           <Grid container className="mb-4">
-            <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
               <Typography>Danh sách kho</Typography>
             </Grid>
-            <Grid item md={9}>
+            <Grid item md={9} sm={9}>
               <FormControl
                 error={
                   formik.touched.storage && formik.errors.storage ? true : false
@@ -186,10 +178,10 @@ function Detail({ formik, storages }) {
             </Grid>
           </Grid>
           <Grid container className="mb-4">
-            <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
               <Typography>Loại báo cáo</Typography>
             </Grid>
-            <Grid item md={9}>
+            <Grid item md={9} sm={9}>
               <FormControl
                 error={
                   formik.touched.storage && formik.errors.storage ? true : false
@@ -217,10 +209,10 @@ function Detail({ formik, storages }) {
         </>
       )}
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Ghi chú</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             label="Ghi chú"
             multiline

@@ -17,10 +17,10 @@ function Detail({ formik }) {
   return (
     <>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Họ và tên</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="Họ và tên"
@@ -31,10 +31,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Tên tài khoản</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="Tên tài khoản"
@@ -48,10 +48,10 @@ function Detail({ formik }) {
       </Grid>
       {location?.state?.create && (
         <Grid container className="mb-4">
-          <Grid item md={3} className="align-items-center d-flex flex-row">
+          <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
             <Typography>Mật khẩu</Typography>
           </Grid>
-          <Grid item md={9}>
+          <Grid item md={9} sm={9}>
             <TextField
               fullWidth
               label="Mật khẩu"
@@ -66,10 +66,10 @@ function Detail({ formik }) {
         </Grid>
       )}
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Địa chỉ email</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="Email"
@@ -80,10 +80,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Số điện thoại</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="Số điện thoại"
@@ -94,10 +94,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Địa chỉ</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             disabled
             fullWidth
@@ -109,10 +109,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Thuộc kho</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TimePicker
             label="Ngày sinh"
             value={moment(formik.values.birthday).format("YYYY-MM-DD")}
@@ -127,10 +127,10 @@ function Detail({ formik }) {
       </Grid>
 
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Loại thành viên</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <FormControl className="w-100">
             <InputLabel>Loại thành viên</InputLabel>
             <Select

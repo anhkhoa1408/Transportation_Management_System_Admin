@@ -89,7 +89,7 @@ const PackageDetail = (props) => {
         >
           <Box className="px-4 py-2">
             <Grid container direction="row" className="mb-1 bg-white">
-              <Grid item sm={3} md={4} className="">
+              <Grid item sm={4} md={4} className="">
                 <Typography className="my-3" variant="h6">
                   Chi tiết kiện hàng
                 </Typography>
@@ -97,7 +97,7 @@ const PackageDetail = (props) => {
 
               <Grid
                 item
-                sm={9}
+                sm={8}
                 md={8}
                 className="d-flex flex-row align-items-center justify-content-end"
               >

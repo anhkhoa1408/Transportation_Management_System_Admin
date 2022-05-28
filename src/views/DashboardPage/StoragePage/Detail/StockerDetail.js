@@ -13,10 +13,10 @@ const StockerDetail = ({ formik, stockers, selectStockers, handleChangeStocker }
   return (
     <>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={9} className="align-items-center d-flex flex-row">
           <Typography>Tên kho</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={3}>
           <TextField
             disabled
             fullWidth
@@ -31,10 +31,10 @@ const StockerDetail = ({ formik, stockers, selectStockers, handleChangeStocker }
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Địa chỉ</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             {...formik.getFieldProps("address")}
             fullWidth
@@ -50,10 +50,10 @@ const StockerDetail = ({ formik, stockers, selectStockers, handleChangeStocker }
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Diện tích</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             disabled
             type="number"
@@ -74,10 +74,10 @@ const StockerDetail = ({ formik, stockers, selectStockers, handleChangeStocker }
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Ngày thành lập</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             disabled
             fullWidth

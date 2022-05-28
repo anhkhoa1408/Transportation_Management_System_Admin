@@ -1,23 +1,15 @@
-import { Download } from "@mui/icons-material";
 import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { useLocation } from "react-router-dom";
-import {
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  UncontrolledDropdown,
-} from "reactstrap";
+import { useHistory, useLocation } from "react-router-dom";
 import * as Bonk from "yup";
 import reportApi from "../../../api/reportApi";
+import storageApi from "../../../api/storageApi";
+import useScroll from "../../../hooks/useScroll";
 import { exportExcel } from "../../../services/export";
 import { errorNotify, successNotify } from "../../../utils/notification";
-import useScroll from "../../../hooks/useScroll";
 import Detail from "./Detail/Detail";
-import storageApi from "../../../api/storageApi";
-import { useHistory } from "react-router-dom";
 
 const ReportDetail = (props) => {
   const location = useLocation();
@@ -113,7 +105,7 @@ const ReportDetail = (props) => {
     } else {
       storageApi
         .getList({
-          _limit: 100
+          _limit: 100,
         })
         .then((response) => {
           setStorages(response);
@@ -131,6 +123,7 @@ const ReportDetail = (props) => {
       <Grid
         item
         md={12}
+        sm={12}
         className="pt-4 px-4 position-sticky d-flex flex-column header-sticky"
       >
         <Paper
@@ -139,12 +132,12 @@ const ReportDetail = (props) => {
         >
           <Box className="px-4 py-2">
             <Grid container className="my-3">
-              <Grid item md={8}>
+              <Grid item md={8} sm={6}>
                 <Typography variant="h6">
                   {location?.state?.id ? "Chi tiết báo cáo" : "Tạo báo cáo"}
                 </Typography>
               </Grid>
-              <Grid item md={4} className="d-flex flex-row justify-content-end">
+              <Grid item md={4} sm={6} className="d-flex flex-row justify-content-end">
                 {location?.state?.id ? (
                   <>
                     <Button
@@ -178,7 +171,7 @@ const ReportDetail = (props) => {
         </Paper>
       </Grid>
 
-      <Grid item md={12} className="px-4 d-flex flex-column">
+      <Grid item md={12} sm={12} className="px-4 d-flex flex-column">
         <Paper className="d-flex flex-column px-4 pt-1 rounded-top col-md-11 align-self-center shadow-none">
           <Box className="px-4">
             <Detail formik={formik} storages={storages} />

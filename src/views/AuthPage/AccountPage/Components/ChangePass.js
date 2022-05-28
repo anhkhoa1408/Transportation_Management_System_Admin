@@ -13,10 +13,10 @@ export const ChangePass = ({ formik, ...props }) => {
         <Button variant="outlined" className="app-btn app-btn--success" onClick={formik.submitForm}>Lưu lại</Button>
       </Box>
       <Grid container md={12} className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={4} className="align-items-center d-flex flex-row">
           <Typography>Mật khẩu hiện tại</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={8}>
           <TextField
             fullWidth
             type="password"
@@ -28,10 +28,10 @@ export const ChangePass = ({ formik, ...props }) => {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={4} className="align-items-center d-flex flex-row">
           <Typography>Mật khẩu mới</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={8}>
           <TextField
             fullWidth
             type="password"
@@ -43,10 +43,10 @@ export const ChangePass = ({ formik, ...props }) => {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={4} className="align-items-center d-flex flex-row">
           <Typography>Xác nhận mật khẩu</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={8}>
           <TextField
             fullWidth
             type="password"

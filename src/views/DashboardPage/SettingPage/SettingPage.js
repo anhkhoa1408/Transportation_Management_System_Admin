@@ -167,10 +167,10 @@ function SettingPage() {
           </Box>
           <Grid container direction="column">
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
                 <Typography>Thành viên bạc</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth
@@ -191,10 +191,10 @@ function SettingPage() {
           </Grid>
           <Grid container direction="column">
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
                 <Typography>Thành viên vàng</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth
@@ -215,10 +215,10 @@ function SettingPage() {
           </Grid>
           <Grid container direction="column">
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
                 <Typography>Thành viên kim cương</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth
@@ -241,10 +241,10 @@ function SettingPage() {
           </Grid>
           <Grid container direction="column">
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
                 <Typography>Thành viên bạch kim</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth
@@ -287,10 +287,10 @@ function SettingPage() {
           </Box>
           <Grid container direction="column">
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
                 <Typography>Giá xăng cũ</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth
@@ -311,10 +311,10 @@ function SettingPage() {
           </Grid>
           <Grid container direction="column">
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
                 <Typography>Giá xăng hiện tại</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth
@@ -357,10 +357,10 @@ function SettingPage() {
           </Box>
           <Grid container direction="column">
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
                 <Typography>Số ngày báo trước</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth
@@ -385,10 +385,10 @@ function SettingPage() {
           </Grid>
           <Grid container direction="column">
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
                 <Typography>Ngày nghỉ tối đa</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth

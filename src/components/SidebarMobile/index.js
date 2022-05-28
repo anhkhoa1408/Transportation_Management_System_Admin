@@ -1,24 +1,20 @@
-import React from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import {
+  Close
+} from "@mui/icons-material";
 import MuiDrawer from "@mui/material/Drawer";
-import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import { styled, useTheme } from "@mui/material/styles";
+import React from "react";
 import { NavLink } from "react-router-dom";
-import { Box } from "@mui/system";
+import { store } from "../../config/configureStore";
 import {
-  Home,
-  AccountCircle,
-  ListAlt,
-  LocalShipping,
-  ConfirmationNumber,
-  Storage,
-  ModeComment,
-  Description,
-  People,
-  Close,
-} from "@mui/icons-material";
+  adminSidebar,
+  customerSidebar,
+  driverSidebar,
+  storekeeperSidebar
+} from "./../../routes/routesList/sidebarRouter";
 
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -28,14 +24,29 @@ const Drawer = styled(MuiDrawer, {
   height: "100%",
 }));
 
-const routerList = [
-  { link: "/customer", title: "Người dùng", icon: <AccountCircle /> },
-  { link: "/staff", title: "Nhân viên", icon: <People /> },
-  { link: "/order", title: "Đơn hàng", icon: <ListAlt /> },
-  { link: "/vehicle", title: "Phương tiện", icon: <LocalShipping /> },
-  { link: "/dashboard", title: "Khuyến mãi", icon: <ConfirmationNumber /> },
-  { link: "/storage", title: "Kho", icon: <Storage /> },
-];
+const routerList = () => {
+  let data = store.getState().userInfo;
+  let sidebarData = [];
+  if (data && data.user && data.user.role) {
+    switch (data.user.role.name) {
+      case "Admin":
+        sidebarData = adminSidebar;
+        break;
+      case "Stocker":
+        sidebarData = storekeeperSidebar;
+        break;
+      case "Driver":
+        sidebarData = driverSidebar;
+        break;
+      case "Customer":
+        sidebarData = customerSidebar;
+        break;
+      default:
+        sidebarData = [];
+    }
+  }
+  return sidebarData;
+};
 
 const SidebarMobile = (props) => {
   const theme = useTheme();
@@ -55,38 +66,15 @@ const SidebarMobile = (props) => {
           alignItems: "stretch",
           overflow: "hidden",
           borderWidth: 0,
+          width: 270,
         },
       }}
     >
       <label htmlFor="toggle-sidebar-mobile" className="d-flex flex-column btn">
-        <Close className="app--primary align-self-end m-2" />
+        <Close className="text-white align-self-end my-2 app-btn--primary app-btn--close rounded-1" />
       </label>
 
-      <NavLink className="nav-link" to="/dashboard">
-        <ListItem
-          button
-          className="app--primary d-flex align-items-center justify-content-center"
-        >
-          <ListItemIcon className="m-0 w-0">
-            <Home />
-          </ListItemIcon>
-          <ListItemText primary="Bảng điều khiển" />
-        </ListItem>
-      </NavLink>
-
-      <Box
-        sx={{
-          padding: theme.spacing(0, 4),
-
-          width: "100%",
-        }}
-      >
-        <Divider
-          sx={{ width: "100%", color: "white", borderWidth: 1, opacity: 1 }}
-        />
-      </Box>
-
-      {routerList.map((item, index) => (
+      {routerList().map((item, index) => (
         <NavLink key={index} className="nav-link" to={item.link}>
           <ListItem
             button
@@ -97,41 +85,6 @@ const SidebarMobile = (props) => {
           </ListItem>
         </NavLink>
       ))}
-      <Box
-        sx={{
-          padding: theme.spacing(0, 4),
-
-          width: "100%",
-        }}
-      >
-        <Divider
-          sx={{ width: "100%", color: "white", borderWidth: 1, opacity: 1 }}
-        />
-      </Box>
-
-      <NavLink className="nav-link" to="/report">
-        <ListItem
-          button
-          className="app--primary d-flex align-items-center justify-content-center"
-        >
-          <ListItemIcon className="m-0 w-0">
-            <Description />
-          </ListItemIcon>
-          <ListItemText primary="Báo cáo định kỳ" />
-        </ListItem>
-      </NavLink>
-
-      <NavLink className="nav-link" to="/feedback">
-        <ListItem
-          button
-          className="app--primary d-flex align-items-center justify-content-center"
-        >
-          <ListItemIcon className="m-0 w-0">
-            <ModeComment />
-          </ListItemIcon>
-          <ListItemText primary="Phản hồi" />
-        </ListItem>
-      </NavLink>
     </Drawer>
   );
 };

@@ -6,8 +6,8 @@ import * as Bonk from "yup";
 import voucherApi from "../../../api/voucherApi";
 import ConfirmAlert from "../../../components/Alert/ConfirmAlert";
 import ImageUpload from "../../../components/Upload/ImageUpload";
-import { errorNotify, successNotify } from "../../../utils/notification";
 import useScroll from "../../../hooks/useScroll";
+import { errorNotify, successNotify } from "../../../utils/notification";
 import Detail from "./Detail/Detail";
 
 const VoucherDetail = (props) => {
@@ -171,10 +171,14 @@ const VoucherDetail = (props) => {
           setData(response);
           console.log(response);
           if (response.voucher_img) {
-            let isValidUrl = new RegExp("https://").test(response.voucher_img.url);
-            setImage(isValidUrl
-              ? response.voucher_img.url
-              : process.env.MAIN_URL + response.voucher_img.url,);
+            let isValidUrl = new RegExp("https://").test(
+              response.voucher_img.url,
+            );
+            setImage(
+              isValidUrl
+                ? response.voucher_img.url
+                : process.env.MAIN_URL + response.voucher_img.url,
+            );
           }
         })
         .catch((error) => {
@@ -191,20 +195,19 @@ const VoucherDetail = (props) => {
       <Grid
         item
         md={12}
+        sm={12}
         className="pt-4 px-4 position-sticky d-flex flex-column header-sticky"
       >
         <Paper
           id="detail-header"
-          className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none"
+          className="d-flex flex-column px-4 rounded-top col-md-11 col-sm-12 align-self-center shadow-none"
         >
           <Box className="px-4 py-2">
             <Grid container className="my-3">
-              <Grid item md={8}>
-                <Typography variant="h6">
-                  Chi tiết mã giảm giá
-                </Typography>
+              <Grid item md={8} sm={8}>
+                <Typography variant="h6">Chi tiết mã giảm giá</Typography>
               </Grid>
-              <Grid item md={4} className="d-flex flex-row justify-content-end">
+              <Grid item md={4} sm={4} className="d-flex flex-row justify-content-end">
                 {location?.state?.id && (
                   <Button
                     onClick={handleConfirm}
@@ -227,8 +230,8 @@ const VoucherDetail = (props) => {
         </Paper>
       </Grid>
 
-      <Grid item md={12} className="px-4 d-flex flex-column">
-        <Paper className="d-flex flex-column px-4 pt-1 rounded-top col-md-11 align-self-center shadow-none">
+      <Grid item md={12} sm={12} className="px-4 d-flex flex-column">
+        <Paper className="d-flex flex-column px-4 pt-1 rounded-top col-md-11 col-sm-12 align-self-center shadow-none">
           <Box className="px-4">
             <Detail formik={formik} />
           </Box>

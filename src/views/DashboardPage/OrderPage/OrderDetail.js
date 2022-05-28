@@ -107,15 +107,16 @@ const OrderDetail = (props) => {
       <Grid
         item
         md={12}
+        sm={12}
         className="pt-4 px-4 position-sticky d-flex flex-column header-sticky"
       >
         <Paper
           id="detail-header"
-          className="d-flex flex-column pt-2 px-4 col-md-11 align-self-center shadow-none"
+          className="d-flex flex-column pt-2 px-4 col-md-11 col-sm-12 align-self-center shadow-none"
         >
           <Box className="px-4 py-2">
             <Grid container direction="row" className="mb-1 bg-white">
-              <Grid item sm={3} md={4} className="">
+              <Grid item sm={4} md={4} className="">
                 <Typography className="my-3" variant="h6">
                   Chi tiết đơn hàng
                 </Typography>
@@ -123,7 +124,7 @@ const OrderDetail = (props) => {
 
               <Grid
                 item
-                sm={9}
+                sm={8}
                 md={8}
                 className="d-flex flex-row align-items-center justify-content-end"
               >
@@ -189,8 +190,8 @@ const OrderDetail = (props) => {
         </Paper>
       </Grid>
 
-      <Grid item md={12} className="px-4 d-flex flex-column">
-        <Paper className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none">
+      <Grid item md={12} sm={12} className="px-4 d-flex flex-column">
+        <Paper className="d-flex flex-column px-4 rounded-top col-md-11 col-sm-12 align-self-center shadow-none">
           <Box className="px-4 py-2">
             <Detail formik={formik} />
           </Box>

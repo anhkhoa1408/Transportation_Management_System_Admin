@@ -9,10 +9,10 @@ function Detail({ formik }) {
   return (
     <>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Mã đơn hàng</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             disabled
             fullWidth
@@ -56,10 +56,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>SDT người gửi</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="SDT người gửi"
@@ -75,10 +75,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Đến</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             {...formik.getFieldProps("to_address")}
             fullWidth
@@ -89,10 +89,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Người nhận</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="Người nhận"
@@ -108,10 +108,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>SDT người nhận</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="SDT người nhận"
@@ -127,10 +127,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       {/* <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Vị trí hiện tại</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="Vị trí hiện tại"
@@ -138,10 +138,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid> */}
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Thời gian đặt hàng</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             disabled
@@ -151,10 +151,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Tổng chi phí</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             // disabled={role.name === "Customer"}
@@ -177,10 +177,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Chi phí còn lại</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             // disabled={role.name === "Customer"}

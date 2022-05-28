@@ -7,7 +7,7 @@
   transform: translateX(-102%);
   z-index: 1;
   transition: transform 0.3s linear;
-  box-shadow: 0 0 5px 3px #fff;
+  box-shadow: 0 0 1px 3px #fff;
   border-right: none;
 }
 

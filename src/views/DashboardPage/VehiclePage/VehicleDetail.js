@@ -218,7 +218,6 @@ const VehicleDetail = (props) => {
   return (
     <Grid className="p-4">
       {alert}
-
       <Grid
         item
         md={12}
@@ -230,7 +229,7 @@ const VehicleDetail = (props) => {
         >
           <Box className="px-4 py-2">
             <Grid container className="my-3">
-              <Grid item md={8}>
+              <Grid item md={5} sm={5}>
                 <Typography variant="h6">
                   Thông tin phương tiện
                 </Typography>
@@ -238,7 +237,8 @@ const VehicleDetail = (props) => {
               {role.name === "Admin" && (
                 <Grid
                   item
-                  md={4}
+                  md={7}
+                  sm={7}
                   className="d-flex flex-row justify-content-end"
                 >
                   {location?.state?.id && (

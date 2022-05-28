@@ -9,7 +9,7 @@ import {
   Paper,
   Select,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import React, { memo } from "react";
 import { useLocation } from "react-router-dom";
@@ -18,14 +18,19 @@ function Detail({ formik, drivers }) {
   const location = useLocation();
   return (
     <>
-      <Grid item md={12} className="px-4 d-flex flex-column">
+      <Grid item md={12} sm={12} className="px-4 d-flex flex-column">
         <Paper className="d-flex flex-column px-4 col-md-11 align-self-center shadow-none">
           <Box className="px-4 py-2">
-            <Grid container md={12} className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+            <Grid container className="mb-4">
+              <Grid
+                item
+                md={3}
+                sm={3}
+                className="align-items-center d-flex flex-row"
+              >
                 <Typography>Biển số</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   fullWidth
                   label="Biển số"
@@ -35,10 +40,15 @@ function Detail({ formik, drivers }) {
               </Grid>
             </Grid>
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid
+                item
+                md={3}
+                sm={3}
+                className="align-items-center d-flex flex-row"
+              >
                 <Typography>Tải trọng</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth
@@ -57,10 +67,15 @@ function Detail({ formik, drivers }) {
               </Grid>
             </Grid>
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid
+                item
+                md={3}
+                sm={3}
+                className="align-items-center d-flex flex-row"
+              >
                 <Typography>Loại xe</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <FormControl className="w-100">
                   <InputLabel>Loại xe</InputLabel>
                   <Select
@@ -76,10 +91,15 @@ function Detail({ formik, drivers }) {
               </Grid>
             </Grid>
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid
+                item
+                md={3}
+                sm={3}
+                className="align-items-center d-flex flex-row"
+              >
                 <Typography>Người quản lý</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <FormControl
                   error={
                     formik.touched.manager && formik.errors.manager
@@ -112,22 +132,25 @@ function Detail({ formik, drivers }) {
         </Paper>
       </Grid>
 
-      <Grid item md={12} className="pt-4 px-4 d-flex flex-column">
+      <Grid item md={12} sm={12} className="pt-4 px-4 d-flex flex-column">
         <Paper className="d-flex flex-column px-4 rounded-top col-md-11 align-self-center shadow-none">
           <Box className="px-4 py-2">
             <Box className="my-4">
-              <Typography variant="h6">
-                Kích thước thùng hàng
-              </Typography>
+              <Typography variant="h6">Kích thước thùng hàng</Typography>
               <Typography variant="subtitle2 opacity-50">
                 Điều chỉnh kích thước xe chở hàng
               </Typography>
             </Box>
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid
+                item
+                md={3}
+                sm={3}
+                className="align-items-center d-flex flex-row"
+              >
                 <Typography>Chiều dài</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth
@@ -144,10 +167,15 @@ function Detail({ formik, drivers }) {
               </Grid>
             </Grid>
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid
+                item
+                md={3}
+                sm={3}
+                className="align-items-center d-flex flex-row"
+              >
                 <Typography>Chiều rộng</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth
@@ -166,10 +194,15 @@ function Detail({ formik, drivers }) {
               </Grid>
             </Grid>
             <Grid container className="mb-4">
-              <Grid item md={3} className="align-items-center d-flex flex-row">
+              <Grid
+                item
+                md={3}
+                sm={3}
+                className="align-items-center d-flex flex-row"
+              >
                 <Typography>Chiều cao</Typography>
               </Grid>
-              <Grid item md={9}>
+              <Grid item md={9} sm={9}>
                 <TextField
                   type="number"
                   fullWidth

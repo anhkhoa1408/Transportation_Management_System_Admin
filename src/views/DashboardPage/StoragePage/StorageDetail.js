@@ -133,7 +133,7 @@ const StorageDetail = (props) => {
           <Paper className="d-flex flex-column p-4 rounded-top col-md-11 align-self-center shadow-sm">
             <Box className="px-5 py-2">
               <Grid container className="mt-3 mb-4">
-                <Grid item md={8}>
+                <Grid item md={8} sm={8}>
                   <Typography variant="h6">
                     Thông tin kho
                   </Typography>
@@ -141,6 +141,7 @@ const StorageDetail = (props) => {
                 <Grid
                   item
                   md={4}
+                  sm={4}
                   className="d-flex flex-row justify-content-end"
                 >
                   {role.name === "Admin" && (

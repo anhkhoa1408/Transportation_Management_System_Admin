@@ -1,33 +1,25 @@
-import { Download } from "@mui/icons-material";
 import {
-  Box,
-  Button,
   FormControl,
   FormHelperText,
   Grid,
   InputAdornment,
   InputLabel,
-  MenuItem,
-  Paper,
-  Select,
+  MenuItem, Select,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import * as Bonk from "yup";
-import { useFormik } from "formik";
 import moment from "moment";
-import { joinAddress } from "../../../../utils/address";
+import React from "react";
 import TimePicker from "./../../../../components/DatePicker";
 
 function Detail({ formik }) {
   return (
     <>
       <Grid container md={12} className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Tên mã giảm giá</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="Tên"
@@ -39,10 +31,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Mô tả</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="Mô tả"
@@ -54,10 +46,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Giảm giá</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             type="number"
             fullWidth
@@ -77,10 +69,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Giảm giá tối đa</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             type="number"
             fullWidth
@@ -89,19 +81,17 @@ function Detail({ formik }) {
             error={formik.errors.sale_max ? true : false}
             helperText={formik.errors.sale_max}
             InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">VND</InputAdornment>
-              ),
+              endAdornment: <InputAdornment position="end">VND</InputAdornment>,
             }}
             {...formik.getFieldProps("sale_max")}
           />
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Đơn tối thiểu</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             type="number"
             fullWidth
@@ -110,19 +100,17 @@ function Detail({ formik }) {
             error={formik.errors.minimum_order ? true : false}
             helperText={formik.errors.minimum_order}
             InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">VND</InputAdornment>
-              ),
+              endAdornment: <InputAdornment position="end">VND</InputAdornment>,
             }}
             {...formik.getFieldProps("minimum_order")}
           />
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Loại hình giảm giá</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <FormControl
             error={formik.errors.sale_type ? true : false}
             className="w-100"
@@ -145,10 +133,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Loại hình khách hàng</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <FormControl
             error={formik.errors.customer_type ? true : false}
             className="w-100"
@@ -175,10 +163,10 @@ function Detail({ formik }) {
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Ngày hết hạn</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TimePicker
             label="Ngày hết hạn"
             value={moment(formik.values.expired).format("YYYY-MM-DD")}

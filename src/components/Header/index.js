@@ -1,28 +1,27 @@
-import React, { useEffect, useState } from "react";
-import { styled } from "@mui/material/styles";
-import MuiAppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import { Avatar, Divider, Typography, Badge } from "@mui/material";
-import { Box } from "@mui/system";
-import LOGO from "./../../assets/img/logo.png";
-import SidebarMobile from "../SidebarMobile";
 import {
-  AccountCircle,
-  FormatAlignJustify,
-  Logout,
-  Settings,
+  AccountCircle, List, Logout,
+  Menu,
+  Settings
 } from "@mui/icons-material";
+import { Avatar, Badge, Divider, Typography } from "@mui/material";
+import MuiAppBar from "@mui/material/AppBar";
+import { styled } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import { Box } from "@mui/system";
+import React, { useEffect, useState } from "react";
+import { connect, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
-  UncontrolledDropdown,
+  UncontrolledDropdown
 } from "reactstrap";
-import AppNotification from "../AppNotification";
-import { useHistory } from "react-router-dom";
 import { CLEAN_STORE } from "../../constants/types";
-import { connect, useDispatch, useSelector } from "react-redux";
 import { simplifyString } from "../../utils/address";
+import AppNotification from "../AppNotification";
+import SidebarMobile from "../SidebarMobile";
+import LOGO from "./../../assets/img/logo.png";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -101,7 +100,7 @@ const Header = (props) => {
             htmlFor="toggle-sidebar-mobile"
             className="d-flex d-sm-flex d-md-flex d-lg-none d-xl-none text-dark me-3 -cursor-pointer btn"
           >
-            <FormatAlignJustify />
+            <Menu />
           </label>
           <Box>
             <img

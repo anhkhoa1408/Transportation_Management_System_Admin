@@ -13,10 +13,10 @@ const AdminDetail = ({ formik, stockers, selectStockers, handleChangeStocker }) 
   return (
     <>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Tên kho</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="Tên kho"
@@ -30,10 +30,10 @@ const AdminDetail = ({ formik, stockers, selectStockers, handleChangeStocker }) 
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Địa chỉ</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             {...formik.getFieldProps("address")}
             fullWidth
@@ -49,10 +49,10 @@ const AdminDetail = ({ formik, stockers, selectStockers, handleChangeStocker }) 
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Diện tích</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             type="number"
             fullWidth
@@ -72,10 +72,10 @@ const AdminDetail = ({ formik, stockers, selectStockers, handleChangeStocker }) 
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Thủ kho</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <Select
             multiple
             labelId="demo-simple-select-label"
@@ -100,10 +100,10 @@ const AdminDetail = ({ formik, stockers, selectStockers, handleChangeStocker }) 
         </Grid>
       </Grid>
       <Grid container className="mb-4">
-        <Grid item md={3} className="align-items-center d-flex flex-row">
+        <Grid item md={3} sm={3} className="align-items-center d-flex flex-row">
           <Typography>Ngày thành lập</Typography>
         </Grid>
-        <Grid item md={9}>
+        <Grid item md={9} sm={9}>
           <TextField
             fullWidth
             label="Ngày thành lập"
